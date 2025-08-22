@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>CARE Group of Institutions</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon" />
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet"
+    />
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"
+    />
+    <link rel="stylesheet" href="assets/css/custom_style.css" />
+    <script src="assets/js/common/check_auth.js"></script>
+    <style>
+      p {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="container fixed-top">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+          <a href="index.html" class="logo"
+            ><img
+              id="logo"
+              src="assets/img/care-logo.png"
+              alt=""
+              class="img-fluid"
+          /></a>
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            style="border: 0px"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse justify-content-end"
+            id="navbarCollapse"
+          >
+            <div class="navbar-nav ms-auto" id="nav-body"></div>
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              type="button"
+              onclick="logout()"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!-- End Header -->
+
+    <main id="main">
+      <section class="inner-page">
+        <div class="container" style="padding-top: 50px">
+          <h2 class="mb-4">Question Paper Generator</h2>
+
+          <div id="template_selection_div">
+            <div
+              class="border border-dashed border-2"
+              style="
+                padding-top: 20px;
+                padding-bottom: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
+              "
+            >
+              <h5 class="mb-4">Part A - Total Marks 20</h5>
+              <div class="row">
+                <div class="col">
+                  <label for="2_marks_mark" class="required">Marks</label>
+                  <select
+                    class="3col active form-select"
+                    name="2_marks_mark"
+                    id="2_marks_mark"
+                    disabled
+                    required
+                  >
+                    <option>2</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="2_marks_no_of_question" class="required"
+                    >No of questions</label
+                  >
+                  <select
+                    class="3col active form-select"
+                    name="2_marks_no_of_question"
+                    id="2_marks_no_of_question"
+                    disabled
+                    required
+                  >
+                    <option>10</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="2_marks_unit" class="required">Unit</label><br />
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="2_marks_unit_selected_1"
+                      name="2_marks_unit"
+                      value="1"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="2_marks_unit_selected_1"
+                      >1</label
+                    >
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="2_marks_unit_selected_2"
+                      name="2_marks_unit"
+                      value="2"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="2_marks_unit_selected_2"
+                      >2</label
+                    >
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="2_marks_unit_selected_3"
+                      name="2_marks_unit"
+                      value="3"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="2_marks_unit_selected_3"
+                      >3</label
+                    >
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="2_marks_unit_selected_4"
+                      name="2_marks_unit"
+                      value="4"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="2_marks_unit_selected_4"
+                      >4</label
+                    >
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="2_marks_unit_selected_5"
+                      name="2_marks_unit"
+                      value="5"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="2_marks_unit_selected_5"
+                      >5</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+
+            <div
+              class="border border-dashed border-2"
+              style="
+                padding-top: 20px;
+                padding-bottom: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
+              "
+            >
+              <h5 class="mb-4">Part B - Total Marks 80</h5>
+              <div class="row">
+                <div class="col">
+                  <label for="part_b_question_type" class="required"
+                    >Question Type</label
+                  >
+                  <select
+                    class="3col active form-select"
+                    name="part_b_question_type"
+                    id="part_b_question_type"
+                    required
+                    onchange="generatePartB()"
+                  >
+                    <option>Answer All</option>
+                    <option>Either Or</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <hr />
+                <div id="partBSubdivisions"></div>
+              </div>
+            </div>
+
+            <div class="row" style="padding-top: 20px; padding-left: 10px">
+              <div class="col view-student-columns">
+                <label for="program_type" class="required">Program Type</label>
+                <select
+                  class="multisteps-form__select form-select"
+                  id="program_type"
+                  name="program_type"
+                  required
+                ></select>
+              </div>
+
+              <div class="col view-student-columns">
+                <label for="branch_code" class="required">Branch</label>
+                <select
+                  class="3col active form-select"
+                  id="branch_code"
+                ></select>
+              </div>
+              <div class="col view-student-columns">
+                <label for="semester" class="required">Semester</label>
+                <select class="3col active form-select" id="semester"></select>
+              </div>
+              <div class="col view-student-columns">
+                <label for="regulation" class="required">Regulation</label>
+                <select
+                  class="3col active form-select"
+                  id="regulation"
+                ></select>
+              </div>
+              <div class="col view-student-columns autocomplete">
+                <label for="sub_code" class="required"> Subject</label>
+                <select
+                  class="3col active form-select"
+                  name="sub_code"
+                  id="sub_code"
+                  required
+                ></select>
+              </div>
+              <div
+                class="col view-student-columns"
+                style="align-self: flex-end"
+              >
+                <input
+                  class="btn btn-primary"
+                  type="button"
+                  value="Generate Question Paper"
+                  onclick="generateQuestionPaper()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            style="padding-bottom: 50px; padding-left: 10px"
+          ></div>
+          <div class="row" style="padding-bottom: 0px">
+            <div class="row">
+              <div class="col mb-2">
+                <div
+                  class="row"
+                  style="padding-bottom: 50px; display: none"
+                  id="add_question_button_div"
+                >
+                  <div class="col mb-2" style="align-self: flex-end">
+                    <input
+                      class="btn btn-primary"
+                      type="button"
+                      value="New Question"
+                      onclick="newQuestion()"
+                    />
+                  </div>
+                </div>
+
+                <div class="container" id="fetching_data" style="display: none">
+                  <p>Fetching Data</p>
+                </div>
+
+                <div class="container" id="questions_div" style="display: none">
+                  <div
+                    class="row"
+                    style="padding-bottom: 50px"
+                    id="add_question_button_div"
+                  >
+                    <div class="col mb-2" style="align-self: flex-end">
+                      <input
+                        class="btn btn-primary"
+                        type="button"
+                        value="New Template"
+                        onclick="showTemplateDiv()"
+                      />
+                    </div>
+                  </div>
+                  <div id="result_div"></div>
+                  <div
+                    class="row"
+                    style="padding-bottom: 50px; padding-top: 50px"
+                    id="add_question_button_div"
+                  >
+                    <div class="col-3">
+                      <label for="question_paper_name" class="col-form-label"
+                        >Question Paper Name</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="question_paper_name"
+                        name="question_paper_name"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col mb-2" style="align-self: flex-end">
+                      <input
+                        class="btn btn-primary"
+                        type="button"
+                        value="Save Question"
+                        onclick="uploadQuestionPaper()"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- End #main -->
+
+    <div id="preloader"></div>
+    <a
+      href="#"
+      class="back-to-top d-flex align-items-center justify-content-center"
+      ><i class="bi bi-arrow-up-short"></i
+    ></a>
+
+    <!-- Vendor JS Files -->
+
+    <!-- Template Main JS File -->
+    <script src="assets/js/packages/main.js"></script>
+
+    <script src="assets/js/packages/popper.min.js"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.all.js"
+      integrity="sha512-7TfWz/1TEVLE2pG8KLC/suq4qgXocI+/sNKfX0yifGXBbSKPoA9wcQ2GDublV7SSCu90vnW1q7+TUXOYaCIshA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="assets/js/common/config.js"></script>
+    <script src="assets/js/common/network_call.js"></script>
+    <script src="assets/js/common/functions.js"></script>
+    <script src="assets/js/pages/question_paper/ui_generator.js"></script>
+    <script src="assets/js/pages/question_paper/question_paper_generator.js"></script>
+    <script src="assets/js/pages/question_paper/get_questions.js"></script>
+    <script src="assets/js/pages/question_paper/display_result.js"></script>
+  </body>
+</html>
