@@ -2,7 +2,7 @@ function getTemplate() {
   showFecthingDataSection("Fetching data");
   allTemplates = [];
   var out = {};
-  out.function = "gt";
+  out.function = "gtemp";
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {

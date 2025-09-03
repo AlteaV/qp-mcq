@@ -33,7 +33,9 @@ var scriptUrls = [
   "/assets/js/common/functions.js",
   "/assets/js/common/network_call.js",
   "/assets/js/common/config.js",
+  "https://cdn.datatables.net/2.0.8/js/dataTables.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js",
+  "https://cdn.jsdelivr.net/npm/sweetalert2@11",
 ];
 
 function scriptsLoadedCallback() {

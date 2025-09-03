@@ -1,10 +1,11 @@
 class View {
   constructor(controller) {
     this.controller = controller;
-    this.subject = document.getElementById("subject");
+    this.userId = document.getElementById("register_num");
     this.getQuestionsButton = document.getElementById("take_test");
     this.submitTest = document.getElementById("submit_test");
 
+    this.fetchingDataSection = document.getElementById("fetching_data");
     this.resultTable = document.getElementById("result_table");
     this.resultDiv = document.getElementById("result_div");
 
@@ -71,7 +72,7 @@ class View {
 
       let questionHTML = `
                 <div>
-                    <p style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
+                    <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
                          ${record.question}
                     </p>
                     ${choiceHTML}
@@ -85,6 +86,7 @@ class View {
     });
 
     displayResult(tableData, this.resultTable);
+    MathJax.typeset();
 
     hideOverlay();
     this.resultDiv.style.display = "block";
@@ -154,19 +156,17 @@ class Controller {
     this.view = view;
   }
 
-  init() {
-    const subCode = [{ html: "Aptitude Test Paper - 1", value: "APT101" }];
-    this.view.renderProgramTypes(subCode);
-  }
+  init() {}
 
   async getQuestionForTakeTest() {
     showOverlay();
     try {
-      let selectedSubject = this.view.subject.value;
+      const urlParams = new URLSearchParams(window.location.search);
+      const questionId = urlParams.get("id");
 
       let payload = {
         function: "gqftt",
-        subject_question_paper_id: 34,
+        subject_question_paper_id: questionId,
       };
 
       let response = await postCall(examCellEndPoint, JSON.stringify(payload));
@@ -175,6 +175,7 @@ class Controller {
         let question = response.result.questions;
         this.questions = question;
         this.view.showReportSection(question);
+        this.view.getQuestionsButton.style.display = "None";
       }
     } catch (error) {
       console.error(error);
@@ -186,6 +187,11 @@ class Controller {
   async submitTest() {
     showOverlay();
     try {
+      let userIds = this.view.userId.value;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const questionId = urlParams.get("id");
+
       let results = [];
 
       this.questions.forEach((item) => {
@@ -202,8 +208,8 @@ class Controller {
 
       let payload = JSON.stringify({
         function: "iusa",
-        user_id: 989437,
-        sub_qp_id: 34,
+        user_id: userIds,
+        sub_qp_id: questionId,
         answers: results,
       });
 
