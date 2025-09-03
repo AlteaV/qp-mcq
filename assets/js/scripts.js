@@ -33,7 +33,6 @@ var scriptUrls = [
   "/assets/js/common/functions.js",
   "/assets/js/common/network_call.js",
   "/assets/js/common/config.js",
-  "/assets/js/packages/js/MathJax-4.0.0-rc.4/tex-mml-chtml.js",
   "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js",
 ];
 

@@ -4,10 +4,19 @@ const subject = document.getElementById("subject");
 
 const fileInput = document.getElementById("file_input");
 const fileUplaodButton = document.getElementById("submit_excel");
-const saveQuestions = document.getElementById("save_question");
+const saveQuestionsButton = document.getElementById("save_question");
 const fetchingData = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
 const resultTable = document.getElementById("result_table");
+
+fileInput.addEventListener("click", () => {
+  resultDiv.style.display = "none";
+  fileInput.value = "";
+});
+
+subject.addEventListener("input", () => {
+  resultDiv.style.display = "none";
+});
 
 let questionsFormat = [];
 
@@ -46,7 +55,7 @@ async function subjectSelection() {
   }
 }
 
-async function sectionSelection() {
+async function sectionSelection(field) {
   const index = field.id.split("_").pop();
   const topicField = topicFields[index];
   const sectionValue = field.value.trim();
@@ -82,7 +91,6 @@ async function getBtllevel() {
       function: "gbl",
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
-    console.log("response", response);
     if (response.success) {
       btlLevel = response.result.btl_level;
     }
@@ -141,11 +149,19 @@ async function getSection(subjectID) {
 }
 
 // get topic
-let topicMap = [];
+let topicsdata = {};
 
 async function getTopics(sectionID, topicField) {
   try {
     showOverlay();
+
+    if (topicsdata[sectionID]) {
+      const topicNames = topicsdata[sectionID].map((t) => t.topic);
+      topicField.value = "";
+      setAutoComplete(topicField, topicNames);
+      hideOverlay();
+      return;
+    }
     const payload = JSON.stringify({
       function: "gt",
       section_id: sectionID,
@@ -153,8 +169,8 @@ async function getTopics(sectionID, topicField) {
     const response = await postCall(QuestionUploadEndPoint, payload);
 
     if (response.success) {
-      topicMap = response.result.topic;
-      const topicNames = topicMap.map((t) => t.topic);
+      topicsdata[sectionID] = response.result.topic;
+      const topicNames = topicsdata[sectionID].map((t) => t.topic);
       topicField.value = "";
       setAutoComplete(topicField, topicNames);
     }
@@ -211,6 +227,9 @@ async function previewQuestions() {
       }
       await getBtllevel();
       await showReportSection(questions);
+    } else {
+      alert(response.message);
+      hideOverlay();
     }
     hideOverlay();
   } catch (error) {
@@ -233,7 +252,7 @@ async function submitQuestion() {
 
     document.querySelectorAll(".btl-field").forEach((select, index) => {
       const selectedOption = select.options[select.selectedIndex];
-      const btlName = selectedOption.textContent.trim();
+      const btlName = selectedOption.value;
       questionsFormat[index].btl_level = btlName;
     });
 
@@ -252,7 +271,7 @@ async function submitQuestion() {
     const out = {
       function: "ss",
       subject: subject.value.trim(),
-      created_by: loggedInUser.staff_id,
+      created_by: 98989898,
       sections: [],
     };
 
@@ -261,8 +280,6 @@ async function submitQuestion() {
       if (!section) {
         section = {
           section: q.section,
-          btl_level:
-            btlLevel.find((b) => b.level_name == q.btl_level)?.level || 1,
           topics: [],
         };
         out.sections.push(section);
@@ -283,17 +300,24 @@ async function submitQuestion() {
         choices: q.choices,
         correct_answer: q.correct_answer,
         mark: q.marks,
+        btl_level: q.btl_level,
       });
     });
 
-    const response = await postCall(staffEndPoint, JSON.stringify(out));
+    const response = await postCall(
+      QuestionUploadEndPoint,
+      JSON.stringify(out)
+    );
 
     if (response.success) {
       alert("Questions submitted successfully!");
       resultTable.innerHTML = "";
       fileInput.value = "";
+      resultDiv.style.display = "none";
+      hideOverlay();
     } else {
-      alert("Submission failed.");
+      alert(response.message);
+      hideOverlay();
     }
   } catch (error) {
     console.error("submitQuestion Error:", error);
@@ -458,6 +482,7 @@ async function showReportSection(data) {
       }
     }
   }
+  MathJax.typeset();
 }
 
 fileUplaodButton.addEventListener("click", async () => {
@@ -472,7 +497,7 @@ fileUplaodButton.addEventListener("click", async () => {
   await previewQuestions();
 });
 
-saveQuestions.addEventListener("click", async () => {
+saveQuestionsButton.addEventListener("click", async () => {
   await submitQuestion();
 });
 
