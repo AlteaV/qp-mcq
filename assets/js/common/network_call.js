@@ -47,6 +47,7 @@ function postCallPreProcess(functionName) {
     functionName == "pvq" ||
     functionName == "gqftt" ||
     functionName == "iusa" ||
+    functionName == "gesr" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
