@@ -36,7 +36,7 @@
 
   <body>
     <main id="main">
-      <section class="inner-page">
+      <section class="inner-page dashboard-content">
         <div class="container" style="padding-top: 50px">
           <div class="row" style="padding-bottom: 50px">
             <section class="">
@@ -50,16 +50,23 @@
                       style="border-radius: 1rem"
                     >
                       <div class="card-body p-5">
-                        <h5 class="text-center">Log in</h5>
-                        <h1 class="mb-5 text-center">Staff</h1>
+                        <h1 class="mb-5 text-center">Log in</h1>
 
                         <div class="form-outline mb-4">
-                          <label class="form-label" for="admin_id"
-                            >Admin ID</label
+                          <label class="form-label" for="organization"
+                            >Organization</label
                           >
+                          <select
+                            id="organization"
+                            class="form-select form-control-lg"
+                          ></select>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                          <label class="form-label" for="user_id">ID</label>
                           <input
                             type="text"
-                            id="admin_id"
+                            id="user_id"
                             class="form-control form-control-lg"
                           />
                         </div>
@@ -123,6 +130,7 @@
 
     <script src="assets/js/packages/jform.min.js"></script>
 
+    <script src="assets/js/common/functions.js"></script>
     <script src="assets/js/common/config.js"></script>
     <script src="assets/js/common/network_call.js"></script>
     <script src="assets/js/pages/auth/login.js"></script>

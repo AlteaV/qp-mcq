@@ -197,7 +197,6 @@ function removeTags(str) {
   return str.replace(/(<([^>]+)>)/gi, "");
 }
 
-
 class TableStructure {
   constructor(data, colSpan, rowSpan, classes, style, attributes) {
     this.data = data;
@@ -347,5 +346,12 @@ function convertToBase64(file) {
   });
 }
 
-
-
+function createEditButton(data, attributes) {
+  return (
+    '<button class="btn btn-primary edit-button" ' +
+    attributes +
+    " data-full=" +
+    encodeURIComponent(JSON.stringify(data)) +
+    '><i class="fas fa-pencil-alt"></i></button>'
+  );
+}

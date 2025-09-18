@@ -88,7 +88,12 @@ function scriptsLoadedCallback() {
 }
 
 function addCheckAuth() {
-  window.isCheckAuthLoaded = true;
+  var script = document.createElement("script");
+  script.src = "/assets/js/common/check_auth.js";
+  script.onload = function () {
+    window.isCheckAuthLoaded = true;
+  };
+  document.body.appendChild(script);
 }
 
 loadScriptsSequentially(scriptUrls, scriptsLoadedCallback);

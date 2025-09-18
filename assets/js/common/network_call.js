@@ -1,4 +1,4 @@
-async function postCall(endPoint, data) {
+async function postCall(endPoint, data, url = null) {
   var myHeaders = new Headers();
   myHeaders.append("Accept", "application/json");
   myHeaders.append("Content-Type", "application/json");
@@ -6,8 +6,14 @@ async function postCall(endPoint, data) {
   const getFunc = JSON.parse(data);
   endPoint = postCallPreProcess(getFunc["function"]);
 
+  let urlBase = "";
   try {
-    const response = await fetch(baseUrl + endPoint, {
+    if (url) {
+      urlBase = url;
+    } else {
+      urlBase = baseUrl + endPoint;
+    }
+    const response = await fetch(urlBase, {
       method: "POST",
       headers: myHeaders,
       body: data,
@@ -50,11 +56,25 @@ function postCallPreProcess(functionName) {
     functionName == "gesr" ||
     functionName == "gsas" ||
     functionName == "grbt" ||
+    functionName == "go" ||
+    functionName == "gsst" ||
+    functionName == "ant" ||
+    functionName == "ut" ||
+    functionName == "ams" ||
+    functionName == "ums" ||
+    functionName == "gms" ||
+    functionName == "ms" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
   } else if (functionName == "gbws") {
     return staffEndPoint;
+  } else if (
+    functionName == "stul" ||
+    // not checked
+    functionName == ""
+  ) {
+    return studentEndPoint;
   }
   // Admin functions  END
   else return examCellEndPoint;

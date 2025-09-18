@@ -5,11 +5,12 @@ class View {
     this.resultTable = document.getElementById("result_table");
     this.resultDiv = document.getElementById("result_div");
     this.registerNumber = document.getElementById("register_num");
+    this.registerNumberRow = document.getElementById("register_number_row");
     this.viewReport = document.getElementById("view_report");
 
     this.viewReport.addEventListener("click", async () => {
       if (this.registerNumber.value) {
-        await this.controller.getStudentMcqReport();
+        await this.controller.getStudentMcqReport(this.registerNumber.value);
       } else {
         alert("Please enter a register number.");
       }
@@ -168,14 +169,21 @@ class Controller {
     this.view = view;
   }
 
-  async init() {}
+  async init() {
+    if (loggedInUser.type == "Student") {
+      this.getStudentMcqReport(loggedInUser.register_num);
+      this.view.registerNumberRow.style.display = "none";
+    } else {
+      this.view.registerNumberRow.style.display = "flex";
+    }
+  }
 
-  async getStudentMcqReport() {
+  async getStudentMcqReport(registerNumber) {
     showOverlay();
     try {
       let payload = JSON.stringify({
         function: "gesr",
-        user_id: this.view.registerNumber.value,
+        user_id: registerNumber,
       });
 
       let response = await postCall(QuestionUploadEndPoint, payload);
@@ -195,9 +203,26 @@ class Controller {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    let controller = new Controller();
-    let view = new View(controller);
-    controller.setView(view);
-    controller.init();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+async function initializePage() {
+  hideOverlay();
+  let controller = new Controller();
+  let view = new View(controller);
+  controller.setView(view);
+  controller.init();
+}

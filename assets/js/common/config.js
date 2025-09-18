@@ -6,3 +6,4 @@ var staffEndPoint = "staff";
 var authEndPoint = "staff";
 var mainEndPoint = "CareFront";
 var QuestionUploadEndPoint = "ExamCell";
+var studentEndPoint = "student";

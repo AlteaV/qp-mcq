@@ -156,13 +156,20 @@ class Controller {
     this.view = view;
   }
 
-  init() {}
+  init() {
+    this.getQuestionForTakeTest();
+  }
 
   async getQuestionForTakeTest() {
     showOverlay();
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const questionId = urlParams.get("id");
+
+      if (!questionId) {
+        hideOverlay();
+        return;
+      }
 
       let payload = {
         function: "gqftt",
@@ -208,7 +215,7 @@ class Controller {
 
       let payload = JSON.stringify({
         function: "iusa",
-        user_id: userIds,
+        user_id: loggedInUser.register_num,
         sub_qp_id: questionId,
         answers: results,
       });
