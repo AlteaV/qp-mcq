@@ -69,8 +69,9 @@ function logIn() {
 
   showOverlay();
 
+  let selectedEndpoint;
   if (typeof selectedOrg.endpoint === "string") {
-    selectedOrg.endpoint = JSON.parse(selectedOrg.endpoint);
+    selectedEndpoint = JSON.parse(selectedOrg.endpoint);
   }
 
   let out = {};
@@ -81,19 +82,19 @@ function logIn() {
       register_num: userId.value,
       function: "stul",
     };
-    selectedOrg.endpoint = selectedOrg.endpoint["student"];
+    selectedEndpoint = selectedEndpoint["student"];
   } else {
     out = {
       password: adminPassword.value,
       staff_id: userId.value,
       function: "sln",
     };
-    selectedOrg.endpoint = selectedOrg.endpoint["staff"];
+    selectedEndpoint = selectedEndpoint["staff"];
   }
 
   let raw = JSON.stringify(out);
 
-  postCall(authEndPoint, raw, selectedOrg.endpoint).then((response) => {
+  postCall(authEndPoint, raw, selectedEndpoint).then((response) => {
     if (!response["result"]["loginSuccess"]) {
       alert(response["result"]["message"]);
       hideOverlay();
