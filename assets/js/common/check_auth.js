@@ -245,6 +245,10 @@ const menuItems = [
         href: "/student_report.html",
         text: "Test Performance Analysis",
       },
+      {
+        href: "/self_learning.html",
+        text: "Self Learning",
+      },
     ],
   },
 ];
@@ -256,6 +260,7 @@ if (loggedInUser.type == "Student") {
     items: [
       { text: "Test Performance Analysis", action: "view" },
       { text: "Take McQ Test", action: "view" },
+      { text: "Self Learning", action: "view" },
     ],
     action: "view",
     asDropdown: false,

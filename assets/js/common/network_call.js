@@ -64,6 +64,9 @@ function postCallPreProcess(functionName) {
     functionName == "ums" ||
     functionName == "gms" ||
     functionName == "ms" ||
+    functionName == "grqfl" ||
+    functionName == "gswt" ||
+    functionName == "sst" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
