@@ -52,19 +52,20 @@ function getTemplate() {
 
 // upload question paper
 
-function uploadMcqQuestioPaper(questionPaper) {
+function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
   var out = {};
   out.function = "umcqqp";
   out.sub_code = "";
-  out.name = "Aptitude";
   out.question = questionPaper;
-  out.created_by = 99875;
+  out.name = questionPaperName;
+  out.created_by = loggedInUser.staff_id;
 
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       const questionId = response.result.id;
       if (questionId) {
-        showGeneratedQuestionID(questionId);
+        $("#questions_div").hide();
+        $("#template_table").show();
         alert(response.message);
       } else {
         alert(response.success);

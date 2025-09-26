@@ -106,6 +106,7 @@ function createQuestions() {
     </table>
     <div class="row">
       <div class="col mt-3 d-flex justify-content-end gap-2">
+      <input type="text" id="qp_name" class="form-control" placeholder="Enter Question Paper Name" style="max-width: 300px;" />
           <button id="questionupload" class="btn btn-primary">Upload Question Paper</button>
       </div>
     </div>
@@ -136,6 +137,12 @@ function createQuestions() {
     });
 
   function mcqQuestioPaper() {
+    let questionPaperName = $("#qp_name").val().trim();
+
+    if (!questionPaperName) {
+      alert("Please enter a name for the question paper.");
+      return;
+    }
     const question_rows = generatedQuestions.map((q) => {
       return {
         btl: q.btl,
@@ -147,7 +154,7 @@ function createQuestions() {
       };
     });
 
-    uploadMcqQuestioPaper(question_rows);
+    uploadMcqQuestioPaper(question_rows, questionPaperName);
     return { question_rows };
   }
 

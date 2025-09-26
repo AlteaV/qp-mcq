@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
+                    <h4 class="c-grey-900 mB-20 mt-6 mb-4">
+                      Assign MCQ Question Paper
+                    </h4>
+
+                    <div class="mt-5" id="fetching_data" style="display: none">
+                      <p>Fetching Data</p>
+                    </div>
+                    <div
+                      class="result mt-5"
+                      id="result_div"
+                      style="display: none"
+                    >
+                      <table
+                        class="table table-bordered"
+                        width="100%"
+                        id="result_table"
+                      ></table>
+                    </div>
+
+                    <!-- AssignQP modal :: BEGIN -->
+                    <div
+                      class="modal fade"
+                      id="groups_modal"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="modalLabel"
+                      aria-hidden="true"
+                    >
+                      <div
+                        class="modal-dialog modal-dialog-centered modal-l"
+                        role="document"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modal_label">
+                              Assign Question Paper
+                            </h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <form
+                              class="needs-validation"
+                              id="form_id"
+                              novalidate
+                            >
+                              <input
+                                type="hidden"
+                                class="form-control"
+                                id="qp_id"
+                                name="qp_id"
+                                autocomplete="off"
+                                required
+                              />
+                              <div class="row mb-2">
+                                <div class="col mb-2">
+                                  <label for="group" class="required"
+                                    >Group</label
+                                  >
+                                  <select
+                                    class="form-select"
+                                    id="group"
+                                    name="group"
+                                    required
+                                  ></select>
+                                </div>
+                              </div>
+                              <div class="row mb-2">
+                                <div class="col mb-2">
+                                  <label for="start_date_time" class="required">
+                                    Start Date & Time</label
+                                  >
+                                  <input
+                                    type="datetime-local"
+                                    class="form-control"
+                                    id="start_date_time"
+                                    name="start_date_time"
+                                    autocomplete="off"
+                                    required
+                                  />
+                                  <div class="invalid-feedback">
+                                    Please provide a valid Start Date & Time
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row mb-2">
+                                <div class="col mb-2">
+                                  <label for="end_date_time" class="required">
+                                    End Date & Time</label
+                                  >
+                                  <input
+                                    type="datetime-local"
+                                    class="form-control"
+                                    id="end_date_time"
+                                    name="end_date_time"
+                                    autocomplete="off"
+                                    required
+                                  />
+                                  <div class="invalid-feedback">
+                                    Please provide a valid End Date & Time
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row mb-2">
+                                <div class="col mb-2">
+                                  <label for="test_type" class="required"
+                                    >Test Type</label
+                                  >
+                                  <select
+                                    class="form-select"
+                                    id="test_type"
+                                    name="test_type"
+                                    required
+                                  >
+                                    <option value="">Select Test Type</option>
+                                    <option value="Practice">
+                                      Practice Test
+                                    </option>
+                                    <option value="Actual">Actual Test</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="row mb-2">
+                                <div class="col mb-2">
+                                  <label for="max_attempts" class="required"
+                                    >Max Attempts</label
+                                  >
+                                  <select
+                                    class="form-select"
+                                    id="max_attempts"
+                                    name="max_attempts"
+                                    required
+                                  >
+                                    <option value="">
+                                      Select Max Attempts
+                                    </option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                  </select>
+                                </div>
+                                <div class="col mb-2">
+                                  <label
+                                    for="shuffle_questions"
+                                    class="required"
+                                    >Shuffle Questions</label
+                                  >
+                                  <div>
+                                    <div class="form-check form-check-inline">
+                                      <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="shuffle_questions"
+                                        id="shuffle_yes"
+                                        value="yes"
+                                        required
+                                      />
+                                      <label
+                                        class="form-check-label"
+                                        for="shuffle_yes"
+                                      >
+                                        Yes
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="shuffle_questions"
+                                        id="shuffle_no"
+                                        value="no"
+                                        required
+                                      />
+                                      <label
+                                        class="form-check-label"
+                                        for="shuffle_no"
+                                      >
+                                        No
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              id="form_submit"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- AssignQP modal :: END -->
+
+                    <!-- ViewQP modal :: BEGIN -->
+                    <div
+                      class="modal fade"
+                      id="view_qp_modal"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="modalLabel"
+                      aria-hidden="true"
+                    >
+                      <div
+                        class="modal-dialog modal-dialog-centered modal-xl"
+                        role="document"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="vqp_modal_label"></h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <div id="vqp_body">
+                              <table
+                                class="table table-bordered"
+                                width="100%"
+                                id="qp_table"
+                              ></table>
+                            </div>
+                          </div>
+                          <!-- <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              id="form_submit"
+                            >
+                              Submit
+                            </button>
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ViewQP modal :: END -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script defer src="/assets/js/packages/mathjax-config.js"></script>
+  <script
+    type="module"
+    src="/assets/js/pages/mcq/mcq_show_question_paper.js"
+  ></script>
+</html>

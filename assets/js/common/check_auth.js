@@ -227,6 +227,10 @@ const menuItems = [
         text: "Generate McQ Question Paper",
       },
       {
+        href: "/mcq_show_question_paper.html",
+        text: "Assign MCQ Question Paper",
+      },
+      {
         href: "/report_by_class.html",
         text: "Test Performance Analysis By Class",
       },
@@ -276,6 +280,7 @@ if (loggedInUser.type == "Student") {
       { text: "Create McQ Template", action: "view" },
       { text: "View McQ Template", action: "view" },
       { text: "Generate McQ Question Paper", action: "view" },
+      { text: "Assign MCQ Question Paper", action: "view" },
       { text: "Test Performance Analysis By Class", action: "view" },
     ],
     action: "view",
