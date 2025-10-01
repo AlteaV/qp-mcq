@@ -1,3 +1,6 @@
+const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+window.isCheckAuthLoaded = false;
+
 function loadScriptsSequentially(scriptUrls, callback) {
   function loadNextScript(index) {
     if (index < scriptUrls.length) {

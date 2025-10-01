@@ -115,6 +115,7 @@ async function getSubname() {
   try {
     let payload = JSON.stringify({
       function: "gms",
+      org_id: loggedInUser.college_code,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -169,6 +170,7 @@ async function addnewMCQsubject() {
       sub_name: subName.value,
       function: "ams",
       staff_id: loggedInUser.staff_id,
+      org_id: loggedInUser.college_code,
     };
 
     let response = await postCall(examCellEndPoint, JSON.stringify(out));
@@ -193,6 +195,22 @@ async function addnewMCQsubject() {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    init();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+function initializePage() {
+  init();
+}

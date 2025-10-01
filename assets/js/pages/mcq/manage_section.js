@@ -43,20 +43,26 @@ addNewmcqsub.addEventListener("click", () => {
 });
 
 subName.addEventListener("change", () => {
-  addBtnDiv.classList.remove("d-none");
   let id = subName.value;
-  let data = [];
-  for (let sec in mcqSec) {
-    if (mcqSec[sec]["subject_id"] == id) {
-      data.push(mcqSec[sec]);
-    }
+  if (id == "") {
+    addBtnDiv.classList.add("d-none");
+    resultDiv.style.display = "none";
+    return;
   }
-  showResult(data);
+  addBtnDiv.classList.remove("d-none");
+
+  let selectedSub = mcqSub.find((s) => s.subject_id == id);
+
+  let sections = selectedSub["sections"];
+  sections = sections.sort((a, b) => {
+    return a.section_name.localeCompare(b.section_name);
+  });
+  showResult(sections);
 });
 
 function rendersubject(data) {
-  let newData = data.map((d) => {
-    return { html: d["subject"], value: d["id"] };
+  let newData = data.map((subject) => {
+    return { html: subject["subject_name"], value: subject["subject_id"] };
   });
   newData.unshift({
     html: "Please select subject",
@@ -92,7 +98,7 @@ function showResult(data) {
     data.forEach((sub, index) => {
       tableData.tableBody.push([
         new TableStructure(index + 1),
-        new TableStructure(sub.section),
+        new TableStructure(sub.section_name),
         new TableStructure(createEditButton(sub)),
       ]);
     });
@@ -110,8 +116,8 @@ function showResult(data) {
       let $button = $(event.currentTarget);
       curr_data = JSON.parse(decodeURIComponent($button.attr("data-full")));
       curr_id = curr_data["id"];
-      editButtonClicked(curr_data["id"]);
-      secName.value = curr_data["section"];
+      editButtonClicked(curr_data["section_id"]);
+      secName.value = curr_data["section_name"];
     });
   } catch (error) {
     hideOverlay();
@@ -145,14 +151,19 @@ async function getSubname() {
   try {
     let payload = JSON.stringify({
       function: "gsas",
-      get_btl: false,
+      org_id: loggedInUser.college_code,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
 
     if (response.success) {
       mcqSub = response.result.subjects;
-      mcqSec = response.result.sections;
+      mcqSub = mcqSub.sort((a, b) => {
+        return a.subject_name.localeCompare(b.subject_name);
+      });
+      mcqSub.forEach((s) => {
+        s["sections"] = JSON.parse(s["sections"]);
+      });
       rendersubject(mcqSub);
     } else {
       alert("An error occurred while fetching McQ Subject data");
@@ -169,31 +180,32 @@ async function updatemcqSecname() {
   showOverlay();
   try {
     let out = {
-      sec_id: curr_data["id"],
+      sec_id: curr_data["section_id"],
       sec_name: secName.value,
       staff_id: loggedInUser.staff_id,
       type: "update",
       function: "ms",
     };
+
     let response = await postCall(staffEndPoint, JSON.stringify(out));
     if (response.success) {
-      for (let sec in mcqSec) {
-        if (mcqSec[sec]["id"] == curr_data["id"]) {
-          mcqSec[sec] = {
-            id: curr_data["id"],
-            subject_id: subName.value,
-            section: secName.value,
-          };
-          break;
+      mcqSub.forEach((s) => {
+        if (s.subject_id == subName.value) {
+          s["sections"].forEach((sec) => {
+            if (sec.section_id == curr_data["section_id"]) {
+              sec.section_name = secName.value;
+            }
+          });
         }
-      }
-      let data = [];
-      for (let sec in mcqSec) {
-        if (mcqSec[sec]["subject_id"] == subName.value) {
-          data.push(mcqSec[sec]);
-        }
-      }
-      showResult(data);
+      });
+
+      let selectedSub = mcqSub.find((s) => s.subject_id == subName.value);
+      let sections = selectedSub["sections"];
+      sections = sections.sort((a, b) => {
+        return a.section_name.localeCompare(b.section_name);
+      });
+
+      showResult(sections);
       $("#modal").modal("hide");
       alert(response.message);
     } else {
@@ -221,18 +233,19 @@ async function addnewmcqSubsec() {
 
     if (response.success) {
       let id = response.result.id;
-      mcqSec.push({
-        id: id,
-        subject_id: subName.value,
-        section: secName.value,
-      });
-      let data = [];
-      for (let sec in mcqSec) {
-        if (mcqSec[sec]["subject_id"] == subName.value) {
-          data.push(mcqSec[sec]);
+      mcqSub.forEach((s) => {
+        if (s.subject_id == subName.value) {
+          s["sections"].push({ section_id: id, section_name: secName.value });
         }
-      }
-      showResult(data);
+      });
+
+      let selectedSub = mcqSub.find((s) => s.subject_id == subName.value);
+      let sections = selectedSub["sections"];
+      sections = sections.sort((a, b) => {
+        return a.section_name.localeCompare(b.section_name);
+      });
+
+      showResult(sections);
       alert(response.message);
       $("#modal").modal("hide");
     } else {
@@ -248,6 +261,22 @@ async function addnewmcqSubsec() {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    init();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+function initializePage() {
+  init();
+}

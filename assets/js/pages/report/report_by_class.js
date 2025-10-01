@@ -71,7 +71,7 @@ function showReportSection(data) {
 
 function renderSubjects(subjects) {
   let sub = subjects.map((subject) => {
-    return { html: subject["subject"], value: subject["id"] };
+    return { html: subject["subject_name"], value: subject["subject_id"] };
   });
   sub.unshift({
     html: "Please select the subject",
@@ -110,7 +110,6 @@ async function getSubjectAndSection() {
 
     if (response.success) {
       subjects = response.result.subjects;
-      sections = response.result.sections;
       renderSubjects(subjects);
     }
     hideOverlay();

@@ -1,7 +1,8 @@
 function uploadTemplate(data, staff_id = null) {
   var out = {};
-  out.function = "at";
+  out.function = "amt";
   out.name = templateName.value;
+  out.org_id = loggedInUser.college_code;
   out.template = data;
   if (staff_id == null) {
     out.created_by = loggedInUser["staff_id"];

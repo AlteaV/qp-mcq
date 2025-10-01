@@ -162,6 +162,7 @@ async function getSubjectsSectionsTopics() {
   try {
     let payload = JSON.stringify({
       function: "gsst",
+      org_id: loggedInUser.college_code,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -204,9 +205,11 @@ async function addNewTopic(section_id, topic) {
       }
       showReportSection(new_topics);
       resetForm();
+      hideOverlay();
       alert(response.message);
+    } else {
+      throw new Error(response.message);
     }
-    hideOverlay();
   } catch (error) {
     hideOverlay();
     console.error(error);
@@ -254,6 +257,22 @@ async function updateTopic(id, section_id, topic) {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    init();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+function initializePage() {
+  init();
+}

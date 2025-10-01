@@ -45,7 +45,7 @@ adminPassword.addEventListener("keypress", function (event) {
   }
 });
 
-function logIn() {
+async function logIn() {
   if (organization.value == "") {
     alert("Choose an Organization");
     return;
@@ -94,45 +94,77 @@ function logIn() {
 
   let raw = JSON.stringify(out);
 
-  postCall(authEndPoint, raw, selectedEndpoint).then((response) => {
-    if (!response["result"]["loginSuccess"]) {
-      alert(response["result"]["message"]);
+  let response = await postCall(authEndPoint, raw, selectedEndpoint);
+  if (!response["result"]["loginSuccess"]) {
+    alert(response["result"]["message"]);
+    hideOverlay();
+    return;
+  }
+
+  if (!response["result"]["loginSuccess"]) {
+    alert(response["result"]["message"]);
+    hideOverlay();
+    return;
+  }
+
+  if (response["result"]["resetPassword"]) {
+    hideOverlay();
+    sessionStorage.setItem("password_reset_type", "staff");
+    window.location.href = "password_reset.html";
+    return;
+  }
+
+  if (userId.value.length >= 7) {
+    let studentDetails = response["result"]["studentDetails"];
+    // (`user_id`, `org_id`, `user_name`, `branch`, `std_year`, `section`
+    let branchCode =
+      "branch_code" in studentDetails ? studentDetails.branch_code : null;
+    let currentYear =
+      "current_year" in studentDetails ? studentDetails.current_year : "";
+    let section = "section" in studentDetails ? studentDetails.section : "";
+
+    let storeUser = await postCall(
+      authEndPoint,
+      JSON.stringify({
+        function: "iouud",
+        user_id: studentDetails.register_num,
+        org_id: studentDetails.college_code,
+        user_name: studentDetails.name,
+        branch: branchCode,
+        std_year: currentYear,
+        section: section,
+      })
+    );
+
+    if (!storeUser.success) {
       hideOverlay();
+      alert("Unable to process");
       return;
     }
 
-    if (response["result"]["resetPassword"]) {
-      hideOverlay();
-      sessionStorage.setItem("password_reset_type", "staff");
-      window.location.href = "password_reset.html";
-      return;
-    }
+    sessionStorage.setItem(
+      "loggedInUser",
+      JSON.stringify(response["result"]["studentDetails"])
+    );
+    window.location.href = "student_report.html";
+  } else {
+    sessionStorage.setItem(
+      "loggedInUser",
+      JSON.stringify(response["result"]["staffDetails"])
+    );
+    sessionStorage.setItem(
+      "program_details",
+      JSON.stringify(response["result"]["department"])
+    );
+    sessionStorage.setItem(
+      "subjects",
+      JSON.stringify(response["result"]["subjects"])
+    );
 
-    if (userId.value.length >= 7) {
-      sessionStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(response["result"]["studentDetails"])
-      );
-      window.location.href = "student_report.html";
-    } else {
-      sessionStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(response["result"]["staffDetails"])
-      );
-      sessionStorage.setItem(
-        "program_details",
-        JSON.stringify(response["result"]["department"])
-      );
-      sessionStorage.setItem(
-        "subjects",
-        JSON.stringify(response["result"]["subjects"])
-      );
-
-      sessionStorage.setItem(
-        "systemParams",
-        JSON.stringify(response["result"]["systemParams"])
-      );
-      window.location.href = "mcq_question_upload.html";
-    }
-  });
+    sessionStorage.setItem(
+      "systemParams",
+      JSON.stringify(response["result"]["systemParams"])
+    );
+    window.location.href = "mcq_question_upload.html";
+  }
 }

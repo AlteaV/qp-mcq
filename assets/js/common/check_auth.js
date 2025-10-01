@@ -1,5 +1,3 @@
-const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-
 if (loggedInUser == null) {
   document.location.href = "/login.html";
 }

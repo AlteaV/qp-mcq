@@ -1,4 +1,5 @@
 let templateName = document.getElementById("template_name");
+let btlLevel = [];
 
 function addQuestionRow() {
   var questionContainer = $("#questionsContainer");
@@ -47,13 +48,11 @@ function getQuestionRow(usedBTLs = []) {
       <div class="col mt-3">
         <label class="required">BTL:</label>
         <select class="btl form-select" required>`;
-
-  for (let i = 1; i <= 7; i++) {
-    let val = `K${i}`;
-    if (!usedBTLs.includes(val)) {
-      questionRow += `<option value="${i}">${val}</option>`;
+  btlLevel.forEach((level) => {
+    if (!usedBTLs.includes(level)) {
+      questionRow += `<option value="${level.level}">${level.level_name}</option>`;
     }
-  }
+  });
 
   questionRow += `</select>
       </div>
@@ -144,11 +143,52 @@ function validateTemplate() {
     return;
   }
   showOverlay();
-  uploadTemplate(allData, 987654);
+  uploadTemplate(allData, loggedInUser.staff_id);
 }
 
 function uploadSuccess() {
   hideOverlay();
   $("#questionsContainer").empty();
   $("#save_template_div").hide();
+}
+
+async function getBtllevel() {
+  try {
+    showOverlay();
+    let payload = JSON.stringify({
+      function: "gbl",
+    });
+    let response = await postCall(QuestionUploadEndPoint, payload);
+    if (response.success) {
+      btlLevel = response.result.btl_level;
+    }
+    hideOverlay();
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching BTL levels");
+  } finally {
+    hideOverlay();
+  }
+}
+
+document.addEventListener("readystatechange", async () => {
+  if (document.readyState === "complete") {
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          init();
+        }
+      }, 100);
+      return;
+    } else {
+      init();
+    }
+  }
+});
+
+async function init() {
+  await getBtllevel();
 }

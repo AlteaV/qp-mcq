@@ -2,6 +2,7 @@ let fetchingDataSection = document.getElementById("fetching_data");
 let resultDivSection = document.getElementById("result_div");
 
 let allTemplates = [];
+let btlLevel = [];
 
 var table = $("#template_table").DataTable({
   info: false,
@@ -126,10 +127,15 @@ function buildQuestionRow(noOfQuestions, btl, marks) {
                 <label>BTL</label>
                 <select class="form-select" disabled>`;
 
-  for (let i = 1; i <= 7; i++) {
-    let isSelected = btl === `K${i}` ? "selected" : "";
-    row += `<option value="K${i}" ${isSelected}>K${i}</option>`;
-  }
+  btlLevel.forEach((level) => {
+    let isSelected = btl == level.level ? "selected" : "";
+    row += `<option value="${level.level}" ${isSelected}>${level.level_name}</option>`;
+  });
+
+  // for (let i = 1; i <= 7; i++) {
+  //   let isSelected = btl === `K${i}` ? "selected" : "";
+  //   row += `<option value="K${i}" ${isSelected}>K${i}</option>`;
+  // }
 
   row += `</select>
               </div>
@@ -160,6 +166,26 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
+async function getBtllevel() {
+  try {
+    showOverlay();
+    let payload = JSON.stringify({
+      function: "gbl",
+    });
+    let response = await postCall(QuestionUploadEndPoint, payload);
+    if (response.success) {
+      btlLevel = response.result.btl_level;
+    }
+    hideOverlay();
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching BTL levels");
+  } finally {
+    hideOverlay();
+  }
+}
+
 async function initializePage() {
+  await getBtllevel();
   getTemplate();
 }

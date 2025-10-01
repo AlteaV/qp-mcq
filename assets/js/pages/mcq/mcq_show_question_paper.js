@@ -37,6 +37,7 @@ async function getQuestionPapers() {
     showOverlay();
     let payload = JSON.stringify({
       function: "mcqp",
+      org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -316,6 +317,22 @@ function displayQP(qp_id) {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    getQuestionPapers();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+async function initializePage() {
+  getQuestionPapers();
+}

@@ -36,7 +36,8 @@ function getTemplate() {
   showFecthingDataSection("Fetching data");
   allTemplates = [];
   var out = {};
-  out.function = "gtemp";
+  out.function = "gmt";
+  out.org_id = loggedInUser.college_code;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {
@@ -55,10 +56,11 @@ function getTemplate() {
 function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
   var out = {};
   out.function = "umcqqp";
-  out.sub_code = "";
   out.question = questionPaper;
   out.name = questionPaperName;
+  out.org_id = loggedInUser.college_code;
   out.created_by = loggedInUser.staff_id;
+  showOverlay();
 
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
@@ -70,10 +72,13 @@ function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
       } else {
         alert(response.success);
       }
+      hideOverlay();
     } else if (response.status == 409) {
       alert(response.message);
+      hideOverlay();
     } else {
       alert("Network error");
+      hideOverlay();
     }
   });
 }

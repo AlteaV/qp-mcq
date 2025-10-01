@@ -1,8 +1,10 @@
 function getTemplate() {
   showFecthingDataSection("Fetching data");
+  showOverlay();
   allTemplates = [];
   var out = {};
-  out.function = "gtemp";
+  out.function = "gmt";
+  out.org_id = loggedInUser.college_code;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {

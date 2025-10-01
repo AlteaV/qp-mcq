@@ -8,6 +8,7 @@ let resultDivSection = document.getElementById("result_div");
 let allTemplates = [];
 
 let table;
+let subjects;
 
 function initTable() {
   table = $("#template_table").DataTable({
@@ -85,6 +86,7 @@ async function showInputfield(templateId, prevSelections = null) {
     $("#submitGenerate").show();
   });
 
+  $(document).off("click", "#submitGenerate");
   $(document).on("click", "#submitGenerate", async function () {
     let selectedTopicIds = [];
     let selections = [];
@@ -132,8 +134,9 @@ async function addSectionRow(prevSelections = null) {
     return;
   }
 
-  let subjects = await getSubjects();
-
+  if (!subjects) {
+    subjects = await getSubjects();
+  }
   let optionsHtml = subjects
     .map((s) => `<option value="${s.id}">${s.subject}</option>`)
     .join("");

@@ -271,7 +271,7 @@ async function submitQuestion() {
     const out = {
       function: "ss",
       subject: subject.value.trim(),
-      created_by: 98989898,
+      created_by: loggedInUser.staff_id,
       sections: [],
     };
 
@@ -296,7 +296,7 @@ async function submitQuestion() {
 
       topic.questions.push({
         question: q.question,
-        img: "",
+        img: null,
         choices: q.choices,
         correct_answer: q.correct_answer,
         mark: q.marks,
