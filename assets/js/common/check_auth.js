@@ -1,4 +1,4 @@
-if (loggedInUser == null) {
+if (loggedInUser == undefined || loggedInUser == null || loggedInUser == "") {
   document.location.href = "/login.html";
 }
 
@@ -186,9 +186,9 @@ var groupObject = (x, f) =>
 
 // createNavMenu();
 
-document.addEventListener("readystatechange", () => {
-  if (document.readyState == "complete") createNavMenu();
-});
+// document.addEventListener("readystatechange", () => {
+//   if (document.readyState == "complete") createNavMenu();
+// });
 
 const menuItems = [
   {

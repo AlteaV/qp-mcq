@@ -15,7 +15,9 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">Take Test</h4>
+                    <h4 class="c-grey-900 mB-20 mt-6 mb-3" id="title">
+                      Take Test
+                    </h4>
                     <div class="row mb-3 align-items-end" style="display: none">
                       <div class="col mt-2">
                         <b
@@ -46,16 +48,42 @@
                       <p>Fetching Data</p>
                     </div>
 
+                    <table
+                      class="table table-bordered"
+                      width="100%"
+                      id="result_table"
+                      style="display: none"
+                    ></table>
+
                     <div
                       class="result mt-4"
                       id="result_div"
                       style="display: none"
                     >
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
+                      <div>
+                        <h5 class="mt-4 mb-3" id="question_no"></h5>
+                        <div id="question_div"></div>
+                        <div class="col mt-4">
+                          <div class="d-flex justify-content-between">
+                            <button
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              id="previous_question"
+                              style="visibility: hidden"
+                            >
+                              Previous Question
+                            </button>
+
+                            <button
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              id="next_question"
+                            >
+                              Next Question
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <div class="col mt-4">
                         <button
                           class="btn btn-primary btn-color"
