@@ -184,6 +184,7 @@ class Controller {
       let payload = JSON.stringify({
         function: "gesr",
         user_id: registerNumber,
+        org_id: loggedInUser.college_code,
       });
 
       let response = await postCall(QuestionUploadEndPoint, payload);

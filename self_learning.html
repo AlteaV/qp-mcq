@@ -57,24 +57,49 @@
                     <div class="mt-5" id="fetching_data" style="display: none">
                       <p>Fetching Data</p>
                     </div>
+                    <table
+                      class="table table-bordered"
+                      width="100%"
+                      id="result_table"
+                      style="display: none"
+                    ></table>
 
                     <div
                       class="result mt-4"
                       id="result_div"
                       style="display: none"
                     >
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
+                      <div>
+                        <h5 class="mt-4 mb-3" id="question_no"></h5>
+                        <div id="question_div"></div>
+                        <div class="col mt-4">
+                          <div class="d-flex justify-content-between">
+                            <button
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              id="previous_question"
+                              style="visibility: hidden"
+                            >
+                              Previous Question
+                            </button>
+
+                            <button
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              id="next_question"
+                            >
+                              Next Question
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <div class="col mt-4">
                         <button
                           class="btn btn-primary btn-color"
                           type="button"
-                          id="submit_button"
+                          id="submit_test"
                         >
-                          View Answers
+                          Submit Test
                         </button>
                       </div>
                     </div>
@@ -90,5 +115,6 @@
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
   <script defer src="/assets/js/packages/mathjax-config.js"></script>
+  <script src="/assets/js/pages/mcq/show_questions.js"></script>
   <script type="module" src="/assets/js/pages/mcq/self_learning.js"></script>
 </html>

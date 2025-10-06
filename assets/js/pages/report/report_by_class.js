@@ -19,18 +19,26 @@ viewReport.addEventListener("click", async () => {
 });
 
 subjectDropDowm.addEventListener("change", () => {
+  resetResult(fetchingDataSection, resultDiv);
   if (subjectDropDowm.value) {
     sectionDiv.classList.remove("d-none");
   }
   let id = subjectDropDowm.value;
   let new_sections = [];
-  const data = sections;
+  let data = subjects.find((s) => s.subject_id == id)["sections"];
+  try {
+    data = JSON.parse(data);
+  } catch (e) {
+    data = data;
+  }
   for (let s in data) {
-    if (data[s]["subject_id"] == id) {
-      new_sections.push(data[s]);
-    }
+    new_sections.push(data[s]);
   }
   renderSections(new_sections);
+});
+
+sesctionDropDown.addEventListener("change", () => {
+  resetResult(fetchingDataSection, resultDiv);
 });
 
 function showReportSection(data) {
@@ -84,10 +92,10 @@ function renderSubjects(subjects) {
 
 function renderSections(sections) {
   let new_sections = sections.map((s) => {
-    return { html: s["section"], value: s["id"] };
+    return { html: s["section_name"], value: s["section_id"] };
   });
   new_sections.unshift({
-    html: "Please select the subject",
+    html: "Please select the section",
     value: "",
     selected: true,
     disabled: true,
@@ -104,6 +112,7 @@ async function getSubjectAndSection() {
   try {
     let payload = JSON.stringify({
       function: "gsas",
+      org_id: loggedInUser.college_code,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -125,8 +134,8 @@ async function getReportByTopic() {
   try {
     let payload = JSON.stringify({
       function: "grbt",
-      subject: subjectDropDowm.value,
       section: sesctionDropDown.value,
+      org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 
@@ -142,6 +151,22 @@ async function getReportByTopic() {
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    init();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+function initializePage() {
+  init();
+}

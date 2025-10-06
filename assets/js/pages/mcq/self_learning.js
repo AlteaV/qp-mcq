@@ -27,11 +27,8 @@ topicDropDown.addEventListener("change", async () => {
 });
 
 networkButton.addEventListener("click", async () => {
+  reset();
   await takeTest();
-});
-
-submitButton.addEventListener("click", async () => {
-  await submitAnswer();
 });
 
 function reset() {
@@ -42,15 +39,23 @@ function reset() {
   if (scoreDiv) {
     scoreDiv.style.display = "none";
   }
+
+  answers = [];
+  previousIndex = 0;
+  questions = [];
+  currentQuestion = null;
+  correctAnswer = [];
+  testType = "";
 }
 
 var subjects = null;
-let questions = [];
+
 async function getSubjects() {
   showOverlay();
   try {
     let payload = JSON.stringify({
       function: "gswt",
+      org_id: loggedInUser.college_code,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -171,7 +176,18 @@ async function takeTest() {
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
       questions = response.result.questions;
-      disaplyQuestions();
+
+      questions = {
+        question_paper_id: null,
+        questions: [],
+        question_paper_name: "",
+        shuffle_questions: false,
+        test_type: "Self",
+      };
+      questions.questions = response.result.questions;
+
+      testType = questions.test_type;
+      nextQuestion();
     } else {
       throw new Error(response.message || "Failed to fetch questions");
     }
@@ -182,150 +198,24 @@ async function takeTest() {
   }
 }
 
-function disaplyQuestions() {
-  let data = questions;
-  let resultDiv = document.getElementById("result_div");
-  let resultTable = document.getElementById("result_table");
-  let fetchingDataSection = document.getElementById("fetching_data_section");
-  if (data.length === 0) {
-    fetchingDataSection.innerHTML = "<p>There is no data</p>";
-    fetchingDataSection.style.display = "block";
-    resultDiv.style.display = "none";
-    hideOverlay();
-    return;
-  }
-
-  let tableData = {
-    tableHeader: [
-      [new TableStructure("S.No"), new TableStructure("Questions & Options")],
-    ],
-    tableBody: [],
-  };
-
-  data.forEach((record, index) => {
-    let choices = JSON.parse(record.choices);
-
-    let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
-
-    for (let key in choices) {
-      const inputId = `choices_${record.question_id}`;
-
-      choiceHTML += `
-                    <label style="display: flex; align-items: left; gap: 5px;">
-                        <input 
-                            type="radio" 
-                            id="${inputId}" 
-                            name="question_${record.question_id}"  
-                            value="${key}" 
-                        />
-                        <span class="latex" >
-                            ${choices[key]}
-                        </span>
-                    </label>`;
-    }
-
-    choiceHTML += `</div>`;
-
-    let questionHTML = `
-                <div>
-                    <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
-                         ${record.question}
-                    </p>
-                    ${choiceHTML}
-                </div>
-            `;
-
-    tableData.tableBody.push([
-      new TableStructure(index + 1),
-      new TableStructure(questionHTML),
-    ]);
-  });
-
-  displayResult(tableData, resultTable);
-  MathJax.typeset();
-
-  hideOverlay();
-  resultDiv.style.display = "block";
-  submitButton.style.display = "block";
-
-  let scoreDiv = document.getElementById("score_div");
-  if (scoreDiv) {
-    scoreDiv.style.display = "none";
-  }
-}
-
-async function submitAnswer() {
-  let questionIds = [];
-
-  questions.forEach((item) => {
-    questionIds.push(item.question_id);
-  });
-  let payload = JSON.stringify({
-    function: "sst",
-    user_id: loggedInUser.register_num,
-    question_ids: questionIds,
-  });
-  try {
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    showResultValidation();
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while submitting answers");
-    hideOverlay();
-  }
-}
-
-function showResultValidation() {
-  let totalQuestions = questions.length;
-  let correctCount = 0;
-
-  questions.forEach((record, index) => {
-    let correctAnswer = record.correct_answer;
-    let selected = document.querySelector(
-      `input[name="question_${record.question_id}"]:checked`
-    );
-
-    let allOptions = document.querySelectorAll(
-      `input[name="question_${record.question_id}"]`
-    );
-
-    allOptions.forEach((option) => {
-      let label = option.parentElement;
-      if (option.value == correctAnswer) {
-        label.style.backgroundColor = "#87b97cff";
-        label.style.fontWeight = "bold";
-        label.style.padding = "5px";
-        label.style.borderRadius = "6px";
-      } else if (option.checked && option.value !== correctAnswer) {
-        label.style.backgroundColor = "#df6e6eff";
-        label.style.fontWeight = "bold";
-        label.style.padding = "5px";
-        label.style.borderRadius = "6px";
-      }
-      option.disabled = true;
-    });
-
-    if (selected && selected.value == correctAnswer) {
-      correctCount++;
-    }
-  });
-
-  let scoreDiv = document.getElementById("score_div");
-  if (!scoreDiv) {
-    scoreDiv = document.createElement("div");
-    scoreDiv.id = "score_div";
-    scoreDiv.style.marginTop = "20px";
-    scoreDiv.style.fontSize = "120%";
-    scoreDiv.style.fontWeight = "bold";
-    resultDiv.appendChild(scoreDiv);
-  }
-
-  scoreDiv.innerHTML = `Total Score: ${correctCount} / ${totalQuestions}`;
-  submitButton.style.display = "none";
-}
-
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
-    await getSubjects();
+    showOverlay();
+
+    if (!window.isCheckAuthLoaded) {
+      const checkInterval = setInterval(() => {
+        if (window.isCheckAuthLoaded) {
+          clearInterval(checkInterval);
+          initializePage();
+        }
+      }, 100);
+      return;
+    } else {
+      initializePage();
+    }
   }
 });
+
+async function initializePage() {
+  await getSubjects();
+}

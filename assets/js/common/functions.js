@@ -330,6 +330,9 @@ function setDropDown(options, element) {
     if (option["selected"] !== undefined) {
       opt.selected = true;
     }
+    if (option["disabled"] !== undefined) {
+      opt.disabled = option.disabled;
+    }
     element.appendChild(opt);
   });
 }
