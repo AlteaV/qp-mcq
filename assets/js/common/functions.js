@@ -358,3 +358,37 @@ function createEditButton(data, attributes) {
     '><i class="fas fa-pencil-alt"></i></button>'
   );
 }
+
+function createButton(
+  data,
+  attributes,
+  buttonClass,
+  icon,
+  isTextButton = false
+) {
+  if (!isTextButton) {
+    return (
+      '<button class="btn btn-primary ' +
+      buttonClass +
+      '" ' +
+      attributes +
+      " data-full=" +
+      encodeURIComponent(JSON.stringify(data)) +
+      '><i class="' +
+      icon +
+      '"></i></button>'
+    );
+  } else {
+    return (
+      '<button class="btn btn-primary ' +
+      buttonClass +
+      '" ' +
+      attributes +
+      " data-full=" +
+      encodeURIComponent(JSON.stringify(data)) +
+      ">" +
+      icon +
+      "</button>"
+    );
+  }
+}

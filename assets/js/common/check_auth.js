@@ -73,6 +73,14 @@ const menuItems = [
         href: "/self_learning.html",
         text: "Self Learning",
       },
+      {
+        href: "/report_test_performance.html",
+        text: "Test Performance Report",
+      },
+      {
+        href: "/report_subject_wise_performance.html",
+        text: "Subject-wise Performance Report",
+      },
     ],
   },
 ];
@@ -85,6 +93,8 @@ if (loggedInUser.type == "Student") {
       { text: "Test Performance Analysis", action: "view" },
       { text: "Take McQ Test", action: "view" },
       { text: "Self Learning", action: "view" },
+      { text: "Test Performance Report", action: "view" },
+      // { text: "Subject-wise Performance Report", action: "view" },
     ],
     action: "view",
     asDropdown: false,
@@ -108,7 +118,11 @@ if (loggedInUser.type == "Student") {
   });
   allowedActions.push({
     text: "MCQ Student",
-    items: [{ text: "Test Performance Analysis", action: "view" }],
+    items: [
+      { text: "Test Performance Analysis", action: "view" },
+      { text: "Test Performance Report", action: "view" },
+      // { text: "Subject-wise Performance Report", action: "view" },
+    ],
     action: "view",
     asDropdown: false,
   });

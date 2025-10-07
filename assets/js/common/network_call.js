@@ -71,6 +71,10 @@ function postCallPreProcess(functionName) {
     functionName == "amqp" ||
     functionName == "amt" ||
     functionName == "gmt" ||
+    functionName == "gaqatg" ||
+    functionName == "grbqp" ||
+    functionName == "gad" ||
+    functionName == "gttbs" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
