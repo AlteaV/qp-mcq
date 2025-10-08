@@ -94,7 +94,7 @@ if (loggedInUser.type == "Student") {
       { text: "Take McQ Test", action: "view" },
       { text: "Self Learning", action: "view" },
       { text: "Test Performance Report", action: "view" },
-      // { text: "Subject-wise Performance Report", action: "view" },
+      { text: "Subject-wise Performance Report", action: "view" },
     ],
     action: "view",
     asDropdown: false,
@@ -121,7 +121,7 @@ if (loggedInUser.type == "Student") {
     items: [
       { text: "Test Performance Analysis", action: "view" },
       { text: "Test Performance Report", action: "view" },
-      // { text: "Subject-wise Performance Report", action: "view" },
+      { text: "Subject-wise Performance Report", action: "view" },
     ],
     action: "view",
     asDropdown: false,
