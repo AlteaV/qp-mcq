@@ -54,6 +54,10 @@ const menuItems = [
         href: "/report_by_class.html",
         text: "Test Performance Analysis By Class",
       },
+      {
+        href: "/report_question_wise_performance.html",
+        text: "Test Performance Analysis By Question",
+      },
     ],
   },
   {
@@ -112,6 +116,7 @@ if (loggedInUser.type == "Student") {
       { text: "Generate McQ Question Paper", action: "view" },
       { text: "Assign MCQ Question Paper", action: "view" },
       { text: "Test Performance Analysis By Class", action: "view" },
+      { text: "Test Performance Analysis By Question", action: "view" },
     ],
     action: "view",
     asDropdown: false,

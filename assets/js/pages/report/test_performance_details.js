@@ -60,39 +60,10 @@ function showIndividualPerformanceSection(data) {
   };
   data.forEach((row, index) => {
     let isCorrect = row.is_correct ? "Yes" : "No";
-
-    let choices = row.choices;
-    if (typeof choices === "string") {
-      try {
-        choices = JSON.parse(choices);
-      } catch {
-        choices = row.choices;
-      }
-    }
-    let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
-    for (let key in choices) {
-      let inputId = `choices_${row.question_id}`;
-      choiceHTML += `
-                    <label  style="display: flex; align-items: left; gap: 5px;  border-radius: 6px;">
-                        <input 
-                            type="radio" 
-                            id="${inputId}" 
-                            name="question_${row.question_id}"  
-                            value="${key}" 
-                            disabled
-                        />
-                        <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
-                            ${choices[key]}
-                        </span>
-                    </label>`;
-    }
-
     let questionHTML = `
                 <div style="margin-bottom: 20px;">
                     <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
                     ${row.question}
-                    </p>
-                    ${choiceHTML}
                 </div>
             `;
 
