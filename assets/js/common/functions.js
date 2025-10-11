@@ -392,3 +392,28 @@ function createButton(
     );
   }
 }
+
+function sanitizeInput(input) {
+  let regex = /[&<>"'/]/g;
+
+  let sanitizedInput = input.replace(regex, function (match) {
+    switch (match) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#x27;";
+      case "/":
+        return "&#x2F;";
+      default:
+        return match;
+    }
+  });
+
+  return sanitizedInput.trim();
+}

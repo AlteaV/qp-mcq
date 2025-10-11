@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                      <div id="section1">
+                        <div>
+                          <h4>Group Management</h4>
+                          <input
+                            class="btn btn-primary mt-3"
+                            type="button"
+                            value="Add Group"
+                            id="add_group"
+                          />
+                        </div>
+                      </div>
+                      <div id="section2" class="d-none">
+                        <div>
+                          <h4>Member Management</h4>
+                          <div class="d-flex justify-content-between">
+                            <button
+                              type="button"
+                              class="btn btn-secondary mt-3"
+                              id="back-btn"
+                            >
+                              <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <input
+                              class="btn btn-primary mt-3"
+                              style="align-self: flex-end"
+                              type="button"
+                              value="Add Member"
+                              id="add_members"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="mt-5"
+                        id="fetching_data"
+                        style="display: none"
+                      >
+                        <p>Fetching Data</p>
+                      </div>
+                      <div
+                        class="result mt-5"
+                        id="result_div"
+                        style="display: none"
+                      >
+                        <table
+                          class="table table-bordered"
+                          width="100%"
+                          id="result_table"
+                        ></table>
+                      </div>
+
+                      <!-- starts here -->
+                      <div
+                        class="modal fade"
+                        id="modal"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="modalLabel"
+                        aria-hidden="true"
+                      >
+                        <div
+                          class="modal-dialog modal-dialog-centered modal-l"
+                          role="document"
+                        >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title" id="modalLabel"></h4>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal"
+                              >
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form id="form">
+                                <div class="row">
+                                  <div class="col" id="s1-modal">
+                                    <label
+                                      for="grp_name"
+                                      class="required mb-3 col"
+                                      >Group Name</label
+                                    >
+                                    <input
+                                      required
+                                      class="form-control"
+                                      name="grp_name"
+                                      id="grp_name"
+                                    />
+                                    <div class="invalid-feedback">
+                                      Please enter Group Name.
+                                    </div>
+                                  </div>
+                                  <div id="s2-modal" class="col d-none">
+                                    <label
+                                      for="user_id"
+                                      class="required mb-3 col"
+                                      >User ID</label
+                                    >
+                                    <textarea
+                                      class="form-control"
+                                      style="min-height: 200px"
+                                      name="user_id"
+                                      id="user_id"
+                                    ></textarea>
+                                    <div>
+                                      Each user ID should be on a seperate line
+                                      with numbers only
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div
+                              class="modal-footer"
+                              style="justify-content: space-between"
+                            >
+                              <div>
+                                <input
+                                  type="button"
+                                  id="constraint_btn"
+                                  class="link-primary text-decoration-underline bg-white d-none"
+                                  style="border: 0"
+                                />
+                              </div>
+                              <div>
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modal"
+                                >
+                                  Close
+                                </button>
+                                <button
+                                  type="button"
+                                  class="btn btn-primary"
+                                  id="form_submit"
+                                >
+                                  Submit
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- ends here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script
+    src="/assets/js/pages/group_management/group_management.js"
+    type="module"
+  ></script>
+</html>

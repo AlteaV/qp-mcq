@@ -45,6 +45,16 @@ function postCallPreProcess(functionName) {
   ) {
     return examCellEndPoint;
   } else if (
+    functionName == "agd" ||
+    functionName == "ggd" ||
+    functionName == "ugd" ||
+    functionName == "ggm" ||
+    functionName == "agm" ||
+    functionName == "dgm" ||
+    functionName == ""
+  ) {
+    return groupMgmtEndPoint;
+  } else if (
     functionName == "gbl" ||
     functionName == "gss" ||
     functionName == "gs" ||

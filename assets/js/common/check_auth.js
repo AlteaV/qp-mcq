@@ -61,6 +61,17 @@ const menuItems = [
     ],
   },
   {
+    text: "Groups",
+    icon: "fas fa-pager",
+    dropdown: true,
+    items: [
+      {
+        href: "/group_management.html",
+        text: "Group Management",
+      },
+    ],
+  },
+  {
     text: "MCQ Student",
     icon: "fas fa-pager",
     dropdown: true,
@@ -104,6 +115,12 @@ if (loggedInUser.type == "Student") {
     asDropdown: false,
   });
 } else {
+  allowedActions.push({
+    text: "Groups",
+    items: [{ text: "Group Management", action: "view" }],
+    action: "view",
+    asDropdown: true,
+  });
   allowedActions.push({
     text: "MCQ Staff",
     items: [
