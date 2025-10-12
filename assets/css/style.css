@@ -6,6 +6,48 @@
 */
 
 /* --- 1. OVERRIDE PRIMARY COLOR (Deep Purple) --- */
+
+/* Target all table headers in your custom file */
+.table thead th,
+.table thead {
+    /* Use the Deep Purple for the background */
+    background-color: #7B2CBF !important; 
+    /* Use white text for high contrast */
+    color: white !important; 
+    /* Add padding for a less cramped feel */
+    padding: 1rem 1.25rem; 
+    /* Remove bottom border for a cleaner look (optional) */
+    border-bottom: none !important; 
+}
+
+/* Apply the rounded corners to the whole table, but only the top */
+.table {
+    border-radius: 0.75rem; 
+    overflow: hidden; /* This is crucial to show rounded corners properly! */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Lift it off the page */
+}
+
+/* Reduce the internal borders for a cleaner, "airier" look */
+.table td, 
+.table th {
+    border-color: #e0e0e0; /* Use a very light gray border */
+}
+
+/* Override the default stripe color */
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    /* Use a light tint of your purple (e.g., 5% purple mixed with white) */
+    background-color: rgba(123, 44, 191, 0.05) !important; 
+}
+
+/* Override the default hover color */
+.table-hover > tbody > tr:hover > * {
+    /* Use a very light tint of your Gold accent color */
+    background-color: rgba(255, 195, 0, 0.15) !important; 
+    transition: background-color 0.15s ease-in-out; /* Add a smooth transition */
+}
+
+
+
 /* Affects: Primary buttons, links, active states, backgrounds using .bg-primary */
 .btn-primary,
 .bg-primary,
