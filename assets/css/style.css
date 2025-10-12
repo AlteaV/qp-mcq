@@ -5,6 +5,70 @@
 * License: https://bootstrapmade.com/license/
 */
 
+/* --- 1. OVERRIDE PRIMARY COLOR (Deep Purple) --- */
+/* Affects: Primary buttons, links, active states, backgrounds using .bg-primary */
+.btn-primary,
+.bg-primary,
+.text-primary,
+.form-check-input:checked {
+    /* Main Theme Color */
+    --bs-primary: #7B2CBF !important; 
+    background-color: #7B2CBF !important;
+    border-color: #7B2CBF !important;
+    color: white !important; /* Ensure text is readable */
+}
+
+/* Ensure links use the new color */
+a {
+    color: #7B2CBF;
+}
+a:hover {
+    color: #5d2294; /* Slightly darker hover state */
+}
+
+/* --- 2. OVERRIDE SECONDARY COLOR (Gold/Yellow Accent) --- */
+/* Affects: Secondary buttons, subtle backgrounds, badges */
+.btn-secondary,
+.bg-secondary,
+.text-secondary {
+    /* Accent Color */
+    --bs-secondary: #FFC300 !important;
+    background-color: #FFC300 !important;
+    border-color: #FFC300 !important;
+    color: #212529 !important; /* Ensure dark text on bright background */
+}
+
+/* --- 3. ADD APPEAL: Rounded Corners --- */
+/* Make all elements slightly more rounded than Bootstrap's default */
+.btn,
+.card,
+.alert,
+.form-control,
+.navbar,
+.modal-content {
+    border-radius: 0.75rem !important; /* Increases from default .25rem to .75rem */
+}
+
+/* --- 4. ADD DEPTH: Subtle Shadows for Buttons and Cards --- */
+/* Give primary buttons a slight lift off the page */
+.btn-primary {
+    /* Shadow for depth: horizontal offset, vertical offset, blur, color */
+    box-shadow: 0 4px 10px rgba(123, 44, 191, 0.4); /* Uses your primary color in the shadow */
+    transition: all 0.2s ease-in-out; /* Smooth transition for hover */
+}
+
+.btn-primary:hover {
+    /* Lifts the button slightly more on hover */
+    box-shadow: 0 6px 12px rgba(123, 44, 191, 0.6); 
+    transform: translateY(-1px);
+}
+
+/* Make Cards and Modals look slightly elevated */
+.card,
+.modal-content {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow lift */
+}
+
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
