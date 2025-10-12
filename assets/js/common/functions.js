@@ -258,7 +258,7 @@ function displayMultipleTables({ data: data, tableElement: table }) {
   table.innerHTML = "";
   data.forEach((tableData) => {
     let tbl = document.createElement("table");
-    tbl.classList.add("table", "table-bordered", "table-striped", "table-hover");
+    tbl.classList.add("table", "table-bordered");
     tbl.style.width = "100%";
     displayResult(tableData, tbl);
     table.appendChild(tbl);
