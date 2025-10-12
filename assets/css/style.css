@@ -34,13 +34,13 @@
 }
 
 /* Override the default stripe color */
-.table-striped > tbody > tr:nth-of-type(odd) > * {
+.tbody > tr:nth-of-type(odd) > * {
     /* Use a light tint of your purple (e.g., 5% purple mixed with white) */
     background-color: rgba(123, 44, 191, 0.05) !important; 
 }
 
 /* Override the default hover color */
-.table-hover > tbody > tr:hover > * {
+.tbody > tr:hover > * {
     /* Use a very light tint of your Gold accent color */
     background-color: rgba(255, 195, 0, 0.15) !important; 
     transition: background-color 0.15s ease-in-out; /* Add a smooth transition */
