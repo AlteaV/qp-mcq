@@ -11,7 +11,7 @@
 .table thead th,
 .table thead {
     /* Use the Deep Purple for the background */
-    background-color: #7B2CBF !important; 
+    background-color: #0077B6 !important; 
     /* Use white text for high contrast */
     color: white !important; 
     /* Add padding for a less cramped feel */
@@ -54,15 +54,15 @@
 .text-primary,
 .form-check-input:checked {
     /* Main Theme Color */
-    --bs-primary: #7B2CBF !important; 
-    background-color: #7B2CBF !important;
-    border-color: #7B2CBF !important;
+    --bs-primary: #0077B6 !important; 
+    background-color: #0077B6  !important;
+    border-color: #0077B6  !important;
     color: white !important; /* Ensure text is readable */
 }
 
 /* Ensure links use the new color */
 a {
-    color: #7B2CBF;
+    color: #0077B6 ;
 }
 a:hover {
     color: #5d2294; /* Slightly darker hover state */
@@ -74,9 +74,9 @@ a:hover {
 .bg-secondary,
 .text-secondary {
     /* Accent Color */
-    --bs-secondary: #FFC300 !important;
-    background-color: #FFC300 !important;
-    border-color: #FFC300 !important;
+    --bs-secondary: #48CAE4  !important;
+    background-color: #48CAE4  !important;
+    border-color: #48CAE4  !important;
     color: #212529 !important; /* Ensure dark text on bright background */
 }
 
