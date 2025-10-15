@@ -14,8 +14,19 @@ const actions = {
 
 const menuItems = [
   {
-    text: "MCQ Staff",
-    icon: "fas fa-pager",
+    text: "Groups",
+    icon: "fas fa-chalkboard-teacher",
+    dropdown: true,
+    items: [
+      {
+        href: "/group_management.html",
+        text: "Group Management",
+      },
+    ],
+  },
+  {
+    text: "Questions Management",
+    icon: "fas fa-book",
     dropdown: true,
     items: [
       {
@@ -42,6 +53,13 @@ const menuItems = [
         href: "/mcq_view_template.html",
         text: "View McQ Template",
       },
+    ],
+  },
+  {
+    text: "Question Paper Management",
+    icon: "fas fa-pen",
+    dropdown: true,
+    items: [
       {
         href: "/generate_mcq_question_paper.html",
         text: "Generate McQ Question Paper",
@@ -50,24 +68,32 @@ const menuItems = [
         href: "/mcq_show_question_paper.html",
         text: "Assign MCQ Question Paper",
       },
-      {
-        href: "/report_by_class.html",
-        text: "Test Performance Analysis By Class",
-      },
-      {
-        href: "/report_question_wise_performance.html",
-        text: "Test Performance Analysis By Question",
-      },
     ],
   },
   {
-    text: "Groups",
-    icon: "fas fa-pager",
+    text: "Reports",
+    icon: "fas fa-tachometer-alt",
     dropdown: true,
     items: [
       {
-        href: "/group_management.html",
-        text: "Group Management",
+        href: "/report_test_performance.html",
+        text: "Test Report",
+      },
+      {
+        href: "/report_subject_wise_performance.html",
+        text: "Subject Wise Report",
+      },
+      {
+        href: "/student_report.html",
+        text: "Test Analysis",
+      },
+      {
+        href: "/report_by_class.html",
+        text: "Group Wise Report",
+      },
+      {
+        href: "/report_question_wise_performance.html",
+        text: "Question Wise Report",
       },
     ],
   },
@@ -81,20 +107,8 @@ const menuItems = [
         text: "Take McQ Test",
       },
       {
-        href: "/student_report.html",
-        text: "Test Performance Analysis",
-      },
-      {
         href: "/self_learning.html",
         text: "Self Learning",
-      },
-      {
-        href: "/report_test_performance.html",
-        text: "Test Performance Report",
-      },
-      {
-        href: "/report_subject_wise_performance.html",
-        text: "Subject-wise Performance Report",
       },
     ],
   },
@@ -105,11 +119,18 @@ if (loggedInUser.type == "Student") {
   allowedActions.push({
     text: "MCQ Student",
     items: [
-      { text: "Test Performance Analysis", action: "view" },
-      { text: "Take McQ Test", action: "view" },
       { text: "Self Learning", action: "view" },
-      { text: "Test Performance Report", action: "view" },
-      { text: "Subject-wise Performance Report", action: "view" },
+      { text: "Test Report", action: "view" },
+    ],
+    action: "view",
+    asDropdown: false,
+  });
+  allowedActions.push({
+    text: "Reports",
+    items: [
+      { text: "Test Analysis", action: "view" },
+      { text: "Test Report", action: "view" },
+      { text: "Subject Wise Report", action: "view" },
     ],
     action: "view",
     asDropdown: false,
@@ -122,7 +143,7 @@ if (loggedInUser.type == "Student") {
     asDropdown: true,
   });
   allowedActions.push({
-    text: "MCQ Staff",
+    text: "Questions Management",
     items: [
       { text: "Manage Subjects", action: "view" },
       { text: "Manage Sections", action: "view" },
@@ -130,23 +151,30 @@ if (loggedInUser.type == "Student") {
       { text: "MCQ Question Upload", action: "view" },
       { text: "Create McQ Template", action: "view" },
       { text: "View McQ Template", action: "view" },
-      { text: "Generate McQ Question Paper", action: "view" },
-      { text: "Assign MCQ Question Paper", action: "view" },
-      { text: "Test Performance Analysis By Class", action: "view" },
-      { text: "Test Performance Analysis By Question", action: "view" },
     ],
     action: "view",
-    asDropdown: false,
+    asDropdown: true,
   });
   allowedActions.push({
-    text: "MCQ Student",
+    text: "Question Paper Management",
     items: [
-      { text: "Test Performance Analysis", action: "view" },
-      { text: "Test Performance Report", action: "view" },
-      { text: "Subject-wise Performance Report", action: "view" },
+      { text: "Generate McQ Question Paper", action: "view" },
+      { text: "Assign MCQ Question Paper", action: "view" },
     ],
     action: "view",
-    asDropdown: false,
+    asDropdown: true,
+  });
+  allowedActions.push({
+    text: "Reports",
+    items: [
+      { text: "Test Analysis", action: "view" },
+      { text: "Test Report", action: "view" },
+      { text: "Subject Wise Report", action: "view" },
+      { text: "Group Wise Report", action: "view" },
+      { text: "Question Wise Report", action: "view" },
+    ],
+    action: "view",
+    asDropdown: true,
   });
 }
 
