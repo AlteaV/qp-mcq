@@ -1,13 +1,14 @@
 // get mcq questions
 
-async function getMcqQuestions(templateID, topicID) {
+async function getMcqQuestions(templateID) {
   $("#fetching_question").show();
   var out = {};
   out.function = "gmqput";
   out.template_id = templateID;
-  out.topic_id = topicID;
 
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
+    console.log(response);
+
     if (response.success) {
       let quetionPaper = response.result.question_paper;
       if (quetionPaper && quetionPaper.length > 0) {

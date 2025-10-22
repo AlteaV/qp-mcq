@@ -42,6 +42,10 @@ const menuItems = [
         text: "Manage Topics",
       },
       {
+        href: "/add_question.html",
+        text: "MCQ Add Question",
+      },
+      {
         href: "/mcq_question_upload.html",
         text: "MCQ Question Upload",
       },

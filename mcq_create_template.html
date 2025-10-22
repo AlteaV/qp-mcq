@@ -19,55 +19,138 @@
                         MCQ Template Generator
                       </h4>
 
-                      <div class="row">
-                        <div class="col">
-                          <label for="totalMarks" class="required"
-                            >Total Marks:</label
-                          >
-                          <input
-                            class="form-control"
-                            type="number"
-                            id="totalMarks"
-                            min="1"
-                            required
-                            value="10"
-                          />
+                      <div class="row mt-5">
+                        <div class="col mb-5" id="template_details">
+                          <form id="template_details_form">
+                            <div class="col">
+                              <label for="total_marks" class="required"
+                                >Total Marks:</label
+                              >
+                              <input
+                                class="form-control"
+                                type="number"
+                                id="total_marks"
+                                min="1"
+                                required
+                              />
+                              <div class="invalid-feedback">
+                                Please enter a valid total marks.
+                              </div>
+                            </div>
+                            <div class="col mt-3">
+                              <label for="template_name" class="required"
+                                >Template Name:</label
+                              >
+                              <input
+                                class="form-control"
+                                type="text"
+                                id="template_name"
+                                required
+                              />
+                              <div class="invalid-feedback">
+                                Please enter a template name.
+                              </div>
+                            </div>
+
+                            <div class="col mt-3" style="align-self: flex-end">
+                              <input
+                                class="btn btn-primary"
+                                type="button"
+                                value="Create Template"
+                                id="create_template_btn"
+                                onclick="createTemplate()"
+                              />
+                            </div>
+                          </form>
                         </div>
-                      </div>
-                      <div class="row">
-                        <div id="questionsContainer"></div>
-                        <div class="col mt-3" style="align-self: flex-end">
-                          <input
-                            class="btn btn-primary"
-                            type="button"
-                            value="Add Question"
-                            onclick="addQuestionRow()"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="row"
-                        id="save_template_div"
-                        style="display: none"
-                      >
-                        <div class="col mt-3">
-                          <label for="template_name" class="required"
-                            >Template Name:</label
-                          >
-                          <input
-                            class="form-control"
-                            type="text"
-                            id="template_name"
-                            required
-                          />
-                        </div>
-                        <div class="col mt-3" style="align-self: flex-end">
-                          <input
-                            class="btn btn-primary"
-                            type="button"
-                            value="Upload Template"
-                            onclick="validateTemplate()"
-                          />
+                        <div
+                          class="col ms-3"
+                          id="question_section"
+                          style="display: none"
+                        >
+                          <div class="row">
+                            <div id="parts_div" style="display: none"></div>
+
+                            <div id="new_part_div" class="bordered">
+                              <form id="part_form">
+                                <div class="row mb-3">
+                                  <div class="col">
+                                    <label for="part_name" class="required"
+                                      >Part Name:</label
+                                    >
+                                    <input
+                                      class="form-control part-names"
+                                      type="text"
+                                      id="part_name"
+                                      required
+                                      disabled
+                                    />
+                                    <div class="invalid-feedback">
+                                      Please enter a part name.
+                                    </div>
+                                  </div>
+                                  <div class="col">
+                                    <label for="part_subject" class="required"
+                                      >Choose a subject:</label
+                                    >
+                                    <select
+                                      class="form-control part-questions"
+                                      id="part_subject"
+                                      required
+                                    >
+                                      <option value="">Select a subject</option>
+                                      <option value="Math">Math</option>
+                                      <option value="Science">Science</option>
+                                      <option value="History">History</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                      Please choose a subject.
+                                    </div>
+                                  </div>
+                                  <div class="col">
+                                    <label for="part_marks" class="required"
+                                      >Total Marks:</label
+                                    >
+                                    <input
+                                      class="form-control part-marks"
+                                      type="number"
+                                      id="part_marks"
+                                      min="1"
+                                      required
+                                      value="1"
+                                    />
+                                    <div class="invalid-feedback">
+                                      Please enter valid marks per question.
+                                    </div>
+                                  </div>
+                                  <!-- create part button -->
+                                  <div
+                                    class="col-auto"
+                                    style="align-self: flex-end"
+                                  >
+                                    <input
+                                      class="btn btn-primary"
+                                      type="button"
+                                      onclick="createPart()"
+                                      id="part_create_btn"
+                                      value="Create Part"
+                                    />
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                          <div class="row mt-3">
+                            <div class="col"></div>
+                            <div class="col-auto" style="align-self: flex-end">
+                              <input
+                                class="btn btn-success"
+                                type="button"
+                                value="Save Template"
+                                onclick="saveTemplate()"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -17,17 +17,9 @@ var table = $("#template_table").DataTable({
       render: function (data, type, full) {
         let questions = JSON.parse(full.template);
         let text = "";
-        let btlCounts = {};
-
-        questions.forEach((row) => {
-          if (!btlCounts[row.btl]) {
-            btlCounts[row.btl] = 0;
-          }
-          btlCounts[row.btl] += row.no_of_questions;
-        });
-
-        for (let btl in btlCounts) {
-          text += `${btl} → ${btlCounts[btl]} questions<br>`;
+        for (let ques of questions) {
+          text += `Part ${ques.part_name} → ${ques.subject}`;
+          text += ` → ${ques.mark} marks<br>`;
         }
         return text;
       },
@@ -79,9 +71,9 @@ function viewTemplate(id) {
   let questionContainer = $("#sectionsContainer").find(".questions-container");
 
   let groupedQuestions = questions.reduce((acc, row) => {
-    let key = row.question_number;
+    let key = row.part_name;
     let existingGroupIndex = acc.findIndex(
-      (group) => group[0].question_number === key
+      (group) => group[0].part_name === key
     );
     if (existingGroupIndex !== -1) {
       acc[existingGroupIndex].push(row);
@@ -102,46 +94,38 @@ function createQuestion(questionGroup) {
   let questionHtml = `<div class="question-row mb-5">
                         <div class="row">
                           <div class="col-auto" style="align-self: center;">
-                            <h5 class="question_number">${questionGroup[0].question_number}</h5>
+                            <h5 class="question_number">Part ${questionGroup[0].part_name}</h5>
                           </div>
                           <div class="col">`;
   questionGroup.forEach((ques) => {
-    questionHtml += buildQuestionRow(
-      ques.no_of_questions,
-      ques.btl,
-      ques.marks
-    );
+    questionHtml += buildQuestionRow(ques);
   });
 
   questionHtml += `</div></div></div>`;
   return questionHtml;
 }
 
-function buildQuestionRow(noOfQuestions, btl, marks) {
+function buildQuestionRow(ques) {
   let row = `<div class="row question mb-2">
               <div class="col">
-                <label>No of questions</label>
-                <input type="number" class="form-control" value="${noOfQuestions}" disabled/>
+                <label>Subject</label>
+                <input type="text" class="form-control" value="${ques.subject}" disabled/>
               </div>
               <div class="col">
-                <label>BTL</label>
-                <select class="form-select" disabled>`;
-
-  btlLevel.forEach((level) => {
-    let isSelected = btl == level.level ? "selected" : "";
-    row += `<option value="${level.level}" ${isSelected}>${level.level_name}</option>`;
-  });
-
-  // for (let i = 1; i <= 7; i++) {
-  //   let isSelected = btl === `K${i}` ? "selected" : "";
-  //   row += `<option value="K${i}" ${isSelected}>K${i}</option>`;
-  // }
-
-  row += `</select>
+                <label>Section</label>
+                <input type="text" class="form-control" value="${ques.section}" disabled/>
+              </div>
+              <div class="col">
+                <label>Topic</label>
+                <input type="text" class="form-control" value="${ques.topic}" disabled/>
+              </div>
+              <div class="col">
+                <label>BTL level</label>
+                <input type="text" class="form-control" value="${ques.btl_level}" disabled/>
               </div>
               <div class="col">
                 <label>Marks</label>
-                <input type="number" class="form-control" value="${marks}" disabled/>
+                <input type="text" class="form-control" value="${ques.mark}" disabled/>
               </div>
             </div>`;
 

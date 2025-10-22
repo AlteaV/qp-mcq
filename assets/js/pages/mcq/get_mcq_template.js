@@ -24,19 +24,9 @@ function initTable() {
         render: function (data, type, full) {
           let questions = JSON.parse(full.template);
           let text = "";
-
-          // Count questions per BTL
-          let btlCounts = {};
-
-          questions.forEach((row) => {
-            if (!btlCounts[row.btl]) {
-              btlCounts[row.btl] = 0;
-            }
-            btlCounts[row.btl] += row.no_of_questions;
-          });
-
-          for (let btl in btlCounts) {
-            text += `${btl} → ${btlCounts[btl]} questions<br>`;
+          for (let ques of questions) {
+            text += `Part ${ques.part_name} → ${ques.subject}`;
+            text += ` → ${ques.mark} marks<br>`;
           }
           return text;
         },
@@ -54,76 +44,20 @@ function initTable() {
   });
 }
 
-async function showInputfield(templateId, prevSelections = null) {
+async function showInputfield(templateId) {
   $("#template_table").hide();
   $("#result_div").hide();
 
-  let formHtml = `
-    <button id="changeTemplate" class="btn btn-secondary" >Change Template</button>
-    <div id="generateForm" class="mb-3" 
-       style="border:2px solid #ccc; border-radius:8px; padding:15px; margin-top:10px;">
-      <div id="sectionsContainer"></div>
-         
-      <div class="mb-3 mt-3">
-        <button id="addSection" type="button" class="btn btn-primary">Add Topics</button> 
-        <button id="submitGenerate" class="btn btn-primary" >Generate Question Paper</button>
-      </div>
-    </div>
-  `;
+  await getMcqQuestions(templateId);
 
-  $("#questions_div").html(formHtml).show();
-  addSectionRow();
+  $("#template_selection_div").hide();
+  $("#questions_div").show();
+  $("#generateForm").hide();
+}
 
-  if (prevSelections) {
-    addSectionRow(prevSelections);
-    $("#submitGenerate").show();
-    $("#changeTemplate").show();
-  }
-
-  $("#addSection").on("click", function () {
-    addSectionRow();
-    $("#changeTemplate").show();
-    $("#submitGenerate").show();
-  });
-
-  $(document).off("click", "#submitGenerate");
-  $(document).on("click", "#submitGenerate", async function () {
-    let selectedTopicIds = [];
-    let selections = [];
-    try {
-      $("#sectionsContainer .section-row").each(function () {
-        let topicId = $(this).find(".topic-input").val().trim();
-        if (topicId) {
-          selectedTopicIds.push(topicId);
-        }
-        let subjectId = $(this).find(".subject-input").val().trim();
-        let sectionId = $(this).find(".section-input").val().trim();
-
-        if (subjectId && sectionId && topicId) {
-          selections.push({
-            subject_id: subjectId,
-            section_id: sectionId,
-            topic_id: topicId,
-          });
-        } else {
-          throw "Please fill all the fields in each section.";
-        }
-      });
-
-      await getMcqQuestions(templateId, selectedTopicIds, selections);
-
-      $("#template_selection_div").hide();
-      $("#questions_div").show();
-      $("#generateForm").hide();
-    } catch (error) {
-      alert(error);
-      console.error("Error generating question paper:", error);
-    }
-  });
-  $(document).on("click", "#changeTemplate", function () {
-    $("#questions_div").hide();
-    $("#template_table").show();
-  });
+function changeTemplate() {
+  $("#questions_div").hide();
+  $("#template_table").show();
 }
 
 async function addSectionRow(prevSelections = null) {

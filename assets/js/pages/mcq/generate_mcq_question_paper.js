@@ -46,7 +46,7 @@ function showSwapQuestions(swapQuestion, index) {
 
 function createQuestions() {
   let html = `
-    <button id="selectparameter" class="btn btn-primary">Change Subject</button>
+    <button id="selectparameter" class="btn btn-primary">Change Template</button>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -161,8 +161,7 @@ function createQuestions() {
   $("#selectparameter")
     .off("click")
     .on("click", function () {
-      $("#questions_div").hide();
-      showInputfield(currentTemplateId);
+      changeTemplate();
     });
 
   $("#questionupload")
