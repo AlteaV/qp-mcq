@@ -107,7 +107,7 @@ function createQuestions() {
     <div class="row">
       <div class="col mt-3 d-flex justify-content-end gap-2">
       <input type="text" id="qp_name" class="form-control" placeholder="Enter Question Paper Name" style="max-width: 300px;" />
-          <button id="questionupload" class="btn btn-primary">Upload Question Paper</button>
+          <button id="questionupload" class="btn btn-primary">Save Question Paper</button>
       </div>
     </div>
   `;

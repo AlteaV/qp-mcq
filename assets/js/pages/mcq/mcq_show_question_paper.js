@@ -215,7 +215,7 @@ async function getQuestionPaperDetails(qp_id) {
   try {
     showOverlay();
     let payload = {
-      function: "gqftt",
+      function: "vqp",
       subject_question_paper_id: qp_id,
     };
 
@@ -262,7 +262,7 @@ function displayQP(qp_id) {
   }
   vqpModalLabel.innerText = "Question Paper: " + qp.name;
 
-  let data = qp.questions;
+  let data = JSON.parse(qp.questions.questions);
 
   let tableData = {
     tableHeader: [
@@ -272,7 +272,7 @@ function displayQP(qp_id) {
   };
 
   data.forEach((record, index) => {
-    let choices = JSON.parse(record.choices);
+    let choices = record.choices;
 
     let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 

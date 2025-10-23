@@ -13,6 +13,8 @@ let partMarks = document.getElementById("part_marks");
 
 // parts div
 let partsDiv = document.getElementById("parts_div");
+let partCreateBtn = document.getElementById("part_create_btn");
+let newPartDiv = document.getElementById("new_part_div");
 
 let btlLevels = [];
 let subjects = [];
@@ -24,7 +26,6 @@ function createTemplate() {
     createTemplateBtn.style.display = "none";
     questionSection.style.display = "block";
     templateDetails.classList.remove("col");
-    templateDetails.classList.add("col-auto");
     templateDetailsForm.classList.remove("was-validated");
     setPartName();
   }
@@ -146,6 +147,11 @@ function checkPartsMark(form) {
 }
 
 function createPart() {
+  newPartDiv.style.display = "block";
+  partCreateBtn.style.display = "none";
+}
+
+function assignQuestionsToSubject() {
   addPartsForm.classList.add("was-validated");
   if (!addPartsForm.checkValidity()) {
     return;
@@ -241,6 +247,10 @@ function createPart() {
 
   partsDiv.style.display = "block";
   setPartName();
+  newPartDiv.style.display = "none";
+  partCreateBtn.style.display = "block";
+  partSubject.value = "";
+  partMarks.value = "";
 }
 
 function addQuestionRow(questionContainer, sections, form) {
@@ -547,7 +557,6 @@ function saveTemplate() {
       partsDiv.innerHTML = "";
       partsDiv.style.display = "none";
       questionSection.style.display = "none";
-      templateDetails.classList.remove("col-auto");
       templateDetails.classList.add("col");
       createTemplateBtn.style.display = "block";
       templateDetailsForm.reset();

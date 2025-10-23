@@ -23,10 +23,11 @@ function initTable() {
         data: "id",
         render: function (data, type, full) {
           let questions = JSON.parse(full.template);
+          questions.sort((a, b) => a.part_name.localeCompare(b.part_name));
           let text = "";
           for (let ques of questions) {
-            text += `Part ${ques.part_name} → ${ques.subject}`;
-            text += ` → ${ques.mark} marks<br>`;
+            text += `Part ${ques.part_name}  :  ${ques.subject}`;
+            text += `  :  ${ques.mark} marks<br>`;
           }
           return text;
         },

@@ -18,8 +18,8 @@ var table = $("#template_table").DataTable({
         let questions = JSON.parse(full.template);
         let text = "";
         for (let ques of questions) {
-          text += `Part ${ques.part_name} → ${ques.subject}`;
-          text += ` → ${ques.mark} marks<br>`;
+          text += `Part ${ques.part_name}  :  ${ques.subject}`;
+          text += `  :  ${ques.mark} marks<br>`;
         }
         return text;
       },

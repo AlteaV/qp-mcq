@@ -9,6 +9,18 @@ const fetchingData = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
 const resultTable = document.getElementById("result_table");
 
+let questionForm = document.getElementById("question_form");
+let questionInput = document.getElementById("question");
+let optionAInput = document.getElementById("option_a");
+let optionBInput = document.getElementById("option_b");
+let optionCInput = document.getElementById("option_c");
+let optionDInput = document.getElementById("option_d");
+let optionEInput = document.getElementById("option_e");
+let btlLevelDropDown = document.getElementById("btl_level");
+let imageInput = document.getElementById("image");
+let correctOptionDropDown = document.getElementById("correct_option");
+let saveButton = document.getElementById("form_submit");
+
 fileInput.addEventListener("click", () => {
   resultDiv.style.display = "none";
   fileInput.value = "";
@@ -24,6 +36,7 @@ const sectionFields = [];
 const topicFields = [];
 let btlLevel = [];
 const sectionIdMap = {};
+let questions = [];
 
 async function subjectSelection() {
   const subjectName = subject.value.trim();
@@ -85,6 +98,9 @@ async function init() {
 
 // btl level
 async function getBtllevel() {
+  if (btlLevel.length > 0) {
+    return;
+  }
   try {
     showOverlay();
     let payload = JSON.stringify({
@@ -219,7 +235,7 @@ async function previewQuestions() {
     const response = await postCall(QuestionUploadEndPoint, payload);
 
     if (response.success) {
-      const questions = response.result.questions;
+      questions = response.result.questions;
       let sub = subject.value;
       const matchedSubject = subjectMap.find((s) => s.subject == sub);
       if (matchedSubject) {
@@ -345,6 +361,7 @@ async function showReportSection(data) {
         new TableStructure("Topic", "", "", "width: 10%;"),
         new TableStructure("BTL", "", "", "width: 5%;"),
         new TableStructure("Mark", "", "", "width: 10%;"),
+        new TableStructure("Action", 2, "", "width: 1%;"),
       ],
     ],
     tableBody: [],
@@ -410,6 +427,20 @@ async function showReportSection(data) {
       )
       .join("")}</select>`;
 
+    let editButton = createButton(
+      { question: record, index: index },
+      "",
+      "edit-button",
+      "fas fa-pencil-alt"
+    );
+
+    let deleteButton = createButton(
+      { question: record, index: index },
+      "",
+      "delete-button btn-danger",
+      "fas fa-trash-alt"
+    );
+
     const questionAndChoicesHTML = questionHTML + choiceHTML;
 
     tableData.tableBody.push([
@@ -419,6 +450,8 @@ async function showReportSection(data) {
       new TableStructure(topicField),
       new TableStructure(btlField),
       new TableStructure(marksField),
+      new TableStructure(editButton),
+      new TableStructure(deleteButton),
     ]);
 
     questionsFormat.push({
@@ -435,6 +468,26 @@ async function showReportSection(data) {
 
   displayResult(tableData, resultTable);
   resultDiv.style.display = "block";
+
+  $("#result_table")
+    .off("click", ".edit-button")
+    .on("click", ".edit-button", (event) => {
+      const $button = $(event.currentTarget);
+      const fullData = JSON.parse(
+        decodeURIComponent($button.attr("data-full"))
+      );
+      editQuestion(fullData);
+    });
+
+  $("#result_table")
+    .off("click", ".delete-button")
+    .on("click", ".delete-button", (event) => {
+      const $button = $(event.currentTarget);
+      const fullData = JSON.parse(
+        decodeURIComponent($button.attr("data-full"))
+      );
+      deleteQuestion(fullData);
+    });
 
   for (let index = 0; index < questionsFormat.length; index++) {
     const record = questionsFormat[index];
@@ -483,6 +536,77 @@ async function showReportSection(data) {
     }
   }
   MathJax.typeset();
+}
+function deleteQuestion(data) {
+  let index = data.index;
+  questions.splice(index, 1);
+  showReportSection(questions);
+}
+
+function editQuestion(data) {
+  let questionData = data.question;
+  let index = data.index;
+
+  questionInput.value = questionData.question;
+  optionAInput.value = questionData.choices.A || "";
+  optionBInput.value = questionData.choices.B || "";
+  optionCInput.value = questionData.choices.C || "";
+  optionDInput.value = questionData.choices.D || "";
+  optionEInput.value = questionData.choices.E || "";
+
+  btlLevelDropDown.innerHTML = btlLevel
+    .map(
+      (level) =>
+        `<option value="${level.level}" ${
+          questionData.btl_level == level.level_name ? "selected" : ""
+        }>${level.level_name}</option>`
+    )
+    .join("");
+
+  correctOptionDropDown.value = questionData.correct_answer || "";
+
+  $("#modal")
+    .off("click", "#form_submit")
+    .on("click", "#form_submit", async (event) => {
+      questionForm.classList.add("was-validated");
+      if (!questionForm.checkValidity()) {
+        return;
+      }
+
+      if (
+        correctOptionDropDown.value == "E" &&
+        optionEInput.value.trim() == ""
+      ) {
+        questionForm.classList.remove("was-validated");
+        alert(
+          "Please provide option E text\nOr select a different correct option"
+        );
+        return;
+      }
+
+      questions[index].question = questionInput.value;
+      questions[index].choices.A = optionAInput.value;
+      questions[index].choices.B = optionBInput.value;
+      questions[index].choices.C = optionCInput.value;
+      questions[index].choices.D = optionDInput.value;
+      if (questions[index].choices.E || optionEInput.value.trim() != "") {
+        questions[index].choices.E = optionEInput.value;
+      }
+
+      let selectedBtlOption =
+        btlLevelDropDown.options[btlLevelDropDown.selectedIndex];
+      questions[index].btl_level = selectedBtlOption
+        ? selectedBtlOption.text
+        : questionData.btl_level;
+
+      questions[index].correct_answer =
+        correctOptionDropDown.value || questionData.correct_answer;
+
+      showReportSection(questions);
+      $("#modal").modal("hide");
+    });
+
+  $("#modal").modal("show");
 }
 
 fileUplaodButton.addEventListener("click", async () => {

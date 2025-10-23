@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
+                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">Add Question</h4>
+                    <form id="filter_form">
+                      <div class="row mb-3 align-items-end">
+                        <div class="col mt-2">
+                          <label for="subject" class="required">Subject</label>
+                          <select
+                            class="form-select"
+                            name="subject"
+                            id="subject"
+                            required
+                          ></select>
+                        </div>
+                        <div class="col mt-2">
+                          <div class="d-none" id="section_div">
+                            <label for="section" class="required"
+                              >Section</label
+                            >
+                            <select
+                              class="form-select"
+                              name="section"
+                              id="section"
+                              required
+                            ></select>
+                          </div>
+                        </div>
+                        <div class="col mt-2">
+                          <div class="d-none" id="topic_div">
+                            <label for="topic" class="required">Topic</label>
+                            <select
+                              class="form-select"
+                              name="topic"
+                              id="topic"
+                              required
+                            ></select>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="mt-5" id="fetching_data" style="display: none">
+                      <p>Fetching Data</p>
+                    </div>
+
+                    <div
+                      class="result mt-4 row"
+                      id="result_div"
+                      style="display: none"
+                    >
+                      <form id="question_form">
+                        <div class="row">
+                          <div class="col">
+                            <label for="question" class="required"
+                              >Question</label
+                            >
+                            <textarea
+                              class="form-control"
+                              id="question"
+                              rows="9"
+                              required
+                              placeholder="Type your question here..."
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div class="row mt-2">
+                          <div class="col mb-2">
+                            <label for="option_a" class="required"
+                              >Option A</label
+                            >
+                            <input
+                              type="text"
+                              id="option_a"
+                              class="form-control"
+                              placeholder="Option A"
+                              required
+                            />
+                          </div>
+                          <div class="col mb-2">
+                            <label for="option_b" class="required"
+                              >Option B</label
+                            >
+                            <input
+                              type="text"
+                              id="option_b"
+                              class="form-control"
+                              placeholder="Option B"
+                              required
+                            />
+                          </div>
+                          <div class="col mb-2">
+                            <label for="option_c" class="required"
+                              >Option C</label
+                            >
+                            <input
+                              type="text"
+                              id="option_c"
+                              class="form-control"
+                              placeholder="Option C"
+                              required
+                            />
+                          </div>
+                          <div class="col mb-2">
+                            <label for="option_d" class="required"
+                              >Option D</label
+                            >
+                            <input
+                              type="text"
+                              id="option_d"
+                              class="form-control"
+                              placeholder="Option D"
+                              required
+                            />
+                          </div>
+                          <div class="col mb-2">
+                            <label for="option_e" class="">Option E</label>
+                            <input
+                              type="text"
+                              id="option_e"
+                              class="form-control"
+                              placeholder="Option E"
+                            />
+                          </div>
+                        </div>
+                        <div class="row mt-3">
+                          <div class="col">
+                            <label for="correct_option" class="required"
+                              >Correct Option</label
+                            >
+                            <select
+                              class="form-select"
+                              name="correct_option"
+                              id="correct_option"
+                              required
+                            >
+                              <option value="" disabled selected>
+                                Please select the correct option
+                              </option>
+                              <option value="A">Option A</option>
+                              <option value="B">Option B</option>
+                              <option value="C">Option C</option>
+                              <option value="D">Option D</option>
+                              <option value="E">Option E</option>
+                            </select>
+                          </div>
+                          <div class="col">
+                            <!-- btl select -->
+                            <label for="btl_level" class="required"
+                              >BTL Level</label
+                            >
+                            <select
+                              class="form-select"
+                              name="btl_level"
+                              id="btl_level"
+                              required
+                            ></select>
+                          </div>
+                          <div class="col">
+                            <!-- single image upload -->
+                            <label for="image" class="">Image</label>
+                            <input
+                              type="file"
+                              class="form-control"
+                              name="image"
+                              id="image"
+                              accept="image/*"
+                            />
+                          </div>
+                          <div class="col-auto" style="align-self: flex-end">
+                            <!-- input button to submit -->
+                            <input
+                              type="button"
+                              class="btn btn-primary"
+                              value="Submit"
+                              id="add_question_btn"
+                            />
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script type="module" src="/assets/js/pages/mcq/add_question.js"></script>
+</html>

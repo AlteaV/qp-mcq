@@ -43,7 +43,7 @@ const menuItems = [
       },
       {
         href: "/add_question.html",
-        text: "MCQ Add Question",
+        text: "Add Question",
       },
       {
         href: "/mcq_question_upload.html",
@@ -152,6 +152,7 @@ if (loggedInUser.type == "Student") {
       { text: "Manage Subjects", action: "view" },
       { text: "Manage Sections", action: "view" },
       { text: "Manage Topics", action: "view" },
+      { text: "Add Question", action: "view" },
       { text: "MCQ Question Upload", action: "view" },
       { text: "Create McQ Template", action: "view" },
       { text: "View McQ Template", action: "view" },

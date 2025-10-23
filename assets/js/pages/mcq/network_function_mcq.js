@@ -7,8 +7,6 @@ async function getMcqQuestions(templateID) {
   out.template_id = templateID;
 
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
-    console.log(response);
-
     if (response.success) {
       let quetionPaper = response.result.question_paper;
       if (quetionPaper && quetionPaper.length > 0) {
