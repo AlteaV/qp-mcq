@@ -44,7 +44,7 @@ function showSwapQuestions(swapQuestion, index) {
   createQuestions();
 }
 
-function createQuestions() {
+async function createQuestions() {
   let html = `
     <button id="selectparameter" class="btn btn-primary">Change Template</button>
     <table class="table table-bordered">
@@ -169,5 +169,16 @@ function createQuestions() {
     .on("click", function () {
       mcqQuestioPaper();
     });
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
 }

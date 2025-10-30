@@ -90,7 +90,7 @@ async function sectionSelection(field) {
   }
 }
 
-subject.addEventListener("input", subjectSelection);
+// subject.addEventListener("input", subjectSelection);
 
 async function init() {
   await getSubjects();
@@ -158,9 +158,10 @@ async function getSection(subjectID) {
       sectionMap = response.result.section;
       sectionData = sectionMap.map((s) => s.section);
     }
-    hideOverlay();
+    // hideOverlay();
   } catch (err) {
     console.error("Error fetching topics", err);
+    alert("An error occurred while fetching sections");
   }
 }
 
@@ -187,12 +188,15 @@ async function getTopics(sectionID, topicField) {
     if (response.success) {
       topicsdata[sectionID] = response.result.topic;
       const topicNames = topicsdata[sectionID].map((t) => t.topic);
-      topicField.value = "";
-      setAutoComplete(topicField, topicNames);
+      if (topicField) {
+        topicField.value = "";
+        setAutoComplete(topicField, topicNames);
+      }
     }
-    hideOverlay();
+    // hideOverlay();
   } catch (err) {
     console.error("Error fetching topics", err);
+    alert("An error occurred while fetching topics");
   }
 }
 
@@ -211,11 +215,11 @@ function setAutoComplete(field, data) {
     suggestionsThreshold: 0,
     onSelectItem: ({ label, value }) => {
       field.value = label;
-      if (field.id == "subject") {
-        subjectSelection();
-      } else if (field.name == "sections") {
-        sectionSelection(field);
-      }
+      // if (field.id == "subject") {
+      //   subjectSelection();
+      // } else if (field.name == "sections") {
+      //   sectionSelection(field);
+      // }
     },
   });
 }
@@ -224,11 +228,43 @@ async function previewQuestions() {
   try {
     showOverlay();
     const file = fileInput.files[0];
+    const subjectName = document.getElementById("subject").value;
+
+    const matchedSubject = subjectMap.find((s) => s.subject === subjectName);
+
+    if (!matchedSubject) {
+      alert("Please select a valid subject.");
+      hideOverlay();
+      return;
+    }
+
+    const subjectId = matchedSubject.id;
+
+    await getSection(subjectId);
+
+    const allSections = [];
+    const allTopics = [];
+
+    for (const section of sectionMap) {
+      allSections.push(section.section);
+
+      await getTopics(section.id, "");
+
+      if (topicsdata[section.id]) {
+        const topics = topicsdata[section.id].map((t) => t.topic);
+        for (const topic of topics) {
+          allTopics.push(topic);
+        }
+      }
+    }
 
     const base64 = await convertToBase64(file);
 
     const payload = JSON.stringify({
       function: "pvq",
+      subject: subjectName,
+      section: allSections,
+      topic: allTopics,
       filedata: base64,
     });
 
@@ -310,14 +346,28 @@ async function submitQuestion() {
         section.topics.push(topic);
       }
 
-      topic.questions.push({
+      let img = [];
+      if (q.images && q.images.length > 0) {
+        img = q.images.map((imgObj) => ({
+          img_id: imgObj.id || "",
+          img_base: imgObj.image_base64 || "",
+        }));
+      }
+
+      let temp = {
         question: q.question,
-        img: null,
+        img: img,
         choices: q.choices,
         correct_answer: q.correct_answer,
         mark: q.marks,
         btl_level: q.btl_level,
-      });
+      };
+      for (let question of questions) {
+        if (question.question.trim() == q.question.trim() && question.table) {
+          temp.table = question.table;
+        }
+      }
+      topic.questions.push(temp);
     });
 
     const response = await postCall(
@@ -338,6 +388,7 @@ async function submitQuestion() {
   } catch (error) {
     console.error("submitQuestion Error:", error);
     alert("Error submitting questions.");
+    hideOverlay();
   }
 }
 
@@ -357,9 +408,9 @@ async function showReportSection(data) {
       [
         new TableStructure("S.No", "", "", "width: 5%;"),
         new TableStructure("Question & Choices", "", "", "width: 28%;"),
-        new TableStructure("Section", "", "", "width: 10%;"),
-        new TableStructure("Topic", "", "", "width: 10%;"),
-        new TableStructure("BTL", "", "", "width: 5%;"),
+        new TableStructure("Section", "", "", "min-width: 200px"),
+        new TableStructure("Topic", "", "", "min-width: 200px;"),
+        new TableStructure("BTL", "", "", "min-width: 100px;"),
         new TableStructure("Mark", "", "", "width: 10%;"),
         new TableStructure("Action", 2, "", "width: 1%;"),
       ],
@@ -371,7 +422,24 @@ async function showReportSection(data) {
 
   data.forEach((record, index) => {
     const choices = record.choices || {};
-    const questionHTML = `<p class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${record.question}</p>`;
+    let questionHTML = `<p class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${record.question}</p>`;
+
+    if (record.images && record.images.length > 0) {
+      record.images.forEach((imgObj) => {
+        if (imgObj.image_base64) {
+          questionHTML += `
+        <div style="text-align: center; margin: 10px 0;">
+          <img src="${imgObj.image_base64}" 
+               alt="Question Image" 
+               style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px;         padding: 5px;" />
+        </div>`;
+        }
+      });
+    }
+
+    if (record.table) {
+      questionHTML += renderTableFromMarkdown(record.table);
+    }
 
     let choiceHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: left; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
@@ -396,7 +464,7 @@ async function showReportSection(data) {
           class="form-control marks-field" 
           value="${record.marks}" 
           min="1" 
-          style="width: 60px;" 
+          style="min-width: 200px"
         />`;
 
     let sectionField = `
@@ -405,6 +473,7 @@ async function showReportSection(data) {
           name = "sections"
           value="${record.section || ""}" 
           data-index="${index}" 
+          style="min-width: 200px"
       />`;
 
     let topicField = `
@@ -413,11 +482,13 @@ async function showReportSection(data) {
          class="form-control topic-field" 
          name = "topics"
          value="${record.topic || ""}" 
-        data-index="${index}" 
+         data-index="${index}" 
+         style="min-width: 200px"
       />`;
 
     let btlField = `
-         <select id="btl_input_${index}" class="form-control btl-field" 
+         <select id="btl_input_${index}"
+         style="min-width: 100px" class="form-control btl-field" 
          data-index="${index}">${btlLevel
       .map(
         (level) =>
@@ -428,14 +499,20 @@ async function showReportSection(data) {
       .join("")}</select>`;
 
     let editButton = createButton(
-      { question: record, index: index },
+      {
+        question: record,
+        index: index,
+      },
       "",
       "edit-button",
       "fas fa-pencil-alt"
     );
 
     let deleteButton = createButton(
-      { question: record, index: index },
+      {
+        question: record,
+        index: index,
+      },
       "",
       "delete-button btn-danger",
       "fas fa-trash-alt"
@@ -457,6 +534,7 @@ async function showReportSection(data) {
     questionsFormat.push({
       question_no: index + 1,
       question: record.question,
+      images: record.images || [],
       choices,
       correct_answer: record.correct_answer,
       section: record.section,
@@ -535,8 +613,51 @@ async function showReportSection(data) {
       }
     }
   }
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
 }
+
+function renderTableFromMarkdown(markdown) {
+  if (!markdown) return "";
+
+  const converter = new showdown.Converter({
+    tables: true,
+  });
+
+  const htmlContent = converter.makeHtml(markdown);
+
+  return `
+    <div class="question-table">
+      <style>
+        .question-table table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .question-table th,
+        .question-table td {
+          border: 1px solid #333;
+          padding: 8px;
+          text-align: center;
+        }
+        .question-table th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      ${htmlContent}
+    </div>
+  `;
+}
+
 function deleteQuestion(data) {
   let index = data.index;
   questions.splice(index, 1);

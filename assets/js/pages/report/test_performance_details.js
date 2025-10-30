@@ -42,7 +42,7 @@ async function getIndividualPerformance(attempt_id, selectedStudent) {
   }
 }
 
-function showIndividualPerformanceSection(data) {
+async function showIndividualPerformanceSection(data) {
   filterDiv.style.display = "none";
   resultDiv.style.display = "none";
   individualPerformanceDiv.style.display = "block";
@@ -75,7 +75,18 @@ function showIndividualPerformanceSection(data) {
     ]);
   });
   displayResult(tableData, individualPerformanceTable);
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
   individualPerformanceDiv.style.display = "block";
   hideOverlay();
 }

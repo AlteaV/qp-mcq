@@ -107,7 +107,7 @@ function previousQuestion() {
   showQuestion(selectedQuestion);
 }
 
-function showQuestion(question) {
+async function showQuestion(question) {
   currentQuestion = question;
 
   let choices = question.choices;
@@ -167,7 +167,18 @@ function showQuestion(question) {
   } else {
     answers[currentAnswerIndex].start_time = [startTime];
   }
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
 
   $("input[type=radio]").click(function () {
     saveAnswer();
@@ -308,7 +319,7 @@ function displayCorrectAnswers() {
   let totalQuestions = answers.length;
   let correctCount = 0;
 
-  answers.forEach((question, index) => {
+  answers.forEach(async (question, index) => {
     let choices = question.choices;
     if (typeof choices === "string") {
       try {
@@ -383,7 +394,18 @@ function displayCorrectAnswers() {
     scoreDiv.innerHTML = `Total Score: ${correctCount} / ${totalQuestions}`;
     scoreDiv.style.display = "block";
     scoreDiv.style.visibility = "visible";
-    MathJax.typeset();
+    try {
+      if (window.MathJax) {
+        if (typeof MathJax.typesetPromise === "function") {
+          await MathJax.typesetPromise();
+        } else if (typeof MathJax.typeset === "function") {
+          MathJax.typeset();
+        }
+      }
+    } catch (error) {
+      console.error("MathJax typeset error:", error);
+      alert("Error rendering mathematical expressions.");
+    }
   });
   questionNo.innerHTML = "";
   hideOverlay();

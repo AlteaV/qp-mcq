@@ -248,7 +248,7 @@ async function getQuestionPaperDetails(qp_id) {
   }
 }
 
-function displayQP(qp_id) {
+async function displayQP(qp_id) {
   if (questionPapers.length == 0) {
     getQuestionPaperDetails(qp_id);
     return;
@@ -312,7 +312,18 @@ function displayQP(qp_id) {
 
   displayResult(tableData, qpTable);
   $("#view_qp_modal").modal("show");
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
 }
 
 document.addEventListener("readystatechange", async () => {

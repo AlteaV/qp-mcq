@@ -20,7 +20,7 @@ questionPaperDropDown.addEventListener("change", () => {
   resetResult(fetchingDataSection, resultDiv);
 });
 
-function showReportSection(data) {
+async function showReportSection(data) {
   fetchingDataSection.style.display = "none";
   if (!data || data.length === 0) {
     fetchingDataSection.innerHTML = "<p>There is no data</p>";
@@ -62,7 +62,18 @@ function showReportSection(data) {
   qpAttendCount.innerHTML = `Total times attended: ${
     data[0].total_attended + data[0].total_unattended
   }`;
-  MathJax.typeset();
+  try {
+    if (window.MathJax) {
+      if (typeof MathJax.typesetPromise === "function") {
+        await MathJax.typesetPromise();
+      } else if (typeof MathJax.typeset === "function") {
+        MathJax.typeset();
+      }
+    }
+  } catch (error) {
+    console.error("MathJax typeset error:", error);
+    alert("Error rendering mathematical expressions.");
+  }
 
   resultDiv.style.display = "block";
   hideOverlay();
