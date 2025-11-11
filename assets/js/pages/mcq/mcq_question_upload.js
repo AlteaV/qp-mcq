@@ -174,10 +174,12 @@ async function getTopics(sectionID, topicField) {
 
     if (topicsdata[sectionID]) {
       const topicNames = topicsdata[sectionID].map((t) => t.topic);
-      topicField.value = "";
-      setAutoComplete(topicField, topicNames);
-      hideOverlay();
-      return;
+      if (topicField) {
+        topicField.value = "";
+        setAutoComplete(topicField, topicNames);
+        hideOverlay();
+        return;
+      }
     }
     const payload = JSON.stringify({
       function: "gt",
@@ -245,18 +247,18 @@ async function previewQuestions() {
     const allSections = [];
     const allTopics = [];
 
-    for (const section of sectionMap) {
-      allSections.push(section.section);
+    // for (const section of sectionMap) {
+    //   allSections.push(section.section);
 
-      await getTopics(section.id, "");
+    //   await getTopics(section.id, "");
 
-      if (topicsdata[section.id]) {
-        const topics = topicsdata[section.id].map((t) => t.topic);
-        for (const topic of topics) {
-          allTopics.push(topic);
-        }
-      }
-    }
+    //   if (topicsdata[section.id]) {
+    //     const topics = topicsdata[section.id].map((t) => t.topic);
+    //     for (const topic of topics) {
+    //       allTopics.push(topic);
+    //     }
+    //   }
+    // }
 
     const base64 = await convertToBase64(file);
 
@@ -268,22 +270,68 @@ async function previewQuestions() {
       filedata: base64,
     });
 
-    const response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(QuestionUploadEndPoint, payload);
 
-    if (response.success) {
-      questions = response.result.questions;
-      let sub = subject.value;
-      const matchedSubject = subjectMap.find((s) => s.subject == sub);
-      if (matchedSubject) {
-        await getSection(matchedSubject.id);
+    let retryCount = 0;
+    let maxRetries = 10;
+
+    while (retryCount < maxRetries) {
+      console.log(`Retry attempt: ${retryCount + 1}`);
+
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+
+      let getScannedDataPayload = JSON.stringify({
+        function: "gstd",
+        id: response.result.id,
+      });
+
+      let retryResponse = await postCall(
+        QuestionUploadEndPoint,
+        getScannedDataPayload
+      );
+      console.log(retryResponse);
+
+      if (retryResponse.message === "Completed") {
+        questions = retryResponse.result.questions;
+        let sub = subject.value;
+        let matchedSubject = subjectMap.find((s) => s.subject == sub);
+        if (matchedSubject) {
+          await getSection(matchedSubject.id);
+        }
+        await getBtllevel();
+        await showReportSection(questions);
+        return;
       }
-      await getBtllevel();
-      await showReportSection(questions);
-    } else {
-      alert(response.message);
+
+      if (
+        retryResponse.message != "Processing" &&
+        retryResponse.message != "Completed"
+      ) {
+        alert(retryResponse.message);
+        hideOverlay();
+        return;
+      }
+
+      // if (retryResponse.message !== "Endpoint request timed out") {
+      //   alert(retryResponse.message);
+      //   hideOverlay();
+      //   return;
+      // }
+
+      retryCount++;
+    }
+    if (retryCount === maxRetries) {
+      alert(
+        "Processing is taking longer than expected. Please try again later."
+      );
       hideOverlay();
     }
-    hideOverlay();
+    // if (response.success) {
+    // } else {
+    //   alert(response.message);
+    //   hideOverlay();
+    // }
+    // hideOverlay();
   } catch (error) {
     console.error("previewQuestions Error:", error);
     alert("Error processing PDF.");
@@ -625,6 +673,7 @@ async function showReportSection(data) {
     console.error("MathJax typeset error:", error);
     alert("Error rendering mathematical expressions.");
   }
+  hideOverlay();
 }
 
 function renderTableFromMarkdown(markdown) {

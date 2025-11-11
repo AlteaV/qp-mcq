@@ -60,7 +60,7 @@ function postCallPreProcess(functionName) {
     functionName == "gs" ||
     functionName == "gt" ||
     functionName == "ss" ||
-    functionName == "pvq" ||
+    // functionName == "pvq" ||
     functionName == "gqftt" ||
     functionName == "iusa" ||
     functionName == "gesr" ||
@@ -89,6 +89,7 @@ function postCallPreProcess(functionName) {
     functionName == "gqwp" ||
     functionName == "isq" ||
     functionName == "vqp" ||
+    functionName == "gstd" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
@@ -100,6 +101,12 @@ function postCallPreProcess(functionName) {
     functionName == ""
   ) {
     return studentEndPoint;
+  } else if (
+    functionName == "pvq" ||
+    // not checked
+    functionName == ""
+  ) {
+    return helpDeskEndPoint;
   }
   // Admin functions  END
   else return examCellEndPoint;
