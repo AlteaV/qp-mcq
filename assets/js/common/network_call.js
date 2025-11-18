@@ -90,6 +90,8 @@ function postCallPreProcess(functionName) {
     functionName == "isq" ||
     functionName == "vqp" ||
     functionName == "gstd" ||
+    functionName == "ecg" ||
+    functionName == "gstbs" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

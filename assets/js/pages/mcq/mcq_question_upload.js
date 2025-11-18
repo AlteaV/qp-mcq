@@ -30,75 +30,42 @@ subject.addEventListener("input", () => {
   resultDiv.style.display = "none";
 });
 
-let questionsFormat = [];
-
-const sectionFields = [];
-const topicFields = [];
-let btlLevel = [];
-const sectionIdMap = {};
-let questions = [];
-
-async function subjectSelection() {
-  const subjectName = subject.value.trim();
-  const matchedSubject = subjectMap.find((s) => s.subject == subjectName);
-
-  if (matchedSubject) {
-    getSection(matchedSubject.id).then(() => {
-      sectionFields.forEach((field, index) => {
-        setAutoComplete(field, sectionData);
-        field.value = "";
-        const topicField = topicFields[index];
-        if (topicField) {
-          topicField.value = "";
-          setAutoComplete(topicField, []);
-        }
-      });
-    });
-  } else {
-    sectionMap = [];
-    sectionData = [];
-    sectionFields.forEach((field, index) => {
-      field.value = "";
-      const topicField = topicFields[index];
-      if (topicField) {
-        topicField.value = "";
-        setAutoComplete(topicField, []);
-      }
-    });
-  }
-}
-
-async function sectionSelection(field) {
-  const index = field.id.split("_").pop();
-  const topicField = topicFields[index];
-  const sectionValue = field.value.trim();
-
-  if (!sectionValue) {
-    setAutoComplete(field, sectionData);
-    topicField.value = "";
-    setAutoComplete(topicField, []);
+fileUplaodButton.addEventListener("click", async () => {
+  if (subject.value.trim() == "") {
+    alert("Please select a subject before uploading the question.");
     return;
   }
+  if (!fileInput.files || fileInput.files.length == 0) {
+    alert("Please upload a file!.");
+    return;
+  }
+  await previewQuestions();
+});
 
-  const matchedSection = sectionMap.find((s) => s.section == sectionValue);
-  if (matchedSection) {
-    sectionIdMap[index] = matchedSection.id;
-    await getTopics(matchedSection.id, topicField);
-  } else {
-    topicField.value = "";
-    setAutoComplete(topicField, []);
+saveQuestionsButton.addEventListener("click", async () => {
+  await submitQuestion();
+});
+
+let subjects = [];
+let sectionTopics = [];
+let btlLevel = [];
+let questions = [];
+let questionsFormat = [];
+
+async function init() {
+  await getBtllevel();
+  await getSubjects();
+  if (sessionStorage.getItem("sections_topics")) {
+    sectionTopics = JSON.parse(sessionStorage.getItem("sections_topics"));
   }
 }
 
-// subject.addEventListener("input", subjectSelection);
-
-async function init() {
-  await getSubjects();
-}
-
-// btl level
 async function getBtllevel() {
   if (btlLevel.length > 0) {
+    return;
+  }
+  if (sessionStorage.getItem("btl_levels")) {
+    btlLevel = JSON.parse(sessionStorage.getItem("btl_levels"));
     return;
   }
   try {
@@ -109,6 +76,7 @@ async function getBtllevel() {
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
       btlLevel = response.result.btl_level;
+      sessionStorage.setItem("btl_levels", JSON.stringify(btlLevel));
     }
     hideOverlay();
   } catch (error) {
@@ -119,20 +87,26 @@ async function getBtllevel() {
   }
 }
 
-// get subject
-let subjectMap = [];
-
 async function getSubjects() {
   try {
     showOverlay();
+    if (sessionStorage.getItem("subjects")) {
+      let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
+      subjects = subjectMap;
+      setSubjects();
+      hideOverlay();
+      return;
+    }
     let payload = JSON.stringify({
       function: "gss",
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
-      subjectMap = response.result.subject;
-      const subjectNames = subjectMap.map((s) => s.subject);
-      setAutoComplete(subject, subjectNames);
+      subjects = response.result.subject;
+
+      subjects.sort((a, b) => a.subject.localeCompare(b.subject));
+      sessionStorage.setItem("subjects", JSON.stringify(subjects));
+      setSubjects();
     }
     hideOverlay();
   } catch (error) {
@@ -141,98 +115,90 @@ async function getSubjects() {
   }
 }
 
-// get section
-let sectionData = [];
-let sectionMap = [];
-
-async function getSection(subjectID) {
-  try {
-    showOverlay();
-    let payload = JSON.stringify({
-      function: "gs",
-      subject_id: subjectID,
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-
-    if (response.success) {
-      sectionMap = response.result.section;
-      sectionData = sectionMap.map((s) => s.section);
-    }
-    // hideOverlay();
-  } catch (err) {
-    console.error("Error fetching topics", err);
-    alert("An error occurred while fetching sections");
-  }
-}
-
-// get topic
-let topicsdata = {};
-
-async function getTopics(sectionID, topicField) {
-  try {
-    showOverlay();
-
-    if (topicsdata[sectionID]) {
-      const topicNames = topicsdata[sectionID].map((t) => t.topic);
-      if (topicField) {
-        topicField.value = "";
-        setAutoComplete(topicField, topicNames);
-        hideOverlay();
-        return;
-      }
-    }
-    const payload = JSON.stringify({
-      function: "gt",
-      section_id: sectionID,
-    });
-    const response = await postCall(QuestionUploadEndPoint, payload);
-
-    if (response.success) {
-      topicsdata[sectionID] = response.result.topic;
-      const topicNames = topicsdata[sectionID].map((t) => t.topic);
-      if (topicField) {
-        topicField.value = "";
-        setAutoComplete(topicField, topicNames);
-      }
-    }
-    // hideOverlay();
-  } catch (err) {
-    console.error("Error fetching topics", err);
-    alert("An error occurred while fetching topics");
-  }
+function setSubjects() {
+  const subjectNames = subjects.map((s) => s.subject);
+  setAutoComplete(subject, subjectNames);
 }
 
 function setAutoComplete(field, data) {
-  let nextSibling = field.nextElementSibling;
-  while (nextSibling) {
-    let toRemove = nextSibling;
-    nextSibling = nextSibling.nextElementSibling;
-    toRemove.remove();
+  try {
+    let nextSibling = field.nextElementSibling;
+    while (nextSibling) {
+      let toRemove = nextSibling;
+      nextSibling = nextSibling.nextElementSibling;
+      toRemove.remove();
+    }
+    new Autocomplete(field, {
+      items: data,
+      valueField: "id",
+      labelField: "title",
+      highlightTyped: true,
+      suggestionsThreshold: 0,
+      onSelectItem: ({ label, value }) => {
+        field.value = label;
+        if (field.id.includes("section_input_")) {
+          let index = field.id.split("_")[2];
+          setTopic(index, label);
+        }
+      },
+    });
+  } catch (err) {
+    console.error("Autocomplete Error:", err);
+    alert("An error occurred while setting up autocomplete.");
+    hideOverlay();
   }
-  new Autocomplete(field, {
-    items: data,
-    valueField: "id",
-    labelField: "title",
-    highlightTyped: true,
-    suggestionsThreshold: 0,
-    onSelectItem: ({ label, value }) => {
-      field.value = label;
-      // if (field.id == "subject") {
-      //   subjectSelection();
-      // } else if (field.name == "sections") {
-      //   sectionSelection(field);
-      // }
-    },
-  });
+}
+
+function setTopic(index, label) {
+  let topicField = document.getElementById(`topic_input_${index}`);
+
+  let matchedSubject = subjects.find(
+    (s) => s.subject == "Quantitative Aptitude"
+  );
+  let subjectId = matchedSubject.id;
+  let sectionTopicMap = getSectionTopic(subjectId);
+
+  let matchedSection = sectionTopicMap.find((st) => st.section == label);
+  if (matchedSection) {
+    topicField.value = "";
+    setAutoComplete(topicField, matchedSection.topics);
+  } else {
+    topicField.value = "";
+    setAutoComplete(topicField, []);
+  }
+}
+
+function getSectionTopic(subjectID) {
+  if (sectionTopics.length == 0) {
+    return [];
+  }
+  let matched = sectionTopics.find((st) => st.subject_id == subjectID);
+
+  if (matched) {
+    let sectionMap = [];
+    for (let section of matched.sections) {
+      if (typeof section.topics === "string") {
+        section.topics = JSON.parse(section.topics);
+      }
+
+      let temp = {
+        section: section.section,
+        topics: section.topics.map((t) => t.topic),
+      };
+      sectionMap.push(temp);
+    }
+    return sectionMap;
+  } else {
+    return [];
+  }
 }
 
 async function previewQuestions() {
   try {
     showOverlay();
-    const file = fileInput.files[0];
-    const subjectName = document.getElementById("subject").value;
-
-    const matchedSubject = subjectMap.find((s) => s.subject === subjectName);
+    let file = fileInput.files[0];
+    let subjectName = document.getElementById("subject").value;
+    let matchedSubject = subjects.find((s) => s.subject == subjectName);
 
     if (!matchedSubject) {
       alert("Please select a valid subject.");
@@ -241,34 +207,19 @@ async function previewQuestions() {
     }
 
     const subjectId = matchedSubject.id;
-
-    await getSection(subjectId);
-
-    const allSections = [];
-    const allTopics = [];
-
-    // for (const section of sectionMap) {
-    //   allSections.push(section.section);
-
-    //   await getTopics(section.id, "");
-
-    //   if (topicsdata[section.id]) {
-    //     const topics = topicsdata[section.id].map((t) => t.topic);
-    //     for (const topic of topics) {
-    //       allTopics.push(topic);
-    //     }
-    //   }
-    // }
-
+    let sectionTopics = getSectionTopic(subjectId);
     const base64 = await convertToBase64(file);
 
-    const payload = JSON.stringify({
-      function: "pvq",
+    let out = {
+      function: "ecg",
       subject: subjectName,
-      section: allSections,
-      topic: allTopics,
+      section_topic: sectionTopics,
       filedata: base64,
-    });
+      org_id: loggedInUser.college_code,
+      subject_id: subjectId,
+    };
+
+    const payload = JSON.stringify(out);
 
     let response = await postCall(QuestionUploadEndPoint, payload);
 
@@ -276,8 +227,6 @@ async function previewQuestions() {
     let maxRetries = 10;
 
     while (retryCount < maxRetries) {
-      console.log(`Retry attempt: ${retryCount + 1}`);
-
       await new Promise((resolve) => setTimeout(resolve, 10000));
 
       let getScannedDataPayload = JSON.stringify({
@@ -289,16 +238,35 @@ async function previewQuestions() {
         QuestionUploadEndPoint,
         getScannedDataPayload
       );
-      console.log(retryResponse);
 
       if (retryResponse.message === "Completed") {
-        questions = retryResponse.result.questions;
-        let sub = subject.value;
-        let matchedSubject = subjectMap.find((s) => s.subject == sub);
-        if (matchedSubject) {
-          await getSection(matchedSubject.id);
+        questions = retryResponse.result.data.questions;
+        if (retryResponse.result.data.section_topic !== undefined) {
+          let temp = {
+            subject_id: subjectId,
+            sections: retryResponse.result.data.section_topic,
+          };
+          let sectionsStoredData = [];
+          if (sessionStorage.getItem("sections_topics")) {
+            sectionsStoredData = JSON.parse(
+              sessionStorage.getItem("sections_topics")
+            );
+            let existingIndex = sectionsStoredData.findIndex(
+              (st) => st.subject_id == subjectId
+            );
+            if (existingIndex != -1) {
+              sectionsStoredData[existingIndex] = temp;
+            } else {
+              sectionsStoredData.push(temp);
+            }
+          } else {
+            sectionsStoredData.push(temp);
+          }
+          sessionStorage.setItem(
+            "sections_topics",
+            JSON.stringify(sectionsStoredData)
+          );
         }
-        await getBtllevel();
         await showReportSection(questions);
         return;
       }
@@ -311,13 +279,6 @@ async function previewQuestions() {
         hideOverlay();
         return;
       }
-
-      // if (retryResponse.message !== "Endpoint request timed out") {
-      //   alert(retryResponse.message);
-      //   hideOverlay();
-      //   return;
-      // }
-
       retryCount++;
     }
     if (retryCount === maxRetries) {
@@ -326,117 +287,9 @@ async function previewQuestions() {
       );
       hideOverlay();
     }
-    // if (response.success) {
-    // } else {
-    //   alert(response.message);
-    //   hideOverlay();
-    // }
-    // hideOverlay();
   } catch (error) {
     console.error("previewQuestions Error:", error);
     alert("Error processing PDF.");
-  }
-}
-
-async function submitQuestion() {
-  try {
-    showOverlay();
-
-    document.querySelectorAll(".section-field").forEach((input, index) => {
-      questionsFormat[index].section = input.value.trim();
-    });
-
-    document.querySelectorAll(".topic-field").forEach((input, index) => {
-      questionsFormat[index].topic = input.value.trim();
-    });
-
-    document.querySelectorAll(".btl-field").forEach((select, index) => {
-      const selectedOption = select.options[select.selectedIndex];
-      const btlName = selectedOption.value;
-      questionsFormat[index].btl_level = btlName;
-    });
-
-    document.querySelectorAll(".marks-field").forEach((input, index) => {
-      questionsFormat[index].marks = parseInt(input.value.trim(), 10) || 1;
-    });
-
-    document
-      .querySelectorAll("input[type='radio']:checked")
-      .forEach((radio) => {
-        const name = radio.name;
-        const index = parseInt(name.split("_")[1], 10);
-        questionsFormat[index].correct_answer = radio.value;
-      });
-
-    const out = {
-      function: "ss",
-      subject: subject.value.trim(),
-      created_by: loggedInUser.staff_id,
-      sections: [],
-    };
-
-    questionsFormat.forEach((q) => {
-      let section = out.sections.find((s) => s.section == q.section);
-      if (!section) {
-        section = {
-          section: q.section,
-          topics: [],
-        };
-        out.sections.push(section);
-      }
-
-      let topic = section.topics.find((t) => t.topic == q.topic);
-      if (!topic) {
-        topic = {
-          topic: q.topic,
-          questions: [],
-        };
-        section.topics.push(topic);
-      }
-
-      let img = [];
-      if (q.images && q.images.length > 0) {
-        img = q.images.map((imgObj) => ({
-          img_id: imgObj.id || "",
-          img_base: imgObj.image_base64 || "",
-        }));
-      }
-
-      let temp = {
-        question: q.question,
-        img: img,
-        choices: q.choices,
-        correct_answer: q.correct_answer,
-        mark: q.marks,
-        btl_level: q.btl_level,
-      };
-      for (let question of questions) {
-        if (question.question.trim() == q.question.trim() && question.table) {
-          temp.table = question.table;
-        }
-      }
-      topic.questions.push(temp);
-    });
-
-    const response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(out)
-    );
-
-    if (response.success) {
-      alert("Questions submitted successfully!");
-      resultTable.innerHTML = "";
-      fileInput.value = "";
-      resultDiv.style.display = "none";
-      hideOverlay();
-    } else {
-      alert(response.message);
-      hideOverlay();
-    }
-  } catch (error) {
-    console.error("submitQuestion Error:", error);
-    alert("Error submitting questions.");
-    hideOverlay();
   }
 }
 
@@ -615,6 +468,14 @@ async function showReportSection(data) {
       deleteQuestion(fullData);
     });
 
+  let subjectName = document.getElementById("subject").value;
+
+  let matchedSubject = subjects.find((s) => s.subject == subjectName);
+  let sectionTopic = getSectionTopic(matchedSubject.id);
+
+  let sectionData = sectionTopic.map((s) => s.section);
+  sectionData = sectionData.sort((a, b) => a.localeCompare(b));
+
   for (let index = 0; index < questionsFormat.length; index++) {
     const record = questionsFormat[index];
     const marksInput = document.getElementById(`marks_input_${index}`);
@@ -635,30 +496,13 @@ async function showReportSection(data) {
       }
     }
 
-    const sectionField = document.getElementById(`section_input_${index}`);
-    const topicField = document.getElementById(`topic_input_${index}`);
+    let sectionField = document.getElementById(`section_input_${index}`);
 
-    if (sectionField && topicField) {
-      sectionFields[index] = sectionField;
-      topicFields[index] = topicField;
-
+    if (sectionField) {
       setAutoComplete(sectionField, sectionData);
-
       sectionField.addEventListener("input", async (e) => {
-        await sectionSelection(e.target);
+        setTopic(index, e.target.value);
       });
-
-      setAutoComplete(topicField, []);
-
-      if (record.section) {
-        const matchedSection = sectionMap.find(
-          (s) => s.section == record.section
-        );
-        if (matchedSection) {
-          await getTopics(matchedSection.id, topicField);
-          topicField.value = record.topic || "";
-        }
-      }
     }
   }
   try {
@@ -779,21 +623,107 @@ function editQuestion(data) {
   $("#modal").modal("show");
 }
 
-fileUplaodButton.addEventListener("click", async () => {
-  if (subject.value.trim() == "") {
-    alert("Please select a subject before uploading the question.");
-    return;
-  }
-  if (!fileInput.files || fileInput.files.length == 0) {
-    alert("Please upload a file!.");
-    return;
-  }
-  await previewQuestions();
-});
+async function submitQuestion() {
+  try {
+    showOverlay();
 
-saveQuestionsButton.addEventListener("click", async () => {
-  await submitQuestion();
-});
+    document.querySelectorAll(".section-field").forEach((input, index) => {
+      questionsFormat[index].section = input.value.trim();
+    });
+
+    document.querySelectorAll(".topic-field").forEach((input, index) => {
+      questionsFormat[index].topic = input.value.trim();
+    });
+
+    document.querySelectorAll(".btl-field").forEach((select, index) => {
+      const selectedOption = select.options[select.selectedIndex];
+      const btlName = selectedOption.value;
+      questionsFormat[index].btl_level = btlName;
+    });
+
+    document.querySelectorAll(".marks-field").forEach((input, index) => {
+      questionsFormat[index].marks = parseInt(input.value.trim(), 10) || 1;
+    });
+
+    document
+      .querySelectorAll("input[type='radio']:checked")
+      .forEach((radio) => {
+        const name = radio.name;
+        const index = parseInt(name.split("_")[1], 10);
+        questionsFormat[index].correct_answer = radio.value;
+      });
+
+    const out = {
+      function: "ss",
+      subject: subject.value.trim(),
+      created_by: loggedInUser.staff_id,
+      sections: [],
+    };
+
+    questionsFormat.forEach((q) => {
+      let section = out.sections.find((s) => s.section == q.section);
+      if (!section) {
+        section = {
+          section: q.section,
+          topics: [],
+        };
+        out.sections.push(section);
+      }
+
+      let topic = section.topics.find((t) => t.topic == q.topic);
+      if (!topic) {
+        topic = {
+          topic: q.topic,
+          questions: [],
+        };
+        section.topics.push(topic);
+      }
+
+      let img = [];
+      if (q.images && q.images.length > 0) {
+        img = q.images.map((imgObj) => ({
+          img_id: imgObj.id || "",
+          img_base: imgObj.image_base64 || "",
+        }));
+      }
+
+      let temp = {
+        question: q.question,
+        img: img,
+        choices: q.choices,
+        correct_answer: q.correct_answer,
+        mark: q.marks,
+        btl_level: q.btl_level,
+      };
+      for (let question of questions) {
+        if (question.question.trim() == q.question.trim() && question.table) {
+          temp.table = question.table;
+        }
+      }
+      topic.questions.push(temp);
+    });
+
+    const response = await postCall(
+      QuestionUploadEndPoint,
+      JSON.stringify(out)
+    );
+
+    if (response.success) {
+      alert("Questions submitted successfully!");
+      resultTable.innerHTML = "";
+      fileInput.value = "";
+      resultDiv.style.display = "none";
+      hideOverlay();
+    } else {
+      alert(response.message);
+      hideOverlay();
+    }
+  } catch (error) {
+    console.error("submitQuestion Error:", error);
+    alert("Error submitting questions.");
+    hideOverlay();
+  }
+}
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
