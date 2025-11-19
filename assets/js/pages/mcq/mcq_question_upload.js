@@ -90,7 +90,10 @@ async function getBtllevel() {
 async function getSubjects() {
   try {
     showOverlay();
-    if (sessionStorage.getItem("subjects")) {
+    if (
+      sessionStorage.getItem("subjects") &&
+      sessionStorage.getItem("subjects") != "undefined"
+    ) {
       let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
       subjects = subjectMap;
       setSubjects();
