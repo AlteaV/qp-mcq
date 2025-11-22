@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
+                    <h4 class="c-grey-900 mB-20 mt-6 mb-4">
+                      View Question Template
+                    </h4>
+
+                    <div id="template_selection_div">
+                      <div
+                        class="container"
+                        id="fetching_data"
+                        style="display: none"
+                      >
+                        <p>Fetching Data</p>
+                      </div>
+
+                      <div
+                        class="row"
+                        id="details"
+                        style="
+                          padding-bottom: 20px;
+                          padding-left: 10px;
+                          padding-top: 20px;
+                          display: none;
+                        "
+                      >
+                        <table
+                          id="template_table"
+                          class="table table-bordered"
+                          width="100%"
+                        >
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Name</th>
+                              <th>Created On</th>
+                              <th>Template</th>
+                              <th>Total Marks</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody id="details_body"></tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div
+                      id="exampleModalCenter"
+                      role="dialog"
+                      aria-labelledby="exampleModalCenterTitle"
+                      data-backdrop="static"
+                      data-keyboard="false"
+                      tabindex="-1"
+                      aria-hidden="true"
+                      class="modal fade"
+                    >
+                      <div
+                        class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+                        role="document"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5
+                              class="modal-title"
+                              id="exampleModalCenterTitle"
+                            >
+                              New Question
+                            </h5>
+                            <button
+                              type="button"
+                              class="close"
+                              aria-label="Close"
+                              data-kt-modal-action="close"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModalCenter"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div id="sectionsContainer" class="mb-5"></div>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-kt-modal-action="close"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModalCenter"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+  <script src="assets/js/pages/qp_gen/view_question_template.js"></script>
+</html>

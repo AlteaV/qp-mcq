@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Blood Test Image</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        justify-content: center;
+        padding-top: 50px;
+        background: #f4f6f8;
+        margin: 0;
+      }
+
+      .container {
+        background: #fff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 450px;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      label {
+        display: inline-block;
+        padding: 15px 10px;
+        border: 2px dashed #4a90e2;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #4a90e2;
+        transition: background 0.2s;
+        font-size: 14px;
+      }
+
+      label:hover {
+        background: #eaf2ff;
+      }
+
+      .file-name {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #555;
+      }
+
+      button {
+        margin-top: 15px;
+        background-color: #4a90e2;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #357ab8;
+      }
+
+      table {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #4a90e2;
+        color: white;
+      }
+      td {
+        background: #f9f9f9;
+      }
+
+      .compare-box {
+        display: flex;
+        height: 28px;
+        border-radius: 5px;
+        overflow: hidden;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+      }
+
+      .barcode-date {
+        margin-top: 12px;
+        text-align: left;
+        font-size: 13px;
+        color: #333;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #4a90e2;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Upload Blood Test Image</h2>
+      <form id="uploadForm">
+        <label>
+          Click or Drag & Drop Image
+          <input type="file" id="imageInput" name="image" accept="image/*" />
+        </label>
+        <div class="file-name" id="fileName">No file chosen</div>
+        <button type="submit">Upload</button>
+      </form>
+
+      <table id="resultTable" style="display: none">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Written</th>
+            <th>Detected</th>
+            <th>Comparison</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td id="writtenName">-</td>
+            <td id="detectedName">-</td>
+            <td><div id="nameBox" class="compare-box">-</div></td>
+          </tr>
+          <tr>
+            <td>Blood Group</td>
+            <td id="writtenBlood">-</td>
+            <td id="detectedBlood">-</td>
+            <td><div id="bloodBox" class="compare-box">-</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="barcode-date" id="barcodeDate" style="display: none">
+        <div><strong>Barcode:</strong> <span id="barcode">-</span></div>
+        <div><strong>Date:</strong> <span id="date">-</span></div>
+      </div>
+
+      <div
+        id="loadingIndicator"
+        style="
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+          display: none;
+        "
+      >
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <script>
+      const imageInput = document.getElementById("imageInput");
+      const fileName = document.getElementById("fileName");
+      const uploadForm = document.getElementById("uploadForm");
+
+      const resultTable = document.getElementById("resultTable");
+      const writtenName = document.getElementById("writtenName");
+      const detectedName = document.getElementById("detectedName");
+      const nameBox = document.getElementById("nameBox");
+
+      const writtenBlood = document.getElementById("writtenBlood");
+      const detectedBlood = document.getElementById("detectedBlood");
+      const bloodBox = document.getElementById("bloodBox");
+
+      const barcodeDateDiv = document.getElementById("barcodeDate");
+      const barcodeSpan = document.getElementById("barcode");
+      const dateSpan = document.getElementById("date");
+
+      imageInput.addEventListener("change", () => {
+        fileName.textContent = imageInput.files[0]?.name || "No file chosen";
+        resetResults();
+      });
+
+      function resetResults() {
+        resultTable.style.display = "none";
+        barcodeDateDiv.style.display = "none";
+
+        writtenName.textContent = "-";
+        detectedName.textContent = "-";
+        nameBox.textContent = "-";
+
+        writtenBlood.textContent = "-";
+        detectedBlood.textContent = "-";
+        bloodBox.textContent = "-";
+
+        barcodeSpan.textContent = "-";
+        dateSpan.textContent = "-";
+      }
+
+      uploadForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        resetResults();
+        if (!imageInput.files.length)
+          return alert("Please choose an image first!");
+
+        const formData = new FormData();
+        formData.append("image", imageInput.files[0]);
+
+        let out = {
+          function: "ebg",
+        };
+
+        if (imageInput.files.length > 0) {
+          let files = imageInput.files;
+          let data = await convertToBase64(files[0]);
+          out.image = data.base64;
+          out.mimeType = data.mimeType;
+        } else {
+          out.image = null;
+        }
+
+        if (!out.image || !out.mimeType) {
+          return alert("Failed to read the image file.");
+        }
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+
+        try {
+          document.getElementById("loadingIndicator").style.display = "flex";
+          let response = await fetch(
+            "https://7t2l13z4hf.execute-api.ap-south-1.amazonaws.com/default/ExamCell",
+            { method: "POST", headers: myHeaders, body: JSON.stringify(out) }
+          );
+          document.getElementById("loadingIndicator").style.display = "none";
+
+          let response_json = await response.json();
+
+          let data =
+            typeof response_json.result === "string"
+              ? JSON.parse(response_json.result.replace(/'/g, '"'))
+              : response_json.result;
+
+          // Update table
+          writtenName.textContent = data.written_name || "-";
+          detectedName.textContent = data.printed_name || "-";
+          writtenBlood.textContent = data.written_blood || "-";
+          detectedBlood.textContent =
+            (data.blood_group || "-") +
+            (data.rh_factor ? ": " + data.rh_factor : "");
+
+          // Name comparison bar
+          let namePercent = data.name_similarity_percent || 0;
+          let unmatchPercent = 100 - namePercent;
+          nameBox.innerHTML = `
+        <div style="display:flex;width:100%;height:100%;overflow:hidden;">
+          <div style="background:#4caf50;width:${namePercent}%;display:flex;justify-content:center;align-items:center;">${
+            namePercent ? "Matched" : ""
+          }</div>
+          <div style="background:#f44336;width:${unmatchPercent}%;"></div>
+        </div>
+      `;
+
+          // Blood comparison bar
+          bloodBox.innerHTML = `
+        <div style="display:flex;width:100%;height:100%;justify-content:center;align-items:center;background:${
+          data.matched ? "#4caf50" : "#f44336"
+        };">
+          ${data.matched ? "Matched" : "Unmatched"}
+        </div>
+      `;
+
+          // Barcode & Date
+          barcodeSpan.textContent = data.barcode || "-";
+          dateSpan.textContent = data.date || "-";
+          barcodeDateDiv.style.display = "block";
+
+          resultTable.style.display = "table";
+        } catch (err) {
+          return alert("Error reading image file: " + err.message);
+        }
+
+        function convertToBase64(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+              const base64String = reader.result.split(",")[1];
+              const mimeType = file.type;
+              resolve({ base64: base64String, mimeType: mimeType });
+            };
+            reader.onerror = (error) => reject(error);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

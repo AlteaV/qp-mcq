@@ -92,6 +92,12 @@ function postCallPreProcess(functionName) {
     functionName == "gstd" ||
     functionName == "ecg" ||
     functionName == "gstbs" ||
+    functionName == "gnmt" ||
+    functionName == "gnmqput" ||
+    functionName == "unmcqqp" ||
+    functionName == "mncqp" ||
+    functionName == "vnqp" ||
+    functionName == "process_blood_test_image" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

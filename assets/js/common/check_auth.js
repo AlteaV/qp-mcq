@@ -116,6 +116,29 @@ const menuItems = [
       },
     ],
   },
+  {
+    text: "QP Generator",
+    icon: "fas fa-pager",
+    dropdown: true,
+    items: [
+      {
+        href: "/qp_create_question_template.html",
+        text: "Create Question Template",
+      },
+      {
+        href: "/qp_view_question_template.html",
+        text: "View Question Template",
+      },
+      {
+        href: "/qp_generate_question_paper.html",
+        text: "Generate Question Paper",
+      },
+      {
+        href: "/qp_view_question_paper.html",
+        text: "View Question Paper",
+      },
+    ],
+  },
 ];
 let allowedActions = [];
 
@@ -177,6 +200,17 @@ if (loggedInUser.type == "Student") {
       { text: "Subject Wise Report", action: "view" },
       { text: "Group Wise Report", action: "view" },
       { text: "Question Wise Report", action: "view" },
+    ],
+    action: "view",
+    asDropdown: true,
+  });
+  allowedActions.push({
+    text: "QP Generator",
+    items: [
+      { text: "Create Question Template", action: "view" },
+      { text: "View Question Template", action: "view" },
+      { text: "Generate Question Paper", action: "view" },
+      { text: "View Question Paper", action: "view" },
     ],
     action: "view",
     asDropdown: true,
