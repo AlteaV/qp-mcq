@@ -84,6 +84,21 @@
                           width="100%"
                           id="result_table"
                         ></table>
+                        <div id="duplicate_msg" style="display: none">
+                          <center><p>
+                            <b>
+                              These questions already exist with the same Topic
+                              and BTL level.<br />
+                              Please remove them from your Excel file and upload
+                              again.
+                            </b>
+                          </p></center>
+                        </div>
+                        <table
+                          class="table table-bordered"
+                          width="100%"
+                          id="existing_table"
+                        ></table>
                         <div class="row">
                           <div class="col mt-4 d-flex justify-content-end">
                             <button
@@ -193,12 +208,9 @@
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
-  <script src="/assets/js/packages/xlxs/xlsx.full.min.js"></script>
+  <script src="/assets/packages/js/xlxs-package/dist/xlsx.min.js"></script>
   <script src="assets/js/common/config.js"></script>
   <script src="assets/js/common/network_call.js"></script>
   <script src="assets/js/common/functions.js"></script>
-  <script
-    type="module"
-    src="assets/js/pages/qp_gen/qp_excel_upload.js"
-  ></script>
+  <script type="module" src="assets/js/pages/mcq/qp_excel_upload.js"></script>
 </html>
