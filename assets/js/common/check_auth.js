@@ -122,6 +122,10 @@ const menuItems = [
     dropdown: true,
     items: [
       {
+        href: "/qp_excel_upload.html",
+        text: "Question Upload (Excel)",
+      },
+      {
         href: "/qp_create_question_template.html",
         text: "Create Question Template",
       },
@@ -207,6 +211,7 @@ if (loggedInUser.type == "Student") {
   allowedActions.push({
     text: "QP Generator",
     items: [
+      { text: "Question Upload (Excel)", action: "view" },
       { text: "Create Question Template", action: "view" },
       { text: "View Question Template", action: "view" },
       { text: "Generate Question Paper", action: "view" },

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                      <h4 class="c-grey-900 mB-20 mt-6 mb-4">
+                        Question Upload
+                      </h4>
+                      <div class="row mb-3">
+                        <div class="col-auto">
+                          <b>
+                            <p>
+                              Make sure that the Questions are stored in proper
+                              format. Sample excel can be downloaded.
+                            </p>
+                          </b>
+                        </div>
+                        <div class="col-auto">
+                          <input
+                            class="btn btn-primary btn-color"
+                            type="button"
+                            value="Download sample"
+                            id="download_excel"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col">
+                          <label for="subject" class="required">Subject</label>
+                          <select
+                            class="form-control"
+                            id="subject"
+                            name="subject"
+                            required
+                          ></select>
+                        </div>
+                        <div class="col">
+                          <label for="file" class="required"
+                            >Upload Questions</label
+                          >
+                          <input
+                            class="form-control"
+                            type="file"
+                            id="file_input"
+                            accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                          />
+                        </div>
+                        <div class="col d-flex align-items-end">
+                          <input
+                            class="btn btn-primary btn-color"
+                            type="button"
+                            value="Scan Questions"
+                            id="submit_excel"
+                          />
+                        </div>
+                      </div>
+
+                      <div
+                        class="mt-5"
+                        id="fetching_data"
+                        style="display: none"
+                      >
+                        <p>Fetching Data</p>
+                      </div>
+                      <div
+                        class="result mt-5"
+                        id="result_div"
+                        style="display: none"
+                      >
+                        <table
+                          class="table table-bordered"
+                          width="100%"
+                          id="result_table"
+                        ></table>
+                        <div class="row">
+                          <div class="col mt-4 d-flex justify-content-end">
+                            <button
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              id="save_question"
+                            >
+                              Save Questions
+                            </button>
+                          </div>
+                        </div>
+
+                        <!-- Edit question modal start -->
+                        <div
+                          class="modal fade"
+                          id="modal"
+                          tabindex="-1"
+                          role="dialog"
+                          aria-labelledby="modalLabel"
+                          aria-hidden="true"
+                        >
+                          <div
+                            class="modal-dialog modal-dialog-centered modal-xl"
+                            role="document"
+                          >
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">
+                                  Edit Question
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="close"
+                                  data-dismiss="modal"
+                                  aria-label="Close"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modal"
+                                >
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <form id="question_form">
+                                  <div class="row">
+                                    <div class="col">
+                                      <label for="question" class="required"
+                                        >Question</label
+                                      >
+                                      <textarea
+                                        class="form-control"
+                                        id="question"
+                                        rows="9"
+                                        required
+                                        placeholder="Type your question here..."
+                                      ></textarea>
+                                    </div>
+                                  </div>
+                                  <div class="row mt-3">
+                                    <div class="col">
+                                      <!-- single image upload -->
+                                      <label for="image" class="">Image</label>
+                                      <input
+                                        type="file"
+                                        class="form-control"
+                                        name="image"
+                                        id="image"
+                                        accept="image/*"
+                                      />
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modal"
+                                >
+                                  Close
+                                </button>
+                                <button
+                                  type="button"
+                                  class="btn btn-primary"
+                                  id="form_submit"
+                                >
+                                  Save changes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Edit question modal end -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+  <script src="/assets/js/packages/xlxs/xlsx.full.min.js"></script>
+  <script src="assets/js/common/config.js"></script>
+  <script src="assets/js/common/network_call.js"></script>
+  <script src="assets/js/common/functions.js"></script>
+  <script
+    type="module"
+    src="assets/js/pages/qp_gen/qp_excel_upload.js"
+  ></script>
+</html>
