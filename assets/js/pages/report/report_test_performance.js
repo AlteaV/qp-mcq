@@ -118,7 +118,10 @@ async function getStudentTests() {
   try {
     let payload = JSON.stringify({
       function: "gttbs",
-      user_id: loggedInUser.register_num,
+      user_id:
+        loggedInUser.register_num ||
+        loggedInUser.user_id ||
+        loggedInUser.staff_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {

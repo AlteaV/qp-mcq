@@ -150,6 +150,7 @@ if (loggedInUser.type == "Student") {
   allowedActions.push({
     text: "MCQ Student",
     items: [
+      { text: "Take McQ Test", action: "view" },
       { text: "Self Learning", action: "view" },
       { text: "Test Report", action: "view" },
     ],
@@ -386,7 +387,7 @@ function setUserName() {
   let userName = document.getElementById("user_name");
 
   if (loggedInUser["type"] == "Student") {
-    userName.innerHTML = loggedInUser.name;
+    userName.innerHTML = loggedInUser.name || loggedInUser.staff_name;
   } else {
     userName.innerHTML = loggedInUser.staff_name;
   }

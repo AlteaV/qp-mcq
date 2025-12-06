@@ -131,7 +131,10 @@ async function getReport() {
     org_id: loggedInUser.college_code,
   };
   if (loggedInUser.type == "Student") {
-    out.user_id = loggedInUser.register_num;
+    out.user_id =
+      loggedInUser.register_num ||
+      loggedInUser.user_id ||
+      loggedInUser.staff_id;
   }
 
   let payload = JSON.stringify(out);

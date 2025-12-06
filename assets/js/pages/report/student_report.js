@@ -171,7 +171,11 @@ class Controller {
 
   async init() {
     if (loggedInUser.type == "Student") {
-      this.getStudentMcqReport(loggedInUser.register_num);
+      this.getStudentMcqReport(
+        loggedInUser.register_num ||
+          loggedInUser.user_id ||
+          loggedInUser.staff_id
+      );
       this.view.registerNumberRow.style.display = "none";
     } else {
       this.view.registerNumberRow.style.display = "flex";
