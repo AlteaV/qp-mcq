@@ -75,6 +75,17 @@ const menuItems = [
     ],
   },
   {
+    text: "MCQ UI template",
+    icon: "fab fa-figma",
+    dropdown: true,
+    items: [
+      {
+        href: "/create_ui_template.html",
+        text: "Manage UI Templates",
+      },
+    ],
+  },
+  {
     text: "Reports",
     icon: "fas fa-tachometer-alt",
     dropdown: true,
@@ -198,6 +209,12 @@ if (loggedInUser.type == "Student") {
     asDropdown: true,
   });
   allowedActions.push({
+    text: "MCQ UI template",
+    items: [{ text: "Manage UI Templates", action: "view" }],
+    action: "view",
+    asDropdown: true,
+  });
+  allowedActions.push({
     text: "Reports",
     items: [
       { text: "Test Analysis", action: "view" },
@@ -261,6 +278,10 @@ allowedActions.forEach((allowedItem) => {
     }
   }
 });
+
+if (loggedInUser.type == "Student") {
+  allowedUrls.push("/view_ui_template.html");
+}
 
 if (allowedUrls.length == 0) {
   sessionStorage.clear();
@@ -430,4 +451,6 @@ function setActiveNavItem() {
   });
 }
 
-buildNavigation();
+if (current_page != "view_ui_template.html") {
+  buildNavigation();
+}

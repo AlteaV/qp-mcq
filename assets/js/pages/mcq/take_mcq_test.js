@@ -33,17 +33,28 @@ function showQuestionPapers(data) {
     let actionBtn = `
       <button 
         class="btn btn-sm btn-primary take-test-btn" 
-        data-id="${record.question_paper_id}"
+        data-qp_assignment_id="${record.qp_assignment_id}"
         data-name="${record.question_paper_name}"
         data-start="${record.start_date_time}"
         data-end="${record.end_date_time}"
         data-attempts="${record.attempts}"
         data-max_attempts="${record.max_attempts}"
         data-group_id="${record.group_id}"
+        data-template_id="${record.template_id}"
+        data-full_screen="${record.full_screen}"
       >
         Take Test
       </button>
     `;
+
+    if (record.attempts >= record.max_attempts) {
+      actionBtn = `<button 
+        class="btn btn-sm btn-secondary" 
+        disabled
+      >
+        Max Attempts Reached
+      </button>`;
+    }
 
     tableData.tableBody.push([
       new TableStructure(index + 1),
@@ -64,13 +75,15 @@ function showQuestionPapers(data) {
   $(".take-test-btn")
     .off("click")
     .on("click", function () {
-      let id = $(this).data("id");
+      let qp_assignment_id = $(this).data("qp_assignment_id");
       let name = $(this).data("name");
       let start = $(this).data("start");
       let end = $(this).data("end");
       let attempts = $(this).data("attempts");
       let max_attempts = $(this).data("max_attempts");
       let group_id = $(this).data("group_id");
+      let template_id = $(this).data("template_id");
+      let user_id = loggedInUser.user_id;
 
       let currentTime = new Date();
 
@@ -89,7 +102,14 @@ function showQuestionPapers(data) {
         return;
       }
 
-      getQuestionPaperDetails(id, group_id);
+      // getQuestionPaperDetails(id, group_id, template_id);
+
+      // window.location.href = 'view_ui_template.html';
+
+      window.location.href =
+        `view_ui_template.html?` +
+        `&qp_assignment_id=${encodeURIComponent(qp_assignment_id)}` +
+        `&template_id=${encodeURIComponent(template_id)}`;
     });
 
   hideOverlay();
@@ -109,6 +129,7 @@ async function getQuestionPapers() {
     if (response.success) {
       showQuestionPapers(response.result.question_papers);
     }
+    hideOverlay();
   } catch (error) {
     console.error(error);
     alert("An error occurred while fetching question papers");
@@ -117,25 +138,26 @@ async function getQuestionPapers() {
   }
 }
 
-async function getQuestionPaperDetails(id, group_id) {
-  let payload = {
-    function: "gqftt",
-    question_paper_id: id,
-    group_id: group_id,
-  };
+// async function getQuestionPaperDetails(id, group_id, template_id) {
+//   let payload = {
+//     function: "gqftt",
+//     question_paper_id: id,
+//     group_id: group_id,
+//     template_id: template_id,
+//   };
 
-  let response = await postCall(examCellEndPoint, JSON.stringify(payload));
+//   let response = await postCall(examCellEndPoint, JSON.stringify(payload));
 
-  if (response.success) {
-    questions = response.result.questions;
-    questions.questions = JSON.parse(questions.questions);
-    resultTable.style.display = "none";
-    testTitle.innerText = `Test: ${questions.question_paper_name}`;
-    submitButton.style.display = "inline-block";
-    testType = questions.test_type;
-    nextQuestion();
-  }
-}
+//   if (response.success) {
+//     questions = response.result.questions;
+//     questions.questions = JSON.parse(questions.questions);
+//     resultTable.style.display = "none";
+//     testTitle.innerText = `Test: ${questions.question_paper_name}`;
+//     submitButton.style.display = "inline-block";
+//     testType = questions.test_type;
+//     nextQuestion();
+//   }
+// }
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {

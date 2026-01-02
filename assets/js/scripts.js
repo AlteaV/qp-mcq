@@ -42,6 +42,11 @@ var scriptUrls = [
 ];
 
 function scriptsLoadedCallback() {
+  // Avoid loading header and footer in exam pages
+  if (document.getElementsByClassName("exam-container").length > 0) {
+    addCheckAuth();
+    return;
+  }
   function includeHTML(fileName, containerId, callback) {
     fetch(fileName)
       .then((response) => response.text())

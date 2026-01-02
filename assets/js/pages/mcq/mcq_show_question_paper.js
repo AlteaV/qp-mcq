@@ -2,6 +2,7 @@ let fetchingData = document.getElementById("fetching_data");
 let resultDiv = document.getElementById("result_div");
 let resultTable = document.getElementById("result_table");
 let qpTable = document.getElementById("qp_table");
+let uitemplate = document.getElementById("template");
 
 let qpId = document.getElementById("qp_id");
 let group = document.getElementById("group");
@@ -32,6 +33,7 @@ formSubmit.addEventListener("click", function (e) {
 let questions = [];
 let groups = [];
 let questionPapers = [];
+let template = [];
 async function getQuestionPapers() {
   try {
     showOverlay();
@@ -150,9 +152,40 @@ async function getGroups(qp_id) {
   }
 }
 
+async function getUiTemplate(qp_id) {
+  try {
+    showOverlay();
+    let payload = JSON.stringify({
+      function: "guitn",
+      org_id: loggedInUser.college_code,
+    });
+    let response = await postCall(QuestionUploadEndPoint, payload);
+    if (response.success) {
+      template = response.result.template || [];
+      hideOverlay();
+      if (template.length === 0) {
+        alert("No UI template found. Please create UI template first.");
+        return;
+      }
+      displayGroups(qp_id);
+    } else {
+      alert(response.message);
+      hideOverlay();
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching UI templates");
+    hideOverlay();
+  }
+}
+
 function displayGroups(qp_id) {
   if (groups.length == 0) {
     getGroups(qp_id);
+    return;
+  }
+  if (template.length == 0) {
+    getUiTemplate(qp_id);
     return;
   }
   group.innerHTML = "";
@@ -166,6 +199,20 @@ function displayGroups(qp_id) {
     option.text = grp.group_name + " (" + grp.group_members_count + " members)";
     group.appendChild(option);
   });
+  uitemplate.innerHTML = "";
+  let templateDefault = document.createElement("option");
+  templateDefault.value = "";
+  templateDefault.text = "Select UI Template";
+  uitemplate.appendChild(templateDefault);
+  template.forEach((tem) => {
+    let option = document.createElement("option");
+    option.value = tem.template_id;
+    option.text = tem.template_name;
+    if (tem.is_default == "Y") {
+      option.selected = true;
+    }
+    uitemplate.appendChild(option);
+  });
   qpId.value = qp_id;
 
   $("#groups_modal").modal("show");
@@ -173,6 +220,7 @@ function displayGroups(qp_id) {
 
 async function assignQpToGroup() {
   let selectedGroup = group.value;
+  let template = uitemplate.value;
   let startDT = startDate_time.value;
   let endDT = endDate_time.value;
   let shuffle = shuffleQuestions.checked ? 1 : 0;
@@ -184,6 +232,7 @@ async function assignQpToGroup() {
     let payload = JSON.stringify({
       function: "amqp",
       group_id: selectedGroup,
+      ui_template_id: template,
       question_paper_id: selectedQp,
       start_date_time: startDT,
       end_date_time: endDT,
@@ -206,7 +255,7 @@ async function assignQpToGroup() {
   } catch (e) {
     console.error(e);
     hideOverlay();
-    alert("An error occurred. Please try again.");
+    alert(e.message || "An error occurred. Please try again.");
     return;
   }
 }

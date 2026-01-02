@@ -96,7 +96,12 @@ function postCallPreProcess(functionName) {
     functionName == "gnmqput" ||
     functionName == "unmcqqp" ||
     functionName == "mncqp" ||
+    functionName == "gaq" ||
     functionName == "vnqp" ||
+    functionName == "guit" ||
+    functionName == "uuit" ||
+    functionName == "guitn" ||
+    functionName == "uad" ||
     functionName == "process_blood_test_image" ||
     functionName == ""
   ) {
