@@ -9,7 +9,6 @@ function showQuestionPapers(data) {
   if (data.length === 0) {
     fetchingDataSection.innerHTML = "<p>There is no data</p>";
     fetchingDataSection.style.display = "block";
-    resultDiv.style.display = "none";
     resultTable.style.display = "none";
     hideOverlay();
     return;
@@ -86,6 +85,10 @@ function showQuestionPapers(data) {
       let user_id = loggedInUser.user_id;
 
       let currentTime = new Date();
+
+      let dateTimeFormat = "DD-MM-YYYY hh:mm A";
+      start = moment(start, dateTimeFormat).toDate();
+      end = moment(end, dateTimeFormat).toDate();
 
       if (new Date(start) > currentTime) {
         alert("The test has not started yet.");
