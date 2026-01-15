@@ -14,10 +14,14 @@ const actions = {
 
 const menuItems = [
   {
-    text: "Groups",
+    text: "Users",
     icon: "fas fa-chalkboard-teacher",
     dropdown: true,
     items: [
+      {
+        href: "/bulk_upload.html",
+        text: "Bulk Upload Users",
+      },
       {
         href: "/group_management.html",
         text: "Group Management",
@@ -113,7 +117,7 @@ const menuItems = [
     ],
   },
   {
-    text: "MCQ Student",
+    text: "Test",
     icon: "fas fa-pager",
     dropdown: true,
     items: [
@@ -157,88 +161,54 @@ const menuItems = [
 ];
 let allowedActions = [];
 
-if (loggedInUser.type == "Student") {
-  allowedActions.push({
-    text: "MCQ Student",
-    items: [
-      { text: "Take McQ Test", action: "view" },
-      { text: "Self Learning", action: "view" },
-      { text: "Test Report", action: "view" },
-    ],
-    action: "view",
-    asDropdown: false,
-  });
-  allowedActions.push({
-    text: "Reports",
-    items: [
-      { text: "Test Analysis", action: "view" },
-      { text: "Test Report", action: "view" },
-      { text: "Subject Wise Report", action: "view" },
-    ],
-    action: "view",
-    asDropdown: false,
-  });
-} else {
-  allowedActions.push({
-    text: "Groups",
-    items: [{ text: "Group Management", action: "view" }],
-    action: "view",
-    asDropdown: true,
-  });
-  allowedActions.push({
-    text: "Questions Management",
-    items: [
-      { text: "Manage Subjects", action: "view" },
-      { text: "Manage Sections", action: "view" },
-      { text: "Manage Topics", action: "view" },
-      { text: "Add Question", action: "view" },
-      { text: "MCQ Question Upload", action: "view" },
-      { text: "Create McQ Template", action: "view" },
-      { text: "View McQ Template", action: "view" },
-    ],
-    action: "view",
-    asDropdown: true,
-  });
-  allowedActions.push({
-    text: "Question Paper Management",
-    items: [
-      { text: "Generate McQ Question Paper", action: "view" },
-      { text: "Assign MCQ Question Paper", action: "view" },
-    ],
-    action: "view",
-    asDropdown: true,
-  });
-  allowedActions.push({
-    text: "MCQ UI template",
-    items: [{ text: "Manage UI Templates", action: "view" }],
-    action: "view",
-    asDropdown: true,
-  });
-  allowedActions.push({
-    text: "Reports",
-    items: [
-      { text: "Test Analysis", action: "view" },
-      { text: "Test Report", action: "view" },
-      { text: "Subject Wise Report", action: "view" },
-      { text: "Group Wise Report", action: "view" },
-      { text: "Question Wise Report", action: "view" },
-    ],
-    action: "view",
-    asDropdown: true,
-  });
-  allowedActions.push({
-    text: "QP Generator",
-    items: [
-      { text: "Question Upload (Excel)", action: "view" },
-      { text: "Create Question Template", action: "view" },
-      { text: "View Question Template", action: "view" },
-      { text: "Generate Question Paper", action: "view" },
-      { text: "View Question Paper", action: "view" },
-    ],
-    action: "view",
-    asDropdown: true,
-  });
+let permissionList = loggedInUser.permissions;
+// check if permissionlist is array as string
+if (typeof permissionList === "string") {
+  try {
+    permissionList = JSON.parse(permissionList);
+  } catch (e) {
+    console.error("Failed to parse permissions:", e);
+    permissionList = [];
+  }
 }
+
+permissionList.forEach((permission) => {
+  for (let i = 0; i < menuItems.length; i++) {
+    let menuItemConfig = menuItems[i];
+    if (menuItemConfig.dropdown) {
+      let subItem = menuItemConfig.items.find(
+        (item) => item.text === permission
+      );
+      if (subItem) {
+        let allowedItem = allowedActions.find(
+          (item) => item.text === menuItemConfig.text
+        );
+        if (allowedItem) {
+          // already exists, add to items
+          allowedItem.items.push({ text: permission, action: actions.view });
+        } else {
+          // create new entry
+          allowedActions.push({
+            text: menuItemConfig.text,
+            items: [{ text: permission, action: actions.view }],
+            action: actions.view,
+            asDropdown: true,
+          });
+        }
+        break;
+      }
+    } else {
+      if (menuItemConfig.text === permission) {
+        allowedActions.push({
+          text: menuItemConfig.text,
+          action: actions.view,
+          asDropdown: false,
+        });
+        break;
+      }
+    }
+  }
+});
 
 const allowedUrls = [];
 const currentPageUrl = window.location.pathname;
@@ -410,7 +380,7 @@ function setUserName() {
   if (loggedInUser["type"] == "Student") {
     userName.innerHTML = loggedInUser.name || loggedInUser.staff_name;
   } else {
-    userName.innerHTML = loggedInUser.staff_name;
+    userName.innerHTML = loggedInUser.name || loggedInUser.staff_name;
   }
 }
 
