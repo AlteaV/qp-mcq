@@ -12,6 +12,17 @@ var showTimer = document.getElementById("show_timer");
 var questionsPerPage = document.getElementById("questions_per_page");
 var addUiTemplateBtn = document.getElementById("new_ui_template_button");
 
+var customMarkYes = document.getElementById("custom_mark_yes");
+var customMarkNo = document.getElementById("custom_mark_no");
+
+var marksvalueInputBox = document.getElementById("marks_values_box");
+var positiveMark = document.getElementById("positive_mark");
+var negativeMark = document.getElementById("negative_mark");
+
+// Final Score Radio
+var finalScoreYes = document.getElementById("final_score_yes");
+var finalScoreNo = document.getElementById("final_score_no");
+
 // Question Layout Radio
 var questionLayoutYes = document.getElementById("question_layout_yes");
 var questionLayoutNo = document.getElementById("question_layout_no");
@@ -38,6 +49,25 @@ var disableRightClickNo = document.getElementById("disable_right_click_no");
 // Is Default Radio
 var isDefaultYes = document.getElementById("is_default_yes");
 var isDefaultNo = document.getElementById("is_default_no");
+
+positiveMark.disabled = true;
+negativeMark.disabled = true;
+
+customMarkYes.addEventListener("change", function () {
+  if (this.checked) {
+    positiveMark.disabled = false;
+    negativeMark.disabled = false;
+  }
+});
+
+customMarkNo.addEventListener("change", function () {
+  if (this.checked) {
+    positiveMark.disabled = true;
+    negativeMark.disabled = true;
+    positiveMark.value = "";
+    negativeMark.value = "";
+  }
+});
 
 let templateId = null;
 let allTemplates = [];
@@ -109,6 +139,10 @@ function getRadioValue(name) {
     if (isDefaultYes.checked) return "Y";
     if (isDefaultNo.checked) return "N";
     return null;
+  } else if (name === "final_score") {
+    if (finalScoreYes.checked) return "Y";
+    if (finalScoreNo.checked) return "N";
+    return null;
   }
   return null;
 }
@@ -152,6 +186,9 @@ function setRadioValue(name, value) {
   } else if (name === "is_default") {
     isDefaultYes.checked = value === "Y";
     isDefaultNo.checked = value === "N";
+  } else if (name === "final_score") {
+    finalScoreYes.checked = value === "Y";
+    finalScoreNo.checked = value === "N" || value == null;
   }
 }
 
@@ -208,6 +245,31 @@ function showResult(data) {
       setRadioValue("full_screen", data.full_screen);
       setRadioValue("disable_right_click", data.disable_right_click);
       setRadioValue("is_default", data.is_default);
+      setRadioValue("final_score", data.is_show_final_score);
+
+      if (data.custom_mark) {
+        let parsedMark =
+          typeof data.custom_mark === "string"
+            ? JSON.parse(data.custom_mark)
+            : data.custom_mark;
+
+        customMarkYes.checked = true;
+        customMarkNo.checked = false;
+
+        positiveMark.value = parsedMark.positive_mark ?? "";
+        negativeMark.value = parsedMark.negative_mark ?? "";
+        positiveMark.disabled = false;
+        negativeMark.disabled = false;
+      } else {
+        // custom_mark is null
+        customMarkYes.checked = false;
+        customMarkNo.checked = true;
+
+        positiveMark.value = "";
+        negativeMark.value = "";
+        positiveMark.disabled = true;
+        negativeMark.disabled = true;
+      }
 
       form.classList.remove("was-validated");
 
@@ -236,9 +298,17 @@ function resetForm() {
   canReviewNo.disabled = true;
   canSkipYes.disabled = true;
   canSkipNo.disabled = true;
+
+  customMarkYes.checked = false;
+  customMarkNo.checked = true;
+  positiveMark.value = "";
+  negativeMark.value = "";
+  positiveMark.disabled = true;
+  negativeMark.disabled = true;
 }
 
 async function getUiTemplate() {
+  showOverlay();
   try {
     let payload = JSON.stringify({
       function: "guit",
@@ -246,10 +316,12 @@ async function getUiTemplate() {
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
+
     if (response.success) {
       let templates = response.result.template;
       allTemplates = templates;
       showResult(templates);
+      hideOverlay();
     } else {
       alert(
         "An error occurred while fetching UI Templates: " + response.message
@@ -310,6 +382,18 @@ async function managUiTemplate() {
       }
     }
 
+    const customMarkValue = customMarkYes.checked ? "Y" : null;
+    let customMark = null;
+    if (customMarkValue === "Y") {
+      customMark = {
+        positive_mark: positiveMark.value ? Number(positiveMark.value) : 0,
+        negative_mark: negativeMark.value ? Number(negativeMark.value) : 0,
+      };
+      customMark = JSON.stringify(customMark);
+    }
+
+    showOverlay();
+
     const payload = {
       function: "uuit",
       staff_id: loggedInUser.staff_id,
@@ -324,6 +408,8 @@ async function managUiTemplate() {
       can_skip: questionLayoutValue === "N" ? null : getRadioValue("can_skip"),
       full_screen: getRadioValue("full_screen"),
       disable_right_click: getRadioValue("disable_right_click"),
+      display_final_score: getRadioValue("final_score"),
+      custom_mark: customMark,
       is_default: isDefaultValue,
     };
 
@@ -341,6 +427,7 @@ async function managUiTemplate() {
     );
 
     if (response.success) {
+      hideOverlay();
       await Swal.fire({
         title: "Success!",
         text: response.message,
@@ -362,9 +449,12 @@ async function managUiTemplate() {
               questionLayoutValue === "N" ? null : getRadioValue("can_review");
             template.can_skip =
               questionLayoutValue === "N" ? null : getRadioValue("can_skip");
+            template.is_show_final_score = getRadioValue("final_score");
+            template.custom_mark = customMark;
           }
         });
       } else {
+        hideOverlay();
         templateId = response.result.template_id;
         allTemplates.push({
           template_id: templateId,
@@ -381,6 +471,8 @@ async function managUiTemplate() {
           full_screen: getRadioValue("full_screen"),
           disable_right_click: getRadioValue("disable_right_click"),
           is_default: isDefaultValue,
+          is_show_final_score: getRadioValue("final_score"),
+          custom_mark: customMark ? JSON.stringify(customMark) : null,
         });
       }
 
@@ -393,6 +485,7 @@ async function managUiTemplate() {
       $("#modal").modal("hide");
     }
   } catch (error) {
+    hideOverlay();
     console.error(error);
     await Swal.fire({
       title: "Error!",

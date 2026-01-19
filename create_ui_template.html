@@ -263,7 +263,130 @@
                                       </div>
                                     </div>
                                   </div>
+                                  <div class="col">
+                                    <label class="form-label required"
+                                      >Do you want to display the final score to
+                                      the user</label
+                                    >
+                                    <div class="mt-1">
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="final_score"
+                                          id="final_score_yes"
+                                          value="1"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="final_score_yes"
+                                          >Yes</label
+                                        >
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="final_score"
+                                          id="final_score_no"
+                                          value="0"
+                                          checked
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="final_score_no"
+                                          >No</label
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
+                                <!-- PARENT BORDER START -->
+                                <div class="row mt-3">
+                                  <div class="col-12">
+                                    <div class="border rounded p-3 bg-light">
+                                      <!-- Custom Mark -->
+                                      <div class="row">
+                                        <div class="col">
+                                          <label class="form-label required">
+                                            Do you want to set Custom Mark
+                                          </label>
+                                          <div class="mt-1">
+                                            <div
+                                              class="form-check form-check-inline"
+                                            >
+                                              <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="custom_mark"
+                                                id="custom_mark_yes"
+                                                value="Y"
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="custom_mark_yes"
+                                                >Yes</label
+                                              >
+                                            </div>
+                                            <div
+                                              class="form-check form-check-inline"
+                                            >
+                                              <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="custom_mark"
+                                                id="custom_mark_no"
+                                                value="N"
+                                                checked
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="custom_mark_no"
+                                                >No</label
+                                              >
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Positive / Negative Mark -->
+                                      <div
+                                        class="row mt-3"
+                                        id="marks_values_box"
+                                      >
+                                        <div class="col-12">
+                                          <div class="row align-items-center">
+                                            <div class="col">
+                                              <label class="form-label mb-1"
+                                                >Positive Mark</label
+                                              >
+                                              <input
+                                                type="number"
+                                                class="form-control"
+                                                id="positive_mark"
+                                                min="0"
+                                              />
+                                            </div>
+
+                                            <div class="col">
+                                              <label class="form-label mb-1"
+                                                >Negative Mark</label
+                                              >
+                                              <input
+                                                type="number"
+                                                class="form-control"
+                                                id="negative_mark"
+                                                min="0"
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- PARENT BORDER END -->
+
                                 <div class="row mt-2"></div>
                                 <!-- PARENT BORDER START -->
                                 <div class="row mt-3">

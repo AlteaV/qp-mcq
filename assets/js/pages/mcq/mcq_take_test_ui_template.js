@@ -31,6 +31,7 @@ let currentPage = 1;
 let timeElapsed = 0;
 let baseFontSize = 14;
 let timerInterval = null;
+let showfinalScoreUser = null;
 
 async function getQuestionPaperDetails() {
   showOverlay();
@@ -51,12 +52,11 @@ async function getQuestionPaperDetails() {
       questionPaperDetails = questionsRes;
       let parsedQuestions = JSON.parse(questionsRes.questions);
       templateConfig = response.result.template;
-
+      showfinalScoreUser = templateConfig.is_show_final_score;
       questionsData = parsedQuestions.map((q, index) => ({
         id: q.question_id,
         subject: q.subject_name,
         maxMark: q.mark,
-        negativeMark: q.negative_mark || 0,
         question: q.question,
         options: q.choices,
         // options: Array.isArray(q.choices) ? q.choices.map((c) => c.text) : [],
@@ -276,7 +276,9 @@ function renderChooseQuestionsLayout() {
 
     const header = document.createElement("div");
     header.className = "subject-header";
-    header.innerHTML = `<span>${subject}</span><span>—</span>`;
+    header.innerHTML = `<span>${
+      subject == "null" ? "Questions" : subject
+    }</span><span>—</span>`;
     header.style.fontWeight = "600";
     header.style.fontSize = "18px";
 
@@ -347,7 +349,10 @@ function goToQuestion(qId) {
       questionEl.closest('div[style*="margin-bottom"]') ||
       questionEl.closest("#questionsContainer") ||
       questionEl;
-    targetDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+    targetDiv.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }
 }
 
@@ -519,6 +524,21 @@ async function renderQuestionsPage() {
         questionStates[q.id].completion_times.push(new Date().toISOString());
         updateCounts();
         updateQuestionButtons();
+        const isLastQuestionOnPage = index === pageQuestions.length - 1;
+        if (!isLastQuestionOnPage) {
+          const nextQuestionDiv = questionDiv.nextElementSibling;
+          if (nextQuestionDiv) {
+            nextQuestionDiv.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        } else {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderQuestionsPage();
+          }
+        }
       };
     }
 
@@ -658,21 +678,140 @@ async function submitTest() {
     );
 
     if (response.success) {
-      await Swal.fire({
-        icon: "success",
-        title: "Test Submitted",
-        text: response.message || "Your test has been submitted successfully!",
-        confirmButtonText: "OK",
-        allowOutsideClick: false,
-      });
+      let final_score = response.result.final_score;
 
-      setTimeout(() => {
-        window.close();
+      if (showfinalScoreUser == "Y") {
+        hideOverlay();
+        leftPanel.style.display = "none";
+        rightPanel.style.display = "none";
+        legend.style.display = "none";
+        examFooter.style.display = "none";
+        timer.style.display = "none";
 
-        if (!window.closed) {
-          window.history.back();
-        }
-      }, 1000);
+        const scoreContainer = document.createElement("div");
+        scoreContainer.id = "finalScoreContainer";
+        scoreContainer.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: #ffffff;
+          z-index: 10000;
+        `;
+
+        scoreContainer.innerHTML = `
+          <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            animation: slideIn 0.5s ease-out;
+          ">
+            <div style="
+              width: 80px;
+              height: 80px;
+              margin: 0 auto 30px;
+              background: #22c55e; 
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            ">
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            
+            <h1 style="
+              font-size: 32px;
+              font-weight: 700;
+              color: #2d3748;
+              margin-bottom: 15px;
+            ">Test Submitted Successfully!</h1>
+            
+            <p style="
+              font-size: 16px;
+              color: #718096;
+              margin-bottom: 40px;
+            ">Your test has been submitted. Here's your result:</p>
+            
+            <div style="
+              background: #f7fafc;
+              border-radius: 15px;
+              padding: 30px;
+              margin-bottom: 30px;
+            ">
+              <div style="margin-bottom: 20px;">
+                <div style="
+                  font-size: 18px;
+                  color: #718096;
+                  margin-bottom: 10px;
+                ">Your Score</div>
+                <div style="
+                  font-size: 48px;
+                  font-weight: 700;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  background-clip: text;
+                ">${final_score.obtained_mark} / ${final_score.total_mark}</div>
+              </div>
+              
+            <button onclick="window.location.replace('take_mcq_test.html')"  style="
+              background: linear-gradient(135deg, #90a0eaff 0%, #8460a8ff 100%);
+              color: white;
+              border: none;
+              padding: 15px 40px;
+              border-radius: 10px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: transform 0.2s;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              Close
+            </button>
+          </div>
+          
+          <style>
+            @keyframes slideIn {
+              from {
+                opacity: 0;
+                transform: translateY(-50px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          </style>
+        `;
+
+        document.body.appendChild(scoreContainer);
+      } else {
+        await Swal.fire({
+          icon: "success",
+          title: "Test Submitted",
+          text:
+            response.message || "Your test has been submitted successfully!",
+          confirmButtonText: "OK",
+          allowOutsideClick: false,
+        });
+
+        setTimeout(() => {
+          window.close();
+
+          if (!window.closed) {
+            window.location.href = "take_mcq_test.html";
+          }
+        }, 1000);
+      }
     } else {
       throw new Error(response.message || "Failed to submit test");
     }

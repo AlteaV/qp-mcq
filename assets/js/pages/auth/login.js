@@ -95,6 +95,13 @@ async function logIn() {
   let raw = JSON.stringify(out);
 
   let response = await postCall(authEndPoint, raw, selectedEndpoint);
+
+  if (!response.success) {
+    alert(response["message"]);
+    hideOverlay();
+    return;
+  }
+
   if (!response["result"]["loginSuccess"]) {
     alert(response["message"]);
     hideOverlay();
