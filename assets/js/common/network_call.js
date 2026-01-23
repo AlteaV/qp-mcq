@@ -105,6 +105,8 @@ function postCallPreProcess(functionName) {
     functionName == "process_blood_test_image" ||
     functionName == "mubu" ||
     functionName == "gup" ||
+    functionName == "gst" ||
+    functionName == "gast" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -125,7 +125,7 @@
                                       ></textarea>
                                     </div>
                                   </div>
-                                  <div class="row mt-2">
+                                  <div class="row mt-2" id="option_row">
                                     <div class="col mb-2">
                                       <label for="option_a" class="required"
                                         >Option A</label
@@ -187,7 +187,7 @@
                                     </div>
                                   </div>
                                   <div class="row mt-3">
-                                    <div class="col">
+                                    <div class="col" id="correct_option_group">
                                       <label
                                         for="correct_option"
                                         class="required"
@@ -208,6 +208,17 @@
                                         <option value="D">Option D</option>
                                         <option value="E">Option E</option>
                                       </select>
+                                    </div>
+                                    <div class="col mb-2" id="answer_group">
+                                      <label for="answer" class="required"
+                                        >Answer</label
+                                      >
+                                      <input
+                                        type="text"
+                                        id="answer"
+                                        class="form-control"
+                                        placeholder="Enter answer"
+                                      />
                                     </div>
                                     <div class="col">
                                       <!-- btl select -->
@@ -276,6 +287,7 @@
     defer
     src="  https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
   ></script>
+  <script src="/assets/js/cache/get_btl.js"></script>
   <script
     type="module"
     src="/assets/js/pages/mcq/mcq_question_upload.js"

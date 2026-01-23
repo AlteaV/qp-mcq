@@ -91,6 +91,7 @@ async function getSubjects() {
     showOverlay();
     let payload = JSON.stringify({
       function: "gss",
+      org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 
@@ -114,7 +115,7 @@ async function getSectionTopic(subjectID) {
     showOverlay();
 
     const secTopicData = sectopicbysubID.find(
-      (item) => item.subject === subjectID
+      (item) => item.subject === subjectID,
     );
     if (secTopicData) {
       sectionTopic = secTopicData.section;
@@ -258,7 +259,7 @@ async function submitQuestion() {
 
     const response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(out)
+      JSON.stringify(out),
     );
 
     if (response.success) {
@@ -285,7 +286,7 @@ async function submitQuestion() {
               topic: item.topic_id,
               btl_level: item.btl_level,
               mark: item.mark,
-            })
+            }),
           );
           showReportSection(tableFormattedData);
         });
@@ -409,7 +410,7 @@ async function showReportSection(data) {
       },
       "",
       "edit-button",
-      "fas fa-pencil-alt"
+      "fas fa-pencil-alt",
     );
 
     let deleteButton = createButton(
@@ -419,7 +420,7 @@ async function showReportSection(data) {
       },
       "",
       "delete-button btn-danger",
-      "fas fa-trash-alt"
+      "fas fa-trash-alt",
     );
 
     tableData.tableBody.push([
@@ -454,7 +455,7 @@ async function showReportSection(data) {
     .on("click", ".edit-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       editQuestion(fullData);
     });
@@ -464,7 +465,7 @@ async function showReportSection(data) {
     .on("click", ".delete-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       deleteQuestion(fullData);
     });
@@ -496,7 +497,7 @@ async function showReportSection(data) {
       const selectedSectionId = sectionDropdown.value;
 
       const matchedSection = sectionTopic.find(
-        (s) => s.section_id == selectedSectionId
+        (s) => s.section_id == selectedSectionId,
       );
 
       if (matchedSection && matchedSection.topics) {

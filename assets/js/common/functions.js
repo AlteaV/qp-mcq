@@ -3,7 +3,7 @@ var cachedDepartment = JSON.parse(sessionStorage.getItem("program_details"));
 function setProgramType(program) {
   if (cachedDepartment != undefined && cachedDepartment != null) {
     var uniquePrograms = cachedDepartment.map(
-      ({ program_type }) => program_type
+      ({ program_type }) => program_type,
     );
     uniquePrograms = new Set(uniquePrograms);
 
@@ -23,7 +23,7 @@ function setProgramType(program) {
 
 function setDepartment(departments, selectedProgram) {
   var departmentsForSelectedProgram = cachedDepartment.filter(
-    (x) => x.program_type === selectedProgram
+    (x) => x.program_type === selectedProgram,
   );
 
   departments.innerHTML = "";
@@ -34,8 +34,8 @@ function setDepartment(departments, selectedProgram) {
     departmentOptions.add(
       new Option(
         department.branch_name + " - " + department.program_code,
-        department.branch_code
-      )
+        department.branch_code,
+      ),
     );
   });
 
@@ -44,7 +44,7 @@ function setDepartment(departments, selectedProgram) {
 
 function setYear(year, selectedBranch) {
   let departmentSelected = cachedDepartment.find(
-    (o) => o.branch_code == selectedBranch
+    (o) => o.branch_code == selectedBranch,
   );
   year.innerHTML = "";
 
@@ -59,7 +59,7 @@ function setYear(year, selectedBranch) {
 
 function setSemester(semester, selectedBranch) {
   let departmentSelected = cachedDepartment.find(
-    (o) => o.branch_code == selectedBranch
+    (o) => o.branch_code == selectedBranch,
   );
 
   semester.innerHTML = "";
@@ -87,18 +87,18 @@ async function setRegulation(regulation, selectedBranch, selectedSemester) {
     if (response.status == 200) {
       sessionStorage.setItem(
         "subjects",
-        JSON.stringify(response["result"].branches)
+        JSON.stringify(response["result"].branches),
       );
     }
     cachedSubjects = JSON.parse(sessionStorage.getItem("subjects"));
   }
 
   var regulationForSelectedProgram = cachedSubjects.find(
-    (x) => x.branch_code === selectedBranch
+    (x) => x.branch_code === selectedBranch,
   );
 
   var subjects = regulationForSelectedProgram.subjects.filter(
-    (x) => x.semester == selectedSemester
+    (x) => x.semester == selectedSemester,
   );
 
   let uniqueRegulation = subjects
@@ -124,16 +124,16 @@ function setSubject(
   subject,
   selectedBranch,
   selectedSemester,
-  selectedRegulation
+  selectedRegulation,
 ) {
   var cachedSubjects = JSON.parse(sessionStorage.getItem("subjects"));
 
   var subjectsForSelectedProgram = cachedSubjects.find(
-    (x) => x.branch_code === selectedBranch
+    (x) => x.branch_code === selectedBranch,
   );
 
   let filteredSubjects = subjectsForSelectedProgram["subjects"].filter(
-    (x) => x.semester == selectedSemester && x.regulation == selectedRegulation
+    (x) => x.semester == selectedSemester && x.regulation == selectedRegulation,
   );
 
   subject.innerHTML = "";
@@ -142,7 +142,7 @@ function setSubject(
 
   filteredSubjects.forEach((sub) => {
     subjectOptions.add(
-      new Option(sub.sub_name + " - " + sub.sub_code, sub.sub_code)
+      new Option(sub.sub_name + " - " + sub.sub_code, sub.sub_code),
     );
   });
 
@@ -364,7 +364,7 @@ function createButton(
   attributes,
   buttonClass,
   icon,
-  isTextButton = false
+  isTextButton = false,
 ) {
   if (!isTextButton) {
     return (
@@ -416,4 +416,12 @@ function sanitizeInput(input) {
   });
 
   return sanitizedInput.trim();
+}
+
+function getBtlLevels() {
+  let btlLevels = sessionStorage.getItem("btl_levels");
+  if (btlLevels) {
+    return JSON.parse(btlLevels);
+  }
+  return [];
 }

@@ -132,23 +132,23 @@ function checkPartsMark(form) {
 
     for (let i = 0; i < questionRows.length; i++) {
       let typeSelect = questionRows[i].getElementsByClassName(
-        "question_type_select"
+        "question_type_select",
       )[0];
       let type = typeSelect.value;
 
       if (type === "single") {
         let noOfQuestions = parseInt(
           questionRows[i].getElementsByClassName("no_of_questions_input")[0]
-            .value
+            .value,
         );
         let marksPerQuestion = parseInt(
-          questionRows[i].getElementsByClassName("marks_input")[0].value
+          questionRows[i].getElementsByClassName("marks_input")[0].value,
         );
         totalMarks += noOfQuestions * marksPerQuestion;
       } else if (type === "either_or") {
         let marksInputs = questionRows[i].getElementsByClassName("marks_input");
         let noQInputs = questionRows[i].getElementsByClassName(
-          "no_of_questions_input"
+          "no_of_questions_input",
         );
 
         let marks_A = parseInt(marksInputs[0].value || 0);
@@ -183,7 +183,7 @@ function assignQuestionsToSubject() {
 
   if (!checkTotalMarks()) {
     alert(
-      `Total marks assigned to parts exceed or equal total marks of the template.`
+      `Total marks assigned to parts exceed or equal total marks of the template.`,
     );
     return;
   }
@@ -204,7 +204,7 @@ function assignQuestionsToSubject() {
   form.appendChild(maxMarksInput);
 
   let selectedSubject = subjects.find(
-    (subj) => subj.subject_id == partSubject.value
+    (subj) => subj.subject_id == partSubject.value,
   );
 
   let selectedSubjectInput = document.createElement("input");
@@ -298,12 +298,12 @@ function addQuestionRow(questionContainer, sections, form) {
 
     if (checkPartMark == "invalid") {
       alert(
-        "For Either-Or type, both questions must have the same marks per question."
+        "For Either-Or type, both questions must have the same marks per question.",
       );
       return;
     } else if (checkPartMark == "high") {
       alert(
-        `Total marks exceed maximum marks for part ${partName}. Please adjust.`
+        `Total marks exceed maximum marks for part ${partName}. Please adjust.`,
       );
       return;
     } else if (checkPartMark == "match") {
@@ -408,7 +408,7 @@ function addQuestionRow(questionContainer, sections, form) {
         if (sectionSelect.value === "") return;
 
         let selectedSection = sections.find(
-          (sec) => sec.section_id == sectionSelect.value
+          (sec) => sec.section_id == sectionSelect.value,
         );
 
         if (!selectedSection || !selectedSection.topics) return;
@@ -547,7 +547,7 @@ function saveTemplate() {
   let isTemplateMarksValid = checkTotalMarks(true);
   if (!isTemplateMarksValid) {
     alert(
-      "Total marks assigned to parts do not equal total marks of the template."
+      "Total marks assigned to parts do not equal total marks of the template.",
     );
     return;
   }
@@ -566,12 +566,12 @@ function saveTemplate() {
     let checkPartMark = checkPartsMark(form[i]);
     if (checkPartMark == "high") {
       alert(
-        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`
+        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`,
       );
       return;
     } else if (checkPartMark == "low") {
       alert(
-        `Total marks less than maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`
+        `Total marks less than maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`,
       );
       return;
     }
@@ -587,7 +587,7 @@ function saveTemplate() {
     let questionRows = form[i].getElementsByClassName("question_row");
     for (let j = 0; j < questionRows.length; j++) {
       let typeSelect = questionRows[j].getElementsByClassName(
-        "question_type_select"
+        "question_type_select",
       )[0];
       let type = typeSelect.value;
       let questionData = {
@@ -607,7 +607,7 @@ function saveTemplate() {
         questionData.btl_level = btlSelect.value;
 
         let noOfQuestionsInput = questionRows[j].getElementsByClassName(
-          "no_of_questions_input"
+          "no_of_questions_input",
         )[0];
         questionData.no_of_questions = noOfQuestionsInput.value;
 
@@ -621,7 +621,7 @@ function saveTemplate() {
           questionRows[j].getElementsByClassName("topic_select");
         let btlSelects = questionRows[j].getElementsByClassName("btl_select");
         let noOfQuestionsInputs = questionRows[j].getElementsByClassName(
-          "no_of_questions_input"
+          "no_of_questions_input",
         );
         let marksInputs = questionRows[j].getElementsByClassName("marks_input");
 
@@ -654,6 +654,7 @@ function saveTemplate() {
   out.org_id = loggedInUser.college_code;
   out.created_by = loggedInUser["staff_id"];
   out.template = data;
+  out.is_mcq = null;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {

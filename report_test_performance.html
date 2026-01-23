@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -71,6 +71,53 @@
                         Back to Report
                       </button>
                       <div id="student_info" class="mb-3"></div>
+                      <div
+                        id="performance_legend"
+                        style="
+                          margin-bottom: 15px;
+                          padding: 12px;
+                          border-radius: 8px;
+                          background-color: #f8f9fa;
+                          font-size: 100%;
+                          font-family:
+                            &quot;Times New Roman&quot;, Times, serif;
+                        "
+                      >
+                        <b>Note:</b>
+                        <ul style="margin-top: 8px; padding-left: 20px">
+                          <li>
+                            <span
+                              style="
+                                background-color: #87b97cff;
+                                padding: 2px 6px;
+                                border-radius: 4px;
+                              "
+                            >
+                              Green
+                            </span>
+                            &nbsp;<b
+                              >Indicates the correct answer, and the user chose
+                              it correctly.</b
+                            >
+                          </li>
+                          <li style="margin-top: 6px">
+                            <span
+                              style="
+                                background-color: #f1e08aff;
+                                padding: 2px 6px;
+                                border-radius: 4px;
+                              "
+                            >
+                              Yellow
+                            </span>
+                            &nbsp;<b
+                              >Indicates the correct answer for the question,
+                              but the user chose the wrong answer or did not
+                              attend.</b
+                            >
+                          </li>
+                        </ul>
+                      </div>
                       <table
                         class="table table-bordered"
                         width="100%"

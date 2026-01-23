@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -157,6 +157,17 @@
                             </select>
                           </div>
                           <div class="col">
+                            <label for="mark" class="required">Mark</label>
+                            <input
+                              type="number"
+                              id="mark"
+                              class="form-control"
+                              placeholder="Mark"
+                              min="1"
+                              required
+                            />
+                          </div>
+                          <div class="col">
                             <!-- btl select -->
                             <label for="btl_level" class="required"
                               >BTL Level</label
@@ -202,5 +213,6 @@
     </div>
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="/assets/js/cache/get_btl.js"></script>
   <script type="module" src="/assets/js/pages/mcq/add_question.js"></script>
 </html>

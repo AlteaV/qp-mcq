@@ -13,6 +13,8 @@ function generateQuestionPaper(questions, templateId) {
       choices: q.choices,
       btl: q.btl_level,
       marks: q.mark,
+      block_id: q.block_id,
+      question_type: q.question_type,
     };
   });
 
@@ -34,11 +36,13 @@ function showSwapQuestions(swapQuestion, index) {
   generatedQuestions[index] = {
     number: generatedQuestions[index].number,
     id: swapQuestion.question_id,
-    topic_id: swapQuestion.topic_id || generatedQuestions[index].topic_id,
+    topic_id: swapQuestion.topic_id,
     question: swapQuestion.question,
     choices: swapQuestion.choices,
-    btl: swapQuestion.btl_level || generatedQuestions[index].btl,
+    btl: swapQuestion.btl_level,
     marks: swapQuestion.mark,
+    block_id: swapQuestion.block_id,
+    question_type: swapQuestion.question_type,
   };
 
   createQuestions();
@@ -62,19 +66,21 @@ async function createQuestions() {
 
   generatedQuestions.forEach((q) => {
     let choicesInline = "";
-    if (q.choices && typeof q.choices === "string") {
-      try {
-        let parsed = JSON.parse(q.choices);
-        choicesInline = Object.keys(parsed)
-          .map((key) => `${key})${parsed[key]}`)
+    if (q.question_type == "Mcq") {
+      if (q.choices && typeof q.choices === "string") {
+        try {
+          let parsed = JSON.parse(q.choices);
+          choicesInline = Object.keys(parsed)
+            .map((key) => `${key})${parsed[key]}`)
+            .join(" &nbsp;&nbsp; ");
+        } catch {
+          choicesInline = q.choices;
+        }
+      } else if (q.choices && typeof q.choices === "object") {
+        choicesInline = Object.keys(q.choices)
+          .map((key) => `${key}) ${q.choices[key]}`)
           .join(" &nbsp;&nbsp; ");
-      } catch {
-        choicesInline = q.choices;
       }
-    } else if (q.choices && typeof q.choices === "object") {
-      choicesInline = Object.keys(q.choices)
-        .map((key) => `${key}) ${q.choices[key]}`)
-        .join(" &nbsp;&nbsp; ");
     }
 
     html += `
@@ -89,10 +95,7 @@ async function createQuestions() {
        <td>
           <button 
             class="btn btn-sm btn-primary swap-btn"
-            data-id="${q.id}"
-            data-topic_id="${q.topic_id}"
-            data-btl="${q.btl}"
-            data-mark="${q.marks}"
+            data-block_id="${q.block_id}"
           >
             Swap
           </button>
@@ -118,21 +121,14 @@ async function createQuestions() {
     .off("click")
     .on("click", function () {
       let index = $(this).closest("tr").index();
-      let topicId = parseInt($(this).data("topic_id"));
-      let btlLevel = parseInt($(this).data("btl"));
-      let mark = parseInt($(this).data("mark"));
+      let block_id = $(this).data("block_id");
 
-      let questionIds = generatedQuestions
-        .filter((q) => q.topic_id == topicId)
-        .map((q) => q.id);
-
+      let questionIds = generatedQuestions.map((q) => q.id);
       let swapData = {
+        template_id: currentTemplateId,
+        block_id: block_id,
         question_id: questionIds,
-        topic_id: topicId,
-        btl_level: btlLevel,
-        mark: mark,
       };
-
       getSwapQuestion(swapData, index);
     });
 
@@ -181,4 +177,5 @@ async function createQuestions() {
     console.error("MathJax typeset error:", error);
     alert("Error rendering mathematical expressions.");
   }
+  hideOverlay();
 }

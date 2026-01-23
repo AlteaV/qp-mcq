@@ -1,6 +1,7 @@
 // get mcq questions
 
 async function getMcqQuestions(templateID) {
+  showOverlay();
   $("#fetching_question").show();
   var out = {};
   out.function = "gmqput";
@@ -20,10 +21,13 @@ async function getMcqQuestions(templateID) {
         }).then(() => {
           showInputfield(templateID);
         });
+        hideOverlay();
       }
     } else if (response.status == 409) {
+      hideOverlay();
       alert(response.message);
     } else {
+      hideOverlay();
       alert("Network error");
     }
   });
@@ -32,10 +36,12 @@ async function getMcqQuestions(templateID) {
 //  get template
 
 function getTemplate() {
+  showOverlay();
   showFecthingDataSection("Fetching data");
   allTemplates = [];
   var out = {};
   out.function = "gmt";
+  out.is_mcq = 1;
   out.org_id = loggedInUser.college_code;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
@@ -44,8 +50,10 @@ function getTemplate() {
       displayTemplateTable();
     } else if (response.status == 409) {
       alert(response.message);
+      hideOverlay();
     } else {
       alert("Network error");
+      hideOverlay();
     }
   });
 }
@@ -84,26 +92,24 @@ function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
 
 // Swap Questions
 
-function getSwapQuestion(swapQuestions, index) {
-  var out = {};
+function getSwapQuestion(out, index) {
+  showOverlay();
   out.function = "smq";
-  out.topic_id = swapQuestions.topic_id;
-  out.question_id = swapQuestions.question_id;
-  out.mark = swapQuestions.mark;
-  out.btl_level = swapQuestions.btl_level;
-
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       let swapquetion = response.result.question;
       if (swapquetion !== null) {
         showSwapQuestions(swapquetion, index);
       } else {
-        alert("there is no alter question for this topic");
+        hideOverlay();
+        alert("There is no alternate question for this topic");
       }
     } else if (response.status == 409) {
       alert(response.message);
+      hideOverlay();
     } else {
       alert("Network error");
+      hideOverlay();
     }
   });
 }
@@ -116,6 +122,7 @@ async function getSubjects() {
     showOverlay();
     let payload = JSON.stringify({
       function: "gss",
+      org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 

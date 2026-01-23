@@ -36,6 +36,7 @@ function getTemplate() {
   allTemplates = [];
   var out = {};
   out.function = "gnmt";
+  out.is_mcq = null;
   out.org_id = loggedInUser.college_code;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
@@ -117,6 +118,7 @@ async function getSubjects() {
     showOverlay();
     let payload = JSON.stringify({
       function: "gss",
+      org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 

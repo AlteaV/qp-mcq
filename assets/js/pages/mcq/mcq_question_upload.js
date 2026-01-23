@@ -8,6 +8,9 @@ const saveQuestionsButton = document.getElementById("save_question");
 const fetchingData = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
 const resultTable = document.getElementById("result_table");
+const optionRow = document.getElementById("option_row");
+const answerGroup = document.getElementById("answer_group");
+const crtOptionColumn = document.getElementById("correct_option_group");
 
 let questionForm = document.getElementById("question_form");
 let questionInput = document.getElementById("question");
@@ -16,6 +19,7 @@ let optionBInput = document.getElementById("option_b");
 let optionCInput = document.getElementById("option_c");
 let optionDInput = document.getElementById("option_d");
 let optionEInput = document.getElementById("option_e");
+let answerInput = document.getElementById("answer");
 let btlLevelDropDown = document.getElementById("btl_level");
 let imageInput = document.getElementById("image");
 let correctOptionDropDown = document.getElementById("correct_option");
@@ -52,77 +56,6 @@ let btlLevel = [];
 let questions = [];
 let questionsFormat = [];
 
-async function init() {
-  await getBtllevel();
-  await getSubjects();
-  if (sessionStorage.getItem("sections_topics")) {
-    sectionTopics = JSON.parse(sessionStorage.getItem("sections_topics"));
-  }
-}
-
-async function getBtllevel() {
-  if (btlLevel.length > 0) {
-    return;
-  }
-  if (sessionStorage.getItem("btl_levels")) {
-    btlLevel = JSON.parse(sessionStorage.getItem("btl_levels"));
-    return;
-  }
-  try {
-    showOverlay();
-    let payload = JSON.stringify({
-      function: "gbl",
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      btlLevel = response.result.btl_level;
-      sessionStorage.setItem("btl_levels", JSON.stringify(btlLevel));
-    }
-    hideOverlay();
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while fetching BTL levels");
-  } finally {
-    hideOverlay();
-  }
-}
-
-async function getSubjects() {
-  try {
-    showOverlay();
-    if (
-      sessionStorage.getItem("subjects") &&
-      sessionStorage.getItem("subjects") != "undefined"
-    ) {
-      let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
-      subjects = subjectMap;
-      setSubjects();
-      hideOverlay();
-      return;
-    }
-    let payload = JSON.stringify({
-      function: "gss",
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      subjects = response.result.subject;
-
-      subjects.sort((a, b) => a.subject.localeCompare(b.subject));
-      sessionStorage.setItem("subjects", JSON.stringify(subjects));
-      setSubjects();
-    }
-    hideOverlay();
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while fetching subjects");
-  }
-}
-
-function setSubjects() {
-  const subjectNames = subjects.map((s) => s.subject);
-  setAutoComplete(subject, subjectNames);
-}
-
 function setAutoComplete(field, data) {
   try {
     let nextSibling = field.nextElementSibling;
@@ -131,6 +64,7 @@ function setAutoComplete(field, data) {
       nextSibling = nextSibling.nextElementSibling;
       toRemove.remove();
     }
+
     new Autocomplete(field, {
       items: data,
       valueField: "id",
@@ -152,48 +86,41 @@ function setAutoComplete(field, data) {
   }
 }
 
-function setTopic(index, label) {
-  let topicField = document.getElementById(`topic_input_${index}`);
+async function getSubjects() {
+  try {
+    showOverlay();
+    if (
+      sessionStorage.getItem("subjects") &&
+      sessionStorage.getItem("subjects") != "undefined"
+    ) {
+      let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
+      subjects = subjectMap;
+      setSubjects();
+      hideOverlay();
+      return;
+    }
+    let payload = JSON.stringify({
+      function: "gss",
+      org_id: loggedInUser.college_code,
+    });
+    let response = await postCall(QuestionUploadEndPoint, payload);
+    if (response.success) {
+      subjects = response.result.subject;
 
-  let matchedSubject = subjects.find(
-    (s) => s.subject == "Quantitative Aptitude"
-  );
-  let subjectId = matchedSubject.id;
-  let sectionTopicMap = getSectionTopic(subjectId);
-
-  let matchedSection = sectionTopicMap.find((st) => st.section == label);
-  if (matchedSection) {
-    topicField.value = "";
-    setAutoComplete(topicField, matchedSection.topics);
-  } else {
-    topicField.value = "";
-    setAutoComplete(topicField, []);
+      subjects.sort((a, b) => a.subject.localeCompare(b.subject));
+      sessionStorage.setItem("subjects", JSON.stringify(subjects));
+      setSubjects();
+    }
+    hideOverlay();
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching subjects");
   }
 }
 
-function getSectionTopic(subjectID) {
-  if (sectionTopics.length == 0) {
-    return [];
-  }
-  let matched = sectionTopics.find((st) => st.subject_id == subjectID);
-
-  if (matched) {
-    let sectionMap = [];
-    for (let section of matched.sections) {
-      if (typeof section.topics === "string") {
-        section.topics = JSON.parse(section.topics);
-      }
-
-      let temp = {
-        section: section.section,
-        topics: section.topics.map((t) => t.topic),
-      };
-      sectionMap.push(temp);
-    }
-    return sectionMap;
-  } else {
-    return [];
-  }
+function setSubjects() {
+  const subjectNames = subjects.map((s) => s.subject);
+  setAutoComplete(subject, subjectNames);
 }
 
 async function previewQuestions() {
@@ -210,18 +137,15 @@ async function previewQuestions() {
     }
 
     const subjectId = matchedSubject.id;
-    let sectionTopics = getSectionTopic(subjectId);
     const base64 = await convertToBase64(file);
 
     let out = {
       function: "ecg",
       subject: subjectName,
-      section_topic: sectionTopics,
       filedata: base64,
       org_id: loggedInUser.college_code,
       subject_id: subjectId,
     };
-
     const payload = JSON.stringify(out);
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -239,37 +163,15 @@ async function previewQuestions() {
 
       let retryResponse = await postCall(
         QuestionUploadEndPoint,
-        getScannedDataPayload
+        getScannedDataPayload,
       );
 
       if (retryResponse.message === "Completed") {
         questions = retryResponse.result.data.questions;
-        if (retryResponse.result.data.section_topic !== undefined) {
-          let temp = {
-            subject_id: subjectId,
-            sections: retryResponse.result.data.section_topic,
-          };
-          let sectionsStoredData = [];
-          if (sessionStorage.getItem("sections_topics")) {
-            sectionsStoredData = JSON.parse(
-              sessionStorage.getItem("sections_topics")
-            );
-            let existingIndex = sectionsStoredData.findIndex(
-              (st) => st.subject_id == subjectId
-            );
-            if (existingIndex != -1) {
-              sectionsStoredData[existingIndex] = temp;
-            } else {
-              sectionsStoredData.push(temp);
-            }
-          } else {
-            sectionsStoredData.push(temp);
-          }
-          sessionStorage.setItem(
-            "sections_topics",
-            JSON.stringify(sectionsStoredData)
-          );
-        }
+        questions = questions.filter(
+          (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
+        );
+        sectionTopics = retryResponse.result.data.section_topic;
         await showReportSection(questions);
         return;
       }
@@ -286,7 +188,7 @@ async function previewQuestions() {
     }
     if (retryCount === maxRetries) {
       alert(
-        "Processing is taking longer than expected. Please try again later."
+        "Processing is taking longer than expected. Please try again later.",
       );
       hideOverlay();
     }
@@ -296,9 +198,34 @@ async function previewQuestions() {
   }
 }
 
+// function getSectionTopic(subjectID) {
+
+//   if (sectionTopics.length == 0) {
+//     return [];
+//   }
+
+//   let matched = sectionTopics.find((st) => st.subject_id == subjectID);
+
+//   if (matched) {
+//     let sectionMap = [];
+//     for (let section of matched.sections) {
+//       if (typeof section.topics === "string") {
+//         section.topics = JSON.parse(section.topics);
+//       }
+
+//       let temp = {
+//         section: section.section,
+//         topics: section.topics.map((t) => t.topic),
+//       };
+//       sectionMap.push(temp);
+//     }
+//     return sectionMap;
+//   } else {
+//     return [];
+//   }
+// }
 async function showReportSection(data) {
   fetchingData.style.display = "none";
-
   if (data.length === 0) {
     fetchingData.innerHTML = "<p>There is no data</p>";
     fetchingData.style.display = "block";
@@ -323,7 +250,6 @@ async function showReportSection(data) {
   };
 
   questionsFormat = [];
-
   data.forEach((record, index) => {
     const choices = record.choices || {};
     let questionHTML = `<p class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${record.question}</p>`;
@@ -344,22 +270,25 @@ async function showReportSection(data) {
     if (record.table) {
       questionHTML += renderTableFromMarkdown(record.table);
     }
-
-    let choiceHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: left; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
-
-    for (let key in choices) {
-      const inputId = `answer_${index}_${key}`;
-      const isChecked = record.correct_answer == key ? "checked" : "";
-
-      choiceHTML += `
-        <label for="${inputId}" style="display: flex; align-items: left ; gap: 5px;">
-          <input type="radio" id="${inputId}" name="answer_${index}" value="${key}" ${isChecked} />
-          <span class="latex" style="font-size: 120%; font-family: 'Times New Roman', Times, serif;">${choices[key]}</span>
-        </label>`;
-    }
-
-    choiceHTML += `</div>`;
-
+    let editButton = createButton(
+      {
+        question: record,
+        index: index,
+      },
+      "",
+      "edit-button",
+      "fas fa-pencil-alt",
+    );
+    let deleteButton = createButton(
+      {
+        question: record,
+        index: index,
+      },
+      "",
+      "delete-button btn-danger",
+      "fas fa-trash-alt",
+    );
+    let choiceHTML = "";
     const marksFieldId = `marks_input_${index}`;
     const marksField = `
         <input 
@@ -394,36 +323,55 @@ async function showReportSection(data) {
          <select id="btl_input_${index}"
          style="min-width: 100px" class="form-control btl-field" 
          data-index="${index}">${btlLevel
-      .map(
-        (level) =>
-          `<option value="${level.level}" ${
-            record.btl_level == level.level_name ? "selected" : ""
-          }>${level.level_name}</option>`
-      )
-      .join("")}</select>`;
+           .map(
+             (level) =>
+               `<option value="${level.level}" ${
+                 record.btl_level == level.level_name ? "selected" : ""
+               }>${level.level_name}</option>`,
+           )
+           .join("")}</select>`;
 
-    let editButton = createButton(
-      {
-        question: record,
-        index: index,
-      },
-      "",
-      "edit-button",
-      "fas fa-pencil-alt"
-    );
+    if (record.question_type == "Numerical") {
+      const answerId = `numerical_answer_${index}`;
+      choiceHTML = `
+                <div style="
+                  margin-top: 10px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  max-width: 400px;
+                ">
+                  <label for="${answerId}" style="font-weight: bold; white-space: nowrap;">
+                    Answer is 
+                  </label>
+                  <input 
+                    type="number"
+                    id="${answerId}"
+                    class="form-control numerical-answer"
+                    value="${record.correct_answer || ""}"
+                    data-index="${index}"
+                    style="max-width: 200px;"
+                  />
+                </div>`;
+    }
 
-    let deleteButton = createButton(
-      {
-        question: record,
-        index: index,
-      },
-      "",
-      "delete-button btn-danger",
-      "fas fa-trash-alt"
-    );
+    if (record.question_type == "Mcq") {
+      choiceHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: left; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
+
+      for (let key in choices) {
+        const inputId = `answer_${index}_${key}`;
+        const isChecked = record.correct_answer == key ? "checked" : "";
+
+        choiceHTML += `
+      <label for="${inputId}" style="display: flex; align-items: left; gap: 5px;">
+        <input type="radio" id="${inputId}" name="answer_${index}" value="${key}" ${isChecked} />
+        <span class="latex">${choices[key]}</span>
+      </label>`;
+      }
+      choiceHTML += `</div>`;
+    }
 
     const questionAndChoicesHTML = questionHTML + choiceHTML;
-
     tableData.tableBody.push([
       new TableStructure(index + 1),
       new TableStructure(questionAndChoicesHTML),
@@ -438,8 +386,9 @@ async function showReportSection(data) {
     questionsFormat.push({
       question_no: index + 1,
       question: record.question,
+      question_type: record.question_type,
       images: record.images || [],
-      choices,
+      choices: record.choices || null,
       correct_answer: record.correct_answer,
       section: record.section,
       topic: record.topic,
@@ -456,7 +405,7 @@ async function showReportSection(data) {
     .on("click", ".edit-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       editQuestion(fullData);
     });
@@ -466,21 +415,27 @@ async function showReportSection(data) {
     .on("click", ".delete-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       deleteQuestion(fullData);
     });
 
-  let subjectName = document.getElementById("subject").value;
+  document.querySelectorAll(".numerical-answer input").forEach((inputField) => {
+    inputField.addEventListener("input", function () {
+      this.value = this.value
+        .replace(/[^0-9.]/g, "")
+        .replace(/(\..*)\./g, "$1");
+    });
+  });
 
-  let matchedSubject = subjects.find((s) => s.subject == subjectName);
-  let sectionTopic = getSectionTopic(matchedSubject.id);
-
-  let sectionData = sectionTopic.map((s) => s.section);
+  let sectionData = sectionTopics.map((s) => s.section);
   sectionData = sectionData.sort((a, b) => a.localeCompare(b));
 
   for (let index = 0; index < questionsFormat.length; index++) {
+    let sectionField = document.getElementById(`section_input_${index}`);
+    setAutoComplete(sectionField, sectionData);
     const record = questionsFormat[index];
+    setTopic(index, record.section || "", false);
     const marksInput = document.getElementById(`marks_input_${index}`);
     if (marksInput) {
       marksInput.addEventListener("change", (e) => {
@@ -498,15 +453,6 @@ async function showReportSection(data) {
         });
       }
     }
-
-    let sectionField = document.getElementById(`section_input_${index}`);
-
-    if (sectionField) {
-      setAutoComplete(sectionField, sectionData);
-      sectionField.addEventListener("input", async (e) => {
-        setTopic(index, e.target.value);
-      });
-    }
   }
   try {
     if (window.MathJax) {
@@ -523,6 +469,19 @@ async function showReportSection(data) {
   hideOverlay();
 }
 
+function setTopic(index, label, clear = true) {
+  let topicField = document.getElementById(`topic_input_${index}`);
+  let topicData = sectionTopics.find((s) => s.section == label)?.topics || [];
+
+  if (typeof topicData === "string") {
+    topicData = JSON.parse(topicData);
+  }
+  topicData = topicData.sort((a, b) => a.localeCompare(b));
+  if (clear) {
+    topicField.value = "";
+  }
+  setAutoComplete(topicField, Array.isArray(topicData) ? topicData : []);
+}
 function renderTableFromMarkdown(markdown) {
   if (!markdown) return "";
 
@@ -564,19 +523,42 @@ function editQuestion(data) {
   let questionData = data.question;
   let index = data.index;
 
-  questionInput.value = questionData.question;
-  optionAInput.value = questionData.choices.A || "";
-  optionBInput.value = questionData.choices.B || "";
-  optionCInput.value = questionData.choices.C || "";
-  optionDInput.value = questionData.choices.D || "";
-  optionEInput.value = questionData.choices.E || "";
+  if (data.question.question_type == "Numerical") {
+    optionRow.style.display = "none";
+    answerGroup.style.display = "block";
+    crtOptionColumn.style.display = "none";
+    optionAInput.removeAttribute("required");
+    optionBInput.removeAttribute("required");
+    optionCInput.removeAttribute("required");
+    optionDInput.removeAttribute("required");
+    optionEInput.removeAttribute("required");
+    correctOptionDropDown.removeAttribute("required");
+    answerInput.setAttribute("required", "required");
+    questionInput.value = questionData.question;
+    answerInput.value = questionData.correct_answer || "";
+  } else {
+    optionRow.style.display = "flex";
+    answerGroup.style.display = "none";
+    crtOptionColumn.style.display = "block";
+    answerInput.removeAttribute("required");
+  }
+
+  if (data.question.question_type == "Mcq") {
+    questionInput.value = questionData.question;
+    answerInput.removeAttribute("required");
+    optionAInput.value = questionData.choices.A || "";
+    optionBInput.value = questionData.choices.B || "";
+    optionCInput.value = questionData.choices.C || "";
+    optionDInput.value = questionData.choices.D || "";
+    optionEInput.value = questionData.choices.E || "";
+  }
 
   btlLevelDropDown.innerHTML = btlLevel
     .map(
       (level) =>
         `<option value="${level.level}" ${
           questionData.btl_level == level.level_name ? "selected" : ""
-        }>${level.level_name}</option>`
+        }>${level.level_name}</option>`,
     )
     .join("");
 
@@ -590,36 +572,46 @@ function editQuestion(data) {
         return;
       }
 
-      if (
-        correctOptionDropDown.value == "E" &&
-        optionEInput.value.trim() == ""
-      ) {
-        questionForm.classList.remove("was-validated");
-        alert(
-          "Please provide option E text\nOr select a different correct option"
-        );
-        return;
+      const questionType = questionsFormat[index].question_type;
+
+      if (questionType == "Mcq") {
+        if (
+          correctOptionDropDown.value == "E" &&
+          optionEInput.value.trim() == ""
+        ) {
+          questionForm.classList.remove("was-validated");
+          alert(
+            "Please provide option E text\nOr select a different correct option",
+          );
+          return;
+        }
+
+        questionsFormat[index].question = questionInput.value;
+        questionsFormat[index].choices.A = optionAInput.value;
+        questionsFormat[index].choices.B = optionBInput.value;
+        questionsFormat[index].choices.C = optionCInput.value;
+        questionsFormat[index].choices.D = optionDInput.value;
+        if (
+          questionsFormat[index].choices.E ||
+          optionEInput.value.trim() != ""
+        ) {
+          questionsFormat[index].choices.E = optionEInput.value;
+        }
+
+        let selectedBtlOption =
+          btlLevelDropDown.options[btlLevelDropDown.selectedIndex];
+        questionsFormat[index].btl_level = selectedBtlOption
+          ? selectedBtlOption.text
+          : questionData.btl_level;
+
+        questionsFormat[index].correct_answer =
+          correctOptionDropDown.value || questionData.correct_answer;
+      } else if (questionType == "Numerical") {
+        questionsFormat[index].question = questionInput.value;
+        questionsFormat[index].correct_answer = answerInput.value.trim();
       }
 
-      questions[index].question = questionInput.value;
-      questions[index].choices.A = optionAInput.value;
-      questions[index].choices.B = optionBInput.value;
-      questions[index].choices.C = optionCInput.value;
-      questions[index].choices.D = optionDInput.value;
-      if (questions[index].choices.E || optionEInput.value.trim() != "") {
-        questions[index].choices.E = optionEInput.value;
-      }
-
-      let selectedBtlOption =
-        btlLevelDropDown.options[btlLevelDropDown.selectedIndex];
-      questions[index].btl_level = selectedBtlOption
-        ? selectedBtlOption.text
-        : questionData.btl_level;
-
-      questions[index].correct_answer =
-        correctOptionDropDown.value || questionData.correct_answer;
-
-      showReportSection(questions);
+      showReportSection(questionsFormat);
       $("#modal").modal("hide");
     });
 
@@ -651,20 +643,45 @@ async function submitQuestion() {
     document
       .querySelectorAll("input[type='radio']:checked")
       .forEach((radio) => {
-        const name = radio.name;
-        const index = parseInt(name.split("_")[1], 10);
-        questionsFormat[index].correct_answer = radio.value;
+        const index = parseInt(radio.name.split("_")[1], 10);
+        if (questionsFormat[index].question_type == "Mcq") {
+          questionsFormat[index].correct_answer = radio.value;
+        }
       });
+
+    document.querySelectorAll(".numerical-answer").forEach((input) => {
+      const index = parseInt(input.dataset.index, 10);
+      if (questionsFormat[index].question_type == "Numerical") {
+        questionsFormat[index].correct_answer = input.value.trim();
+        questionsFormat[index].choices = null;
+      }
+    });
+
+    let subjectName = document.getElementById("subject").value;
+    let matchedSubject = subjects.find((s) => s.subject == subjectName);
+    if (!matchedSubject) {
+      alert("Please select a valid subject.");
+      hideOverlay();
+      return;
+    }
+
+    let subjectId = matchedSubject.id;
 
     const out = {
       function: "ss",
-      subject: subject.value.trim(),
+      subject_id: subjectId,
       created_by: loggedInUser.staff_id,
       sections: [],
     };
 
-    questionsFormat.forEach((q) => {
+    for (let index = 0; index < questionsFormat.length; index++) {
+      let q = questionsFormat[index];
       let section = out.sections.find((s) => s.section == q.section);
+      if (q.section == null || q.section == "") {
+        alert(`Please enter a valid section for ${index + 1} question`);
+        hideOverlay();
+        return;
+      }
       if (!section) {
         section = {
           section: q.section,
@@ -673,6 +690,11 @@ async function submitQuestion() {
         out.sections.push(section);
       }
 
+      if (q.topic == null || q.topic == "") {
+        alert("Please enter a valid topic for " + (index + 1) + " question");
+        hideOverlay();
+        return;
+      }
       let topic = section.topics.find((t) => t.topic == q.topic);
       if (!topic) {
         topic = {
@@ -690,25 +712,53 @@ async function submitQuestion() {
         }));
       }
 
+      if (q.btl_level == null || q.btl_level == "") {
+        alert(
+          "Please enter a valid BTL Level for " + (index + 1) + " question",
+        );
+        hideOverlay();
+        return;
+      }
+      if (q.marks == null || q.marks == "") {
+        alert("Please enter a valid mark for " + (index + 1) + " question");
+        hideOverlay();
+        return;
+      }
       let temp = {
         question: q.question,
         img: img,
-        choices: q.choices,
         correct_answer: q.correct_answer,
         mark: q.marks,
         btl_level: q.btl_level,
+        question_type: q.question_type,
       };
+
+      if (q.question_type == "Mcq") {
+        temp.choices = q.choices;
+      } else if (q.question_type == "Numerical") {
+        temp.choices = null;
+      }
+
       for (let question of questions) {
         if (question.question.trim() == q.question.trim() && question.table) {
           temp.table = question.table;
         }
       }
+      if (q.correct_answer == null || q.correct_answer == "") {
+        if (q.question_type == "Mcq") {
+          alert(`Please choose a valid answer for question ${index + 1}`);
+        } else if (q.question_type == "Numerical") {
+          alert(`Please input a valid answer for question ${index + 1}`);
+        }
+        hideOverlay();
+        return;
+      }
       topic.questions.push(temp);
-    });
+    }
 
     const response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(out)
+      JSON.stringify(out),
     );
 
     if (response.success) {
@@ -731,7 +781,6 @@ async function submitQuestion() {
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
     showOverlay();
-
     if (!window.isCheckAuthLoaded) {
       const checkInterval = setInterval(() => {
         if (window.isCheckAuthLoaded) {
@@ -745,3 +794,9 @@ document.addEventListener("readystatechange", async () => {
     }
   }
 });
+
+async function init() {
+  await fetchBtl();
+  btlLevel = getBtlLevels();
+  await getSubjects();
+}

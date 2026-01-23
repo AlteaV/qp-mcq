@@ -142,7 +142,7 @@ $(document).on("change", ".subject-input", async function () {
     .join("");
 
   $sectionSelect.html(
-    `<option value="">Select Section</option>${sectionOptions}`
+    `<option value="">Select Section</option>${sectionOptions}`,
   );
 });
 
@@ -176,6 +176,7 @@ function displayTemplateTable() {
   $("#fetching_data").hide();
   if (allTemplates.length == 0) {
     showFecthingDataSection("There is no data");
+    hideOverlay();
     return;
   }
   table.clear();
@@ -204,7 +205,7 @@ function setTemplate(id) {
       let existingCombination = acc[key].data.find(
         (item) =>
           item.btl === row.btl &&
-          item.units.every((unit) => row.units.includes(unit))
+          item.units.every((unit) => row.units.includes(unit)),
       );
 
       if (!existingCombination) {

@@ -59,11 +59,11 @@ let selectedTemplatdId = "";
 function viewTemplate(id) {
   selectedTemplatdId = id;
   let questions = JSON.parse(
-    allTemplates.find((temp) => temp.id == id).template
+    allTemplates.find((temp) => temp.id == id).template,
   );
 
   $("#exampleModalCenterTitle").text(
-    allTemplates.find((temp) => temp.id == id).name
+    allTemplates.find((temp) => temp.id == id).name,
   );
   $("#sectionsContainer").empty();
 
@@ -73,7 +73,7 @@ function viewTemplate(id) {
   let groupedQuestions = questions.reduce((acc, row) => {
     let key = row.part_name;
     let existingGroupIndex = acc.findIndex(
-      (group) => group[0].part_name === key
+      (group) => group[0].part_name === key,
     );
     if (existingGroupIndex !== -1) {
       acc[existingGroupIndex].push(row);
@@ -120,6 +120,10 @@ function buildQuestionRow(ques) {
                 <input type="text" class="form-control" value="${ques.topic}" disabled/>
               </div>
               <div class="col">
+                <label>Question Type</label>
+                <input type="text" class="form-control" value="${ques.question_type}" disabled/>
+              </div>
+              <div class="col">
                 <label>BTL level</label>
                 <input type="text" class="form-control" value="${ques.btl_level}" disabled/>
               </div>
@@ -132,24 +136,23 @@ function buildQuestionRow(ques) {
   return row;
 }
 
-function getTemplate() {
+async function getTemplate() {
   showFecthingDataSection("Fetching data");
   showOverlay();
   allTemplates = [];
   var out = {};
   out.function = "gmt";
   out.org_id = loggedInUser.college_code;
-
-  postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
-    if (response.status == 200) {
-      allTemplates = response.result.template;
-      displayTemplateTable();
-    } else if (response.status == 409) {
-      alert(response.message);
-    } else {
-      alert("Network error");
-    }
-  });
+  out.is_mcq = 1;
+  let response = await postCall(examCellEndPoint, JSON.stringify(out));
+  if (response.status == 200) {
+    allTemplates = response.result.template;
+    displayTemplateTable();
+  } else if (response.status == 409) {
+    alert(response.message);
+  } else {
+    alert("Network error");
+  }
 }
 
 document.addEventListener("readystatechange", async () => {

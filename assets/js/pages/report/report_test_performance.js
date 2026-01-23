@@ -40,13 +40,14 @@ function showReportSection(data) {
     tableData.tableHeader[0].push(new TableStructure("Question Paper Name"));
     tableData.tableHeader[0].push(new TableStructure(`Correct Answers`));
     tableData.tableHeader[0].push(new TableStructure(`Total Questions`));
+    tableData.tableHeader[0].push(new TableStructure(`Total Mark Obtained`));
   } else {
     tableData.tableHeader[0].push(new TableStructure("User ID"));
     tableData.tableHeader[0].push(new TableStructure("User Name"));
     tableData.tableHeader[0].push(
       new TableStructure(
-        `Total Score<br><small>(out of ${data[0].total_questions})</small>`
-      )
+        `Total Score<br><small>(out of ${data[0].total_questions})</small>`,
+      ),
     );
   }
 
@@ -58,7 +59,7 @@ function showReportSection(data) {
       row.attempt_id,
       "",
       "view-button",
-      "fas fa-eye"
+      "fas fa-eye",
     );
 
     let temp = [];
@@ -67,6 +68,7 @@ function showReportSection(data) {
       temp.push(new TableStructure(row.name));
       temp.push(new TableStructure(row.total_score));
       temp.push(new TableStructure(row.total_questions));
+      temp.push(new TableStructure(row.total_score));
     } else {
       temp.push(new TableStructure(row.user_id));
       temp.push(new TableStructure(row.user_name));
@@ -82,7 +84,7 @@ function showReportSection(data) {
   $("#result_table").off("click", ".view-button");
   $("#result_table").on("click", ".view-button", async (event) => {
     let attemptId = JSON.parse(
-      decodeURIComponent(event.currentTarget.getAttribute("data-full"))
+      decodeURIComponent(event.currentTarget.getAttribute("data-full")),
     );
     selectedStudent = data.find((d) => d.attempt_id == attemptId);
     getIndividualPerformance(attemptId, selectedStudent);

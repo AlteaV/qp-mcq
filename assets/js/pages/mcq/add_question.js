@@ -15,6 +15,7 @@ let optionBInput = document.getElementById("option_b");
 let optionCInput = document.getElementById("option_c");
 let optionDInput = document.getElementById("option_d");
 let optionEInput = document.getElementById("option_e");
+let markInput = document.getElementById("mark");
 let btlLevelDropDown = document.getElementById("btl_level");
 let imageInput = document.getElementById("image");
 let correctOptionDropDown = document.getElementById("correct_option");
@@ -23,6 +24,10 @@ var resultDiv = document.getElementById("result_div");
 
 let subjects = [];
 let btlLevels = [];
+
+markInput.addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "");
+});
 
 addQuestionBtn.addEventListener("click", async () => {
   filterForm.classList.add("was-validated");
@@ -42,44 +47,10 @@ addQuestionBtn.addEventListener("click", async () => {
 });
 
 async function init() {
-  // await getSubjectsSectionsTopics();
-  // await getBtlLevels();
+  await getSubjectsSectionsTopics();
+  await fetchBtl();
 
-  btlLevels = [
-    {
-      level: 1,
-      level_name: "Remember",
-    },
-    {
-      level: 2,
-      level_name: "Understand",
-    },
-    {
-      level: 3,
-      level_name: "Apply",
-    },
-    {
-      level: 4,
-      level_name: "Analyze",
-    },
-    {
-      level: 5,
-      level_name: "Evaluate",
-    },
-    {
-      level: 6,
-      level_name: "Create",
-    },
-  ];
-
-  subjects = [
-    {
-      subject_id: 1,
-      subject_name: "Quantitative Aptitude",
-      sections:
-        '[{"topics": [{"topic_id": 32, "topic_name": "Partnership"}, {"topic_id": 34, "topic_name": "Time and Work"}, {"topic_id": 35, "topic_name": "Time and Distance"}, {"topic_id": 11, "topic_name": "Simplification"}, {"topic_id": 3, "topic_name": "Simple Interest"}, {"topic_id": 4, "topic_name": "Profit and Loss"}, {"topic_id": 1, "topic_name": "Problems on Trains"}, {"topic_id": 27, "topic_name": "Problems on Numbers"}, {"topic_id": 20, "topic_name": "Probability"}, {"topic_id": 23, "topic_name": "Pipes and Cistern"}, {"topic_id": 5, "topic_name": "Percentage"}, {"topic_id": 22, "topic_name": "Alligation or Mixture"}, {"topic_id": 9, "topic_name": "Numbers"}, {"topic_id": 33, "topic_name": "Compound Interest"}, {"topic_id": 30, "topic_name": "Clock"}, {"topic_id": 13, "topic_name": "Chain Rule"}, {"topic_id": 6, "topic_name": "Calendar"}, {"topic_id": 7, "topic_name": "Average"}, {"topic_id": 29, "topic_name": "Area"}], "section_id": 1, "section_name": "Arithmetic"}, {"topics": [{"topic_id": 64, "topic_name": "Logical Problems"}], "section_id": 3, "section_name": "Logical Reasoning"}, {"topics": [{"topic_id": 87, "topic_name": "Data Sufficiency"}], "section_id": 4, "section_name": "Verbal Reasoning"}]',
-    },
-  ];
+  btlLevels = getBtlLevels();
   hideOverlay();
   renderSubjects(subjects);
   renderBtlLevels(btlLevels);
@@ -184,7 +155,7 @@ async function getSubjectsSectionsTopics() {
   showOverlay();
   try {
     let payload = JSON.stringify({
-      function: "gswt",
+      function: "gst",
       org_id: loggedInUser.college_code,
     });
 
@@ -198,27 +169,6 @@ async function getSubjectsSectionsTopics() {
     hideOverlay();
     console.error(error);
     alert("An error occurred while fetching subjects, sections and topics");
-  }
-}
-
-async function getBtlLevels() {
-  showOverlay();
-  try {
-    let payload = JSON.stringify({
-      function: "gbl",
-      org_id: loggedInUser.college_code,
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      btlLevels = response.result.btl_level;
-    } else {
-      throw new Error(response.message);
-    }
-    hideOverlay();
-  } catch (error) {
-    hideOverlay();
-    console.error(error);
-    alert("An error occurred while fetching BTL levels");
   }
 }
 
@@ -245,7 +195,7 @@ async function uploadQuestion() {
   } else {
     out.image = null;
   }
-  out.mark = 1;
+  out.mark = markInput.value;
   out.staff_id = loggedInUser.staff_id;
 
   showOverlay();

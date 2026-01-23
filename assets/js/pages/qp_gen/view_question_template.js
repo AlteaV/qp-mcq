@@ -65,6 +65,7 @@ function displayTemplateTable() {
   $("#fetching_data").hide();
   if (allTemplates.length == 0) {
     showFecthingDataSection("There is no data");
+    hideOverlay();
     return;
   }
   table.clear();
@@ -198,6 +199,7 @@ function getTemplate() {
   var out = {};
   out.function = "gnmt";
   out.org_id = loggedInUser.college_code;
+  out.is_mcq = null;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {

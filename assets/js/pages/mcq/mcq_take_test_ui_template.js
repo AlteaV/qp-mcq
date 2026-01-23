@@ -33,6 +33,68 @@ let baseFontSize = 14;
 let timerInterval = null;
 let showfinalScoreUser = null;
 
+let response = {
+  success: true,
+  message: "Data fetched successfully!",
+  result: {
+    questions: {
+      question_paper_id: 50,
+      question_paper_name: "NumericalTestQP",
+      questions:
+        '[{"mark": 1, "choices": {"A": "0", "B": "2", "C": "1", "D": "4"}, "question": "The number of real roots $= 9$ is", "subject_id": null, "question_id": 675, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "The number of solutions of the equation $\\\\log_4(x - 1) = \\\\log_2(x - 3)$ is", "subject_id": null, "question_id": 662, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": null, "question": "The number of solutions of the equation $\\\\log_4(x - 1) = \\\\log_2(x - 3)$ is", "subject_id": null, "question_id": 671, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "-4, -3", "B": "6, 1", "C": "4, 3", "D": "-6, -1"}, "question": "Sachin and Rahul attempted to solve a quadratic equation. Sachin made a mistake in writing down the constant term and ended up in roots (4, 3). Rahul made a mistake in writing down coefficient of $x$ to get roots (3, 2). The correct roots of equation are", "subject_id": null, "question_id": 660, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "The least positive value of \'a\' for which the equation, $2x^2 + (a + 10)x + 33/2 = 2a$ has real roots is", "subject_id": null, "question_id": 670, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "0", "B": "2", "C": "1", "D": "4"}, "question": "The number of real roots of a quadratic equation such that its value is 9 is", "subject_id": null, "question_id": 673, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "Let (a) be the roots of the quadratic equation $x^2 - x - 4 = 0$. If $P_n =$, $n \\\\leq N$ then", "subject_id": null, "question_id": 674, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": null, "question": "Let (a) be the roots of the quadratic equation $x^2 - x - 4 = 0$. If $P_n =$, $n \\\\le N$ then", "subject_id": null, "question_id": 676, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "$\\\\frac{1}{2}$", "B": "$\\\\frac{\\\\sqrt{3}}{2}$", "C": "$\\\\frac{1}{\\\\sqrt{3}}$", "D": "$\\\\frac{1}{\\\\sqrt{2}}$"}, "question": "If the angle between the lines joining the foci to an extremity of minor axis of an Ellipse is $90^{\\\\circ}$ its eccentricity is", "subject_id": null, "question_id": 611, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": {"A": "$(4\\\\sqrt{2}, 2\\\\sqrt{3})$", "B": "$(4\\\\sqrt{3}, 2\\\\sqrt{3})$", "C": "$(4\\\\sqrt{3}, 2\\\\sqrt{2})$", "D": "$(4\\\\sqrt{2}, 2\\\\sqrt{2})$"}, "question": "Let the length of the latus rectum of an ellipse with its major axis along x-axis and centre at the origin, be 8. If the distance between the foci of this ellipse is equal to the length of its minor axis, then which one of the following points lies on it?", "subject_id": null, "question_id": 623, "subject_name": null, "question_type": "Mcq"}]',
+      shuffle_questions: 1,
+      test_type: "Practice",
+      assignment_id: 35,
+      group_id: 7,
+      attempt_id: 187,
+    },
+    template: {
+      template_id: 3,
+      org_id: 8107,
+      template_name: "JEE UI template 2",
+      total_duration_mins: 90,
+      show_timer: "dont_show",
+      can_review: null,
+      question_layout: "N",
+      questions_per_page: 10,
+      can_skip: null,
+      full_screen: "Y",
+      disable_right_click: "Y",
+      is_default: "Y",
+      custom_mark: null,
+      is_show_final_score: null,
+    },
+  },
+  status: 200,
+};
+let questionsRes = response.result.questions;
+questionPaperDetails = questionsRes;
+let parsedQuestions = JSON.parse(questionsRes.questions);
+templateConfig = response.result.template;
+showfinalScoreUser = templateConfig.is_show_final_score;
+questionsData = parsedQuestions.map((q, index) => ({
+  id: q.question_id,
+  subject: q.subject_name,
+  maxMark: q.mark,
+  question: q.question,
+  options: q.choices,
+  question_type: q.question_type,
+  // options: Array.isArray(q.choices) ? q.choices.map((c) => c.text) : [],
+  correct_answer: q.correct_answer,
+}));
+
+questionStates = {};
+questionsData.forEach((q) => {
+  questionStates[q.id] = {
+    status: "unattempted",
+    selectedAnswer: null,
+    isReviewMarked: false,
+    start_times: [],
+    completion_times: [],
+  };
+});
+prepareContainer();
+
 async function getQuestionPaperDetails() {
   showOverlay();
   let payload = {
@@ -59,7 +121,7 @@ async function getQuestionPaperDetails() {
         maxMark: q.mark,
         question: q.question,
         options: q.choices,
-        // options: Array.isArray(q.choices) ? q.choices.map((c) => c.text) : [],
+        question_type: q.question_type,
         correct_answer: q.correct_answer,
       }));
 
@@ -235,9 +297,8 @@ function showTimer(type) {
         timeLeft--;
         const mins = Math.floor(timeLeft / 60);
         const secs = timeLeft % 60;
-        document.getElementById(
-          "timer"
-        ).innerHTML = `⏱ ${mins} min : ${secs} sec`;
+        document.getElementById("timer").innerHTML =
+          `⏱ ${mins} min : ${secs} sec`;
       } else {
         clearInterval(timerInterval);
         submitTest();
@@ -249,9 +310,8 @@ function showTimer(type) {
         timeElapsed++;
         const mins = Math.floor(timeElapsed / 60);
         const secs = timeElapsed % 60;
-        document.getElementById(
-          "timer"
-        ).innerHTML = `⏱ ${mins} min : ${secs} sec`;
+        document.getElementById("timer").innerHTML =
+          `⏱ ${mins} min : ${secs} sec`;
       } else {
         clearInterval(timerInterval);
         submitTest();
@@ -404,9 +464,9 @@ async function renderQuestionsPage() {
         <span style="font-weight: 600; font-size: 18px;">Questions ${
           (currentPage - 1) * templateConfig.questions_per_page + 1
         } - ${Math.min(
-    currentPage * templateConfig.questions_per_page,
-    questionsData.length
-  )}</span>
+          currentPage * templateConfig.questions_per_page,
+          questionsData.length,
+        )}</span>
         <button class="font-btn increase">A+</button>
         <button class="font-btn decrease">A-</button>
       </div>
@@ -430,6 +490,13 @@ async function renderQuestionsPage() {
     const questionDiv = document.createElement("div");
     questionDiv.style.cssText = `margin-bottom: ${marginBottom}; padding-bottom: 30px; border-bottom: ${borderBottom};`;
 
+    let type = "";
+    if (q.question_type == "Mcq") {
+      type = "Select the correct answer:";
+    } else if (q.question_type == "Numerical") {
+      type = "Enter your answer:";
+    }
+
     questionDiv.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <div style="font-weight: 600; font-size: 16px;">
@@ -441,7 +508,7 @@ async function renderQuestionsPage() {
         q.question
       }</div>
 
-      <div style="font-weight: 600; margin-bottom: 10px; color: #555;">Select the correct answer:</div>
+      <div style="font-weight: 600; margin-bottom: 10px; color: #555;">${type}</div>
       
       <div class="options-container-${
         q.id
@@ -456,8 +523,8 @@ async function renderQuestionsPage() {
             ? `
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:18px;font-weight:600;">
             <input type="checkbox" class="review-check-${q.id}" ${
-                state.isReviewMarked ? "checked" : ""
-              }>
+              state.isReviewMarked ? "checked" : ""
+            }>
             <span>Review</span>
           </label>`
             : ``
@@ -488,14 +555,15 @@ async function renderQuestionsPage() {
     container.appendChild(questionDiv);
 
     const optionsContainer = questionDiv.querySelector(
-      `.options-container-${q.id}`
+      `.options-container-${q.id}`,
     );
-    Object.entries(q.options).forEach(([key, value]) => {
-      const optionDiv = document.createElement("div");
-      optionDiv.className = "option-item";
-      optionDiv.style.cssText =
-        "display: flex; align-items: center; padding: 12px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;";
-      optionDiv.innerHTML = `
+    if (q.question_type == "Mcq") {
+      Object.entries(q.options).forEach(([key, value]) => {
+        const optionDiv = document.createElement("div");
+        optionDiv.className = "option-item";
+        optionDiv.style.cssText =
+          "display: flex; align-items: center; padding: 12px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;";
+        optionDiv.innerHTML = `
       <input type="radio" name="answer-${
         q.id
       }" value="${key}" style="margin-right: 12px; width: 18px; height: 18px; cursor: pointer;" ${
@@ -504,9 +572,46 @@ async function renderQuestionsPage() {
       <span style="font-weight: 600; margin-right: 8px;">${key}.</span>
       <span>${value}</span>
       `;
-      optionDiv.onclick = () => selectAnswer(q.id, key);
+        optionDiv.onclick = () => selectAnswer(q.id, key);
+        optionsContainer.appendChild(optionDiv);
+      });
+    } else if (q.question_type == "Numerical") {
+      const optionDiv = document.createElement("div");
+      optionDiv.className = "option-item";
+      optionDiv.style.cssText =
+        "display: flex; align-items: center; padding: 12px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;";
+      optionDiv.innerHTML = `
+      <input type="text" name="answer-${
+        q.id
+      }" value="${state.selectedAnswer !== null ? state.selectedAnswer : ""}" class="form-control numerical-answer" style="margin-right: 12px; width:100%; height: 30px; cursor: pointer;" inputmode="decimal" pattern="^-?[0-9]*\.?[0-9]*$" oninput="let val = this.value; let hasNegative = val.startsWith('-'); val = val.replace(/[^0-9.]/g, ''); let parts = val.split('.'); if (parts.length > 2) { val = parts[0] + '.' + parts.slice(1).join(''); } this.value = (hasNegative ? '-' : '') + val;">
+        `;
+      optionDiv.querySelector(`input[name="answer-${q.id}"]`).onchange = (
+        e,
+      ) => {
+        selectAnswer(q.id, e.target.value);
+      };
       optionsContainer.appendChild(optionDiv);
-    });
+
+      //       <div style="
+      //   margin-top: 10px;
+      //   display: flex;
+      //   align-items: center;
+      //   gap: 10px;
+      //   max-width: 400px;
+      // ">
+      //   <label for="${answerId}" style="font-weight: bold; white-space: nowrap;">
+      //     Answer is
+      //   </label>
+      //   <input
+      //     type="number"
+      //     id="${answerId}"
+      //     class="form-control numerical-answer"
+      //     value="${record.correct_answer || ""}"
+      //     data-index="${index}"
+      //     style="max-width: 200px;"
+      //   />
+      // </div>`
+    }
 
     const reviewCheckbox = questionDiv.querySelector(`.review-check-${q.id}`);
     if (reviewCheckbox) {
@@ -584,7 +689,7 @@ function selectAnswer(qId, idx) {
   currentQuestionTimeStart = new Date().toISOString();
 
   const radio = document.querySelector(
-    `input[name="answer-${qId}"][value="${idx}"]`
+    `input[name="answer-${qId}"][value="${idx}"]`,
   );
   if (radio) radio.checked = true;
 
@@ -633,25 +738,26 @@ async function submitTest() {
 
   let allAnswered = [];
   let totalTime = Math.floor(
-    (new Date(testEndTime) - new Date(testStartTime)) / 1000
+    (new Date(testEndTime) - new Date(testStartTime)) / 1000,
   );
   Object.entries(questionStates).forEach(([qId, state]) => {
     if (state.start_time && state.end_time) {
       state.time_taken_secs = Math.floor(
-        (new Date(state.end_time) - new Date(state.start_time)) / 1000
+        (new Date(state.end_time) - new Date(state.start_time)) / 1000,
       );
     } else {
       state.time_taken_secs = 0;
     }
 
     if (state.status != "unattempted" && state.status != "skip") {
-      allAnswered.push({
+      let temp = {
         question_id: parseInt(qId),
         total_time: state.time_taken_secs,
         start_time: state.start_time || null,
         end_time: state.end_time || null,
         selected_option: state.selectedAnswer,
-      });
+      };
+      allAnswered.push(temp);
     }
   });
 
@@ -671,10 +777,11 @@ async function submitTest() {
     attempt_id: questionPaperDetails.attempt_id,
     function: "uad",
   };
+
   try {
     let response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(payload)
+      JSON.stringify(payload),
     );
 
     if (response.success) {

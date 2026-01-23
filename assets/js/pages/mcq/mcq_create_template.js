@@ -125,7 +125,7 @@ function checkPartsMark(form) {
   if (form) {
     let maxMarks = form.getElementsByClassName("max_marks_input")[0].value;
     let noOfQuestionsInputs = form.getElementsByClassName(
-      "no_of_questions_input"
+      "no_of_questions_input",
     );
     let marksInputs = form.getElementsByClassName("marks_input");
     let totalMarks = 0;
@@ -160,7 +160,7 @@ function assignQuestionsToSubject() {
 
   if (!checkTotalMarks()) {
     alert(
-      `Total marks assigned to parts exceed or equal total marks of the template.`
+      `Total marks assigned to parts exceed or equal total marks of the template.`,
     );
     return;
   }
@@ -181,7 +181,7 @@ function assignQuestionsToSubject() {
   form.appendChild(maxMarksInput);
 
   let selectedSubject = subjects.find(
-    (subj) => subj.subject_id == partSubject.value
+    (subj) => subj.subject_id == partSubject.value,
   );
 
   let selectedSubjectInput = document.createElement("input");
@@ -229,7 +229,7 @@ function assignQuestionsToSubject() {
   let quesButtonCol = document.createElement("div");
   quesButtonCol.classList.add("col", "align-self-end");
 
-  let addQuestionBtn = document.createElement("button");
+  let addQuestionBtn = document.createElement("add_ques_button");
   addQuestionBtn.classList.add("btn", "btn-primary");
   addQuestionBtn.innerText = "Add Question Row";
 
@@ -265,7 +265,7 @@ function addQuestionRow(questionContainer, sections, form) {
     let checkPartMark = checkPartsMark(form);
     if (checkPartMark == "high") {
       alert(
-        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`
+        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`,
       );
       return;
     } else if (checkPartMark == "match") {
@@ -373,7 +373,7 @@ function addQuestionRow(questionContainer, sections, form) {
     }
 
     let selectedSection = sections.find(
-      (sec) => sec.section_id == sectionSelect.value
+      (sec) => sec.section_id == sectionSelect.value,
     );
     selectedSection.topics.forEach((topic) => {
       let option = document.createElement("option");
@@ -421,6 +421,32 @@ function addQuestionRow(questionContainer, sections, form) {
   btlLabelCol.appendChild(btlSelect);
   questionRow.appendChild(btlLabelCol);
   questionInputCol.appendChild(questionRow);
+
+  let questionTypeCol = document.createElement("div");
+  questionTypeCol.classList.add("col");
+  let questionTypeLabel = document.createElement("label");
+  questionTypeLabel.classList.add("form-label", "required");
+  questionTypeLabel.innerText = "Question Type:";
+  let questionTypeSelect = document.createElement("select");
+  questionTypeSelect.classList.add("form-select", "question_type_select");
+  questionTypeSelect.required = true;
+  let defaultQuestionTypeOption = document.createElement("option");
+  defaultQuestionTypeOption.value = "";
+  defaultQuestionTypeOption.disabled = true;
+  defaultQuestionTypeOption.selected = true;
+  defaultQuestionTypeOption.innerText = "Select Question Type";
+  questionTypeSelect.appendChild(defaultQuestionTypeOption);
+  let mcqOption = document.createElement("option");
+  mcqOption.value = "Mcq";
+  mcqOption.innerText = "MCQ";
+  questionTypeSelect.appendChild(mcqOption);
+  let numericalOption = document.createElement("option");
+  numericalOption.value = "Numerical";
+  numericalOption.innerText = "Numerical";
+  questionTypeSelect.appendChild(numericalOption);
+  questionTypeCol.appendChild(questionTypeLabel);
+  questionTypeCol.appendChild(questionTypeSelect);
+  questionRow.appendChild(questionTypeCol);
 
   let noOfQuestionsCol = document.createElement("div");
   noOfQuestionsCol.classList.add("col");
@@ -478,11 +504,13 @@ function deleteQuestionRow(questionDiv) {
 }
 
 function saveTemplate() {
+  showOverlay();
   let isTemplateMarksValid = checkTotalMarks(true);
   if (!isTemplateMarksValid) {
     alert(
-      "Total marks assigned to parts do not equal total marks of the template."
+      "Total marks assigned to parts do not equal total marks of the template.",
     );
+    hideOverlay();
     return;
   }
 
@@ -492,6 +520,7 @@ function saveTemplate() {
   for (let i = 0; i < form.length; i++) {
     form[i].classList.add("was-validated");
     if (!form[i].checkValidity()) {
+      hideOverlay();
       return;
     }
     form[i].classList.remove("was-validated");
@@ -500,13 +529,15 @@ function saveTemplate() {
     let checkPartMark = checkPartsMark(form[i]);
     if (checkPartMark == "high") {
       alert(
-        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`
+        `Total marks exceed maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`,
       );
+      hideOverlay();
       return;
     } else if (checkPartMark == "low") {
       alert(
-        `Total marks less than maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`
+        `Total marks less than maximum marks for part ${partName}. Please adjust the number of questions or marks per question.`,
       );
+      hideOverlay();
       return;
     }
 
@@ -533,9 +564,14 @@ function saveTemplate() {
       questionData.btl_level = btlSelect.value;
 
       let noOfQuestionsInput = questionRows[j].getElementsByClassName(
-        "no_of_questions_input"
+        "no_of_questions_input",
       )[0];
       questionData.no_of_questions = noOfQuestionsInput.value;
+
+      let questionTypeSelect = questionRows[j].getElementsByClassName(
+        "question_type_select",
+      )[0];
+      questionData.question_type = questionTypeSelect.value;
 
       let marksInput = questionRows[j].getElementsByClassName("marks_input")[0];
       questionData.marks_per_question = marksInput.value;
@@ -548,6 +584,7 @@ function saveTemplate() {
   out.function = "amt";
   out.name = templateName.value;
   out.org_id = loggedInUser.college_code;
+  out.is_mcq = 1;
   out.created_by = loggedInUser["staff_id"];
   out.template = data;
 
