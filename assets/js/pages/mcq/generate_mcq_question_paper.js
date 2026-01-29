@@ -15,6 +15,8 @@ function generateQuestionPaper(questions, templateId) {
       marks: q.mark,
       block_id: q.block_id,
       question_type: q.question_type,
+      table: q.table_data,
+      images: q.images,
     };
   });
 
@@ -83,12 +85,29 @@ async function createQuestions() {
       }
     }
 
+    let tableHtml = q.table ? `<p>${renderTableFromMarkdown(q.table)}</p>` : "";
+    let imageHtml = "";
+    if (q.images && q.images.length > 0) {
+      q.images.forEach((imgObj) => {
+        if (imgObj.image_base64) {
+          imageHtml += ` 
+        <div style="text-align: center; margin: 10px 0;">
+          <img src="${imgObj.image_base64}" 
+               alt="Question Image" 
+               style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px; padding: 5px;" />
+        </div>`;
+        }
+      });
+    }
+
     html += `
       <tr>
         <td>${q.number}</td>
         <td style="text-align: left;">
           <p class="latex">${q.question}</p>
           <p class="latex">${choicesInline}</p>
+          ${tableHtml}
+          ${imageHtml}
         </td>
         <td>${q.btl}</td>
         <td>${q.marks}</td>
@@ -151,7 +170,9 @@ async function createQuestions() {
     });
 
     uploadMcqQuestioPaper(question_rows, questionPaperName);
-    return { question_rows };
+    return {
+      question_rows,
+    };
   }
 
   $("#selectparameter")
@@ -178,4 +199,35 @@ async function createQuestions() {
     alert("Error rendering mathematical expressions.");
   }
   hideOverlay();
+}
+
+function renderTableFromMarkdown(markdown) {
+  if (!markdown) return "";
+
+  const converter = new showdown.Converter({
+    tables: true,
+  });
+
+  const htmlContent = converter.makeHtml(markdown);
+
+  return `
+    <div class="question-table">
+      <style>
+        .question-table table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .question-table th,
+        .question-table td {
+          border: 1px solid #333;
+          padding: 8px;
+          text-align: center;
+        }
+        .question-table th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      ${htmlContent}
+    </div>
+  `;
 }

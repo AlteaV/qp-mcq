@@ -38,7 +38,6 @@ function showReportSection(data) {
 
   if (loggedInUser.type == "Student") {
     tableData.tableHeader[0].push(new TableStructure("Question Paper Name"));
-    tableData.tableHeader[0].push(new TableStructure(`Correct Answers`));
     tableData.tableHeader[0].push(new TableStructure(`Total Questions`));
     tableData.tableHeader[0].push(new TableStructure(`Total Mark Obtained`));
   } else {
@@ -66,7 +65,6 @@ function showReportSection(data) {
     temp.push(new TableStructure(index + 1));
     if (loggedInUser.type == "Student") {
       temp.push(new TableStructure(row.name));
-      temp.push(new TableStructure(row.total_score));
       temp.push(new TableStructure(row.total_questions));
       temp.push(new TableStructure(row.total_score));
     } else {

@@ -145,7 +145,7 @@ $(document).on("change", ".subject-input", async function () {
     .join("");
 
   $sectionSelect.html(
-    `<option value="">Select Section</option>${sectionOptions}`
+    `<option value="">Select Section</option>${sectionOptions}`,
   );
 });
 
@@ -209,7 +209,7 @@ function setTemplate(id) {
       let existingCombination = acc[key].data.find(
         (item) =>
           item.btl === row.btl &&
-          item.units.every((unit) => row.units.includes(unit))
+          item.units.every((unit) => row.units.includes(unit)),
       );
 
       if (!existingCombination) {

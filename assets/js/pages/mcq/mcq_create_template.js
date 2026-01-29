@@ -52,26 +52,6 @@ async function getSubjects() {
   }
 }
 
-async function getBtlLevels() {
-  showOverlay();
-  try {
-    let payload = JSON.stringify({
-      function: "gbl",
-      org_id: loggedInUser.college_code,
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      btlLevels = response.result.btl_level;
-    } else {
-      throw new Error(response.message);
-    }
-  } catch (error) {
-    hideOverlay();
-    console.error(error);
-    alert("An error occurred while fetching subjects");
-  }
-}
-
 function setPartName() {
   let existingParts = document.getElementsByClassName("part_container");
   let letter = String.fromCharCode(existingParts.length + "A".charCodeAt(0));
@@ -627,7 +607,8 @@ document.addEventListener("readystatechange", async () => {
 });
 
 async function init() {
+  await fetchBtl();
+  btlLevel = getBtlLevels();
   await getSubjects();
-  await getBtlLevels();
   hideOverlay();
 }

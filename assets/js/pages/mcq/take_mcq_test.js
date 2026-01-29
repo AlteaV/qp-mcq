@@ -21,37 +21,40 @@ function showQuestionPapers(data) {
         new TableStructure("Type"),
         new TableStructure("Start Time"),
         new TableStructure("End Time"),
-        new TableStructure("Attempts"),
-        new TableStructure("Max Attempts"),
         new TableStructure("Action"),
       ],
     ],
     tableBody: [],
   };
   data.forEach((record, index) => {
+    let buttonName = "";
+    let allowTest = true;
+    if (record.allow_test == "Resume") {
+      buttonName = "Resume Test";
+    } else if (record.allow_test == "Allow") {
+      buttonName = "Take Test";
+    } else {
+      buttonName = "Test Completed";
+      allowTest = false;
+    }
     let actionBtn = `
       <button 
         class="btn btn-sm btn-primary take-test-btn" 
         data-qp_assignment_id="${record.qp_assignment_id}"
-        data-name="${record.question_paper_name}"
         data-start="${record.start_date_time}"
         data-end="${record.end_date_time}"
-        data-attempts="${record.attempts}"
-        data-max_attempts="${record.max_attempts}"
-        data-group_id="${record.group_id}"
         data-template_id="${record.template_id}"
-        data-full_screen="${record.full_screen}"
       >
-        Take Test
+        ${buttonName}
       </button>
     `;
 
-    if (record.attempts >= record.max_attempts) {
+    if (!allowTest) {
       actionBtn = `<button 
         class="btn btn-sm btn-secondary" 
         disabled
       >
-        Max Attempts Reached
+        ${buttonName}
       </button>`;
     }
 
@@ -61,8 +64,6 @@ function showQuestionPapers(data) {
       new TableStructure(record.test_type),
       new TableStructure(record.start_date_time),
       new TableStructure(record.end_date_time),
-      new TableStructure(record.attempts ?? 0),
-      new TableStructure(record.max_attempts),
       new TableStructure(actionBtn),
     ]);
   });
@@ -75,14 +76,9 @@ function showQuestionPapers(data) {
     .off("click")
     .on("click", function () {
       let qp_assignment_id = $(this).data("qp_assignment_id");
-      let name = $(this).data("name");
       let start = $(this).data("start");
       let end = $(this).data("end");
-      let attempts = $(this).data("attempts");
-      let max_attempts = $(this).data("max_attempts");
-      let group_id = $(this).data("group_id");
       let template_id = $(this).data("template_id");
-      let user_id = loggedInUser.user_id;
 
       let currentTime = new Date();
 
@@ -97,11 +93,6 @@ function showQuestionPapers(data) {
 
       if (new Date(end) < currentTime) {
         alert("The test has already ended.");
-        return;
-      }
-
-      if (attempts >= max_attempts) {
-        alert("You have reached the maximum number of attempts for this test.");
         return;
       }
 

@@ -231,26 +231,8 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
-async function getBtllevel() {
-  try {
-    showOverlay();
-    let payload = JSON.stringify({
-      function: "gbl",
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      btlLevel = response.result.btl_level;
-    }
-    hideOverlay();
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while fetching BTL levels");
-  } finally {
-    hideOverlay();
-  }
-}
-
 async function initializePage() {
-  await getBtllevel();
+  await fetchBtl();
+  btlLevel = getBtlLevels();
   getTemplate();
 }

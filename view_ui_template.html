@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -73,6 +73,10 @@
     <script id="rendered-js" src="/assets/js/scripts.js"></script>
     <script defer src="/assets/js/packages/mathjax-config.js"></script>
     <script
+      defer
+      src="  https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
+    ></script>
+    <script
       type="module"
       src="/assets/js/pages/mcq/mcq_take_test_ui_template.js"
     ></script>
@@ -120,8 +124,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             transition: all 0.3s;
           "
-          onmouseover="this.style.background='#45a049'"
-          onmouseout="this.style.background='#4CAF50'"
+          onmouseover="this.style.background = '#45a049'"
+          onmouseout="this.style.background = '#4CAF50'"
         >
           Enter Fullscreen
         </button>

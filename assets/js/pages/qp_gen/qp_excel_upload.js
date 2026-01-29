@@ -44,33 +44,11 @@ let questions = [];
 // subject.addEventListener("input", subjectSelection);
 
 async function init() {
-  await getBtllevel();
+  await fetchBtl();
+  btlLevel = getBtlLevels();
   await getSubjects();
   const selectedSubjectId = subject.value;
   getSectionTopic(selectedSubjectId);
-}
-
-// btl level
-async function getBtllevel() {
-  if (btlLevel.length > 0) {
-    return;
-  }
-  try {
-    showOverlay();
-    let payload = JSON.stringify({
-      function: "gbl",
-    });
-    let response = await postCall(QuestionUploadEndPoint, payload);
-    if (response.success) {
-      btlLevel = response.result.btl_level;
-    }
-    hideOverlay();
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while fetching BTL levels");
-  } finally {
-    hideOverlay();
-  }
 }
 
 function renderSubject(sub) {

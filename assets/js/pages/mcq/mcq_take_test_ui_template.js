@@ -33,68 +33,6 @@ let baseFontSize = 14;
 let timerInterval = null;
 let showfinalScoreUser = null;
 
-let response = {
-  success: true,
-  message: "Data fetched successfully!",
-  result: {
-    questions: {
-      question_paper_id: 50,
-      question_paper_name: "NumericalTestQP",
-      questions:
-        '[{"mark": 1, "choices": {"A": "0", "B": "2", "C": "1", "D": "4"}, "question": "The number of real roots $= 9$ is", "subject_id": null, "question_id": 675, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "The number of solutions of the equation $\\\\log_4(x - 1) = \\\\log_2(x - 3)$ is", "subject_id": null, "question_id": 662, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": null, "question": "The number of solutions of the equation $\\\\log_4(x - 1) = \\\\log_2(x - 3)$ is", "subject_id": null, "question_id": 671, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "-4, -3", "B": "6, 1", "C": "4, 3", "D": "-6, -1"}, "question": "Sachin and Rahul attempted to solve a quadratic equation. Sachin made a mistake in writing down the constant term and ended up in roots (4, 3). Rahul made a mistake in writing down coefficient of $x$ to get roots (3, 2). The correct roots of equation are", "subject_id": null, "question_id": 660, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "The least positive value of \'a\' for which the equation, $2x^2 + (a + 10)x + 33/2 = 2a$ has real roots is", "subject_id": null, "question_id": 670, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "0", "B": "2", "C": "1", "D": "4"}, "question": "The number of real roots of a quadratic equation such that its value is 9 is", "subject_id": null, "question_id": 673, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": null, "question": "Let (a) be the roots of the quadratic equation $x^2 - x - 4 = 0$. If $P_n =$, $n \\\\leq N$ then", "subject_id": null, "question_id": 674, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": null, "question": "Let (a) be the roots of the quadratic equation $x^2 - x - 4 = 0$. If $P_n =$, $n \\\\le N$ then", "subject_id": null, "question_id": 676, "subject_name": null, "question_type": "Numerical"}, {"mark": 1, "choices": {"A": "$\\\\frac{1}{2}$", "B": "$\\\\frac{\\\\sqrt{3}}{2}$", "C": "$\\\\frac{1}{\\\\sqrt{3}}$", "D": "$\\\\frac{1}{\\\\sqrt{2}}$"}, "question": "If the angle between the lines joining the foci to an extremity of minor axis of an Ellipse is $90^{\\\\circ}$ its eccentricity is", "subject_id": null, "question_id": 611, "subject_name": null, "question_type": "Mcq"}, {"mark": 1, "choices": {"A": "$(4\\\\sqrt{2}, 2\\\\sqrt{3})$", "B": "$(4\\\\sqrt{3}, 2\\\\sqrt{3})$", "C": "$(4\\\\sqrt{3}, 2\\\\sqrt{2})$", "D": "$(4\\\\sqrt{2}, 2\\\\sqrt{2})$"}, "question": "Let the length of the latus rectum of an ellipse with its major axis along x-axis and centre at the origin, be 8. If the distance between the foci of this ellipse is equal to the length of its minor axis, then which one of the following points lies on it?", "subject_id": null, "question_id": 623, "subject_name": null, "question_type": "Mcq"}]',
-      shuffle_questions: 1,
-      test_type: "Practice",
-      assignment_id: 35,
-      group_id: 7,
-      attempt_id: 187,
-    },
-    template: {
-      template_id: 3,
-      org_id: 8107,
-      template_name: "JEE UI template 2",
-      total_duration_mins: 90,
-      show_timer: "dont_show",
-      can_review: null,
-      question_layout: "N",
-      questions_per_page: 10,
-      can_skip: null,
-      full_screen: "Y",
-      disable_right_click: "Y",
-      is_default: "Y",
-      custom_mark: null,
-      is_show_final_score: null,
-    },
-  },
-  status: 200,
-};
-let questionsRes = response.result.questions;
-questionPaperDetails = questionsRes;
-let parsedQuestions = JSON.parse(questionsRes.questions);
-templateConfig = response.result.template;
-showfinalScoreUser = templateConfig.is_show_final_score;
-questionsData = parsedQuestions.map((q, index) => ({
-  id: q.question_id,
-  subject: q.subject_name,
-  maxMark: q.mark,
-  question: q.question,
-  options: q.choices,
-  question_type: q.question_type,
-  // options: Array.isArray(q.choices) ? q.choices.map((c) => c.text) : [],
-  correct_answer: q.correct_answer,
-}));
-
-questionStates = {};
-questionsData.forEach((q) => {
-  questionStates[q.id] = {
-    status: "unattempted",
-    selectedAnswer: null,
-    isReviewMarked: false,
-    start_times: [],
-    completion_times: [],
-  };
-});
-prepareContainer();
-
 async function getQuestionPaperDetails() {
   showOverlay();
   let payload = {
@@ -123,19 +61,27 @@ async function getQuestionPaperDetails() {
         options: q.choices,
         question_type: q.question_type,
         correct_answer: q.correct_answer,
+        table: q.table_data,
+        images: q.images,
       }));
-
       questionStates = {};
-      questionsData.forEach((q) => {
-        questionStates[q.id] = {
-          status: "unattempted",
-          selectedAnswer: null,
-          isReviewMarked: false,
-          start_times: [],
-          completion_times: [],
-        };
-      });
+      if (questionsRes.temp_answer == null) {
+        questionsData.forEach((q) => {
+          questionStates[q.id] = {
+            status: "unattempted",
+            selectedAnswer: null,
+            isReviewMarked: false,
+            start_times: [],
+            completion_times: [],
+          };
+        });
+      } else {
+        questionStates = JSON.parse(questionsRes.temp_answer);
+      }
       prepareContainer();
+    } else {
+      alert(response.message);
+      window.history.back();
     }
   } catch (error) {
     console.error(error);
@@ -163,6 +109,7 @@ function prepareContainer() {
             .then(() => {
               document.addEventListener("fullscreenchange", async () => {
                 if (!document.fullscreenElement) {
+                  await submitTempAnswer();
                   window.history.back();
                 }
               });
@@ -183,9 +130,49 @@ function prepareContainer() {
   }
 }
 
+async function submitTempAnswer() {
+  showOverlay();
+  const payload = {
+    assignment_id: questionPaperDetails.assignment_id,
+    attempt_id: questionPaperDetails.attempt_id,
+    answer: JSON.stringify(questionStates),
+    user_id:
+      loggedInUser.register_num ||
+      loggedInUser.user_id ||
+      loggedInUser.staff_id,
+    function: "itad",
+  };
+
+  try {
+    let response = await postCall(
+      QuestionUploadEndPoint,
+      JSON.stringify(payload),
+    );
+
+    if (response.success) {
+      hideOverlay();
+      alert(response.message);
+    } else {
+      hideOverlay();
+      throw new Error(response.message || "Failed to submit test");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Error submitting test: " + error.message);
+    hideOverlay();
+  }
+}
+
 function initializeUI() {
   document.querySelector(".left-panel").style.fontSize = baseFontSize + "px";
   testStartTime = new Date().toISOString();
+  Object.entries(questionStates).forEach(([qId, state]) => {
+    if (state.hasOwnProperty("start_time")) {
+      if (new Date(state.start_time) < new Date(testStartTime)) {
+        testStartTime = state.start_time;
+      }
+    }
+  });
   timeLeft = templateConfig.total_duration_mins * 60;
   examFooter.style.display = "flex";
 
@@ -248,23 +235,6 @@ function initializeUI() {
 
     nextButton.onclick = () => {
       const totalPages = getTotalPages();
-      // const pageQuestions = getQuestionsForPage(currentPage);
-
-      // let unattemptedQuestions = pageQuestions.filter((q) => {
-      //   const state = questionStates[q.id];
-      //   return state.status === "unattempted" && !state.isReviewMarked;
-      // });
-
-      // if (
-      //   unattemptedQuestions.length > 0 &&
-      //   templateConfig.can_skip_question !== "Y"
-      // ) {
-      //   alert(
-      //     "Please attend the question before moving to the next one. If you want to skip it, click Skip and then proceed."
-      //   );
-      //   return;
-      // }
-
       if (currentPage < totalPages) {
         currentPage++;
         renderQuestionsPage();
@@ -507,6 +477,25 @@ async function renderQuestionsPage() {
       <div style="margin-bottom: 15px; line-height: 1.8; white-space: pre-wrap; color: #333;">${
         q.question
       }</div>
+
+      ${q.table ? `<p>${renderTableFromMarkdown(q.table)}</p>` : ""}
+      ${
+        q.images && q.images.length > 0
+          ? q.images
+              .map((imgObj) => {
+                if (imgObj.image_base64) {
+                  return `
+                  <div style="text-align: center; margin: 15px 0;">
+                    <img src="${imgObj.image_base64}" 
+                         alt="Question Image" 
+                         style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px; padding: 5px;" />
+                  </div>`;
+                }
+                return "";
+              })
+              .join("")
+          : ""
+      }
 
       <div style="font-weight: 600; margin-bottom: 10px; color: #555;">${type}</div>
       
@@ -949,4 +938,35 @@ document.addEventListener("readystatechange", async () => {
 
 async function initializePage() {
   await getQuestionPaperDetails();
+}
+
+function renderTableFromMarkdown(markdown) {
+  if (!markdown) return "";
+
+  const converter = new showdown.Converter({
+    tables: true,
+  });
+
+  const htmlContent = converter.makeHtml(markdown);
+
+  return `
+    <div class="question-table">
+      <style>
+        .question-table table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .question-table th,
+        .question-table td {
+          border: 1px solid #333;
+          padding: 8px;
+          text-align: center;
+        }
+        .question-table th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      ${htmlContent}
+    </div>
+  `;
 }

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
+                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">
+                      Test Performance Analysis By Class
+                    </h4>
+                    <div class="row mb-3 align-items-end">
+                      <div class="col mt-2">
+                        <label for="type" class="required">Type</label>
+                        <select
+                          class="form-select"
+                          name="type"
+                          id="type"
+                          required
+                        >
+                          <option value="On Going">On Going</option>
+                          <option value="Upcoming">Upcoming</option>
+                          <option value="Completed">Completed</option>
+                        </select>
+                      </div>
+
+                      <div class="col mt-4">
+                        <button
+                          class="btn btn-primary btn-color"
+                          type="button"
+                          id="network_button"
+                        >
+                          View Assigned QP
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mt-5" id="fetching_data" style="display: none">
+                      <p>Fetching Data</p>
+                    </div>
+
+                    <div
+                      class="result mt-4"
+                      id="result_div"
+                      style="display: none"
+                    >
+                      <table
+                        class="table table-bordered"
+                        width="100%"
+                        id="result_table"
+                      ></table>
+                    </div>
+
+                    <div
+                      class="modal fade"
+                      id="modal"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="modalLabel"
+                      aria-hidden="true"
+                    >
+                      <div
+                        class="modal-dialog modal-dialog-centered modal-xl"
+                        role="document"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitle">
+                              <b id="form_title">Students Locked Out</b>
+                            </h5>
+                            <button
+                              type="button"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <table
+                              class="table table-bordered"
+                              width="100%"
+                              id="locked_out_students_table"
+                            ></table>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                              id="close_id"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script type="module" src="/assets/js/pages/mcq/view_assigned_qp.js"></script>
+</html>

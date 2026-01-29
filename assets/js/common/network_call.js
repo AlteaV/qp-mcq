@@ -107,6 +107,10 @@ function postCallPreProcess(functionName) {
     functionName == "gup" ||
     functionName == "gst" ||
     functionName == "gast" ||
+    functionName == "itad" ||
+    functionName == "gaqao" ||
+    functionName == "glsd" ||
+    functionName == "autr" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

@@ -76,6 +76,10 @@ const menuItems = [
         href: "/mcq_show_question_paper.html",
         text: "Assign MCQ Question Paper",
       },
+      {
+        href: "/mcq_view_assigned_qp.html",
+        text: "View Assigned MCQ Question Paper",
+      },
     ],
   },
   {
@@ -177,11 +181,11 @@ permissionList.forEach((permission) => {
     let menuItemConfig = menuItems[i];
     if (menuItemConfig.dropdown) {
       let subItem = menuItemConfig.items.find(
-        (item) => item.text === permission
+        (item) => item.text === permission,
       );
       if (subItem) {
         let allowedItem = allowedActions.find(
-          (item) => item.text === menuItemConfig.text
+          (item) => item.text === menuItemConfig.text,
         );
         if (allowedItem) {
           // already exists, add to items
@@ -234,7 +238,7 @@ allowedActions.forEach((allowedItem) => {
       // Add specific dropdown items
       allowedItem.items.forEach((subItemText) => {
         const subItemConfig = menuItemConfig.items.find(
-          (item) => item.text == subItemText.text
+          (item) => item.text == subItemText.text,
         );
         if (subItemConfig) {
           if (currentPageUrl == subItemConfig.href) {
@@ -283,7 +287,7 @@ function buildDropdownMenuItem(itemConfig, navList) {
   dropdownToggle.href = "#!";
   dropdownToggle.classList.add(
     "dashboard-nav-item",
-    "dashboard-nav-dropdown-toggle"
+    "dashboard-nav-dropdown-toggle",
   );
   dropdownToggle.innerHTML = `<i class="${icon}"></i> ${text}`;
   dropdown.appendChild(dropdownToggle);
@@ -308,7 +312,7 @@ function buildNavigation() {
 
   allowedActions.forEach((allowedItem) => {
     let menuItemConfig = menuItems.find(
-      (item) => item.text == allowedItem.text
+      (item) => item.text == allowedItem.text,
     );
 
     if (!menuItemConfig) return; // Skip if menu item not found
@@ -326,7 +330,7 @@ function buildNavigation() {
       } else {
         allowedItem.items.forEach((item) => {
           const subMenuItem = menuItemConfig.items.find(
-            (m) => m.text === item.text
+            (m) => m.text === item.text,
           );
           if (subMenuItem) dropdownConfig.items.push(subMenuItem);
         });
@@ -342,7 +346,7 @@ function buildNavigation() {
             : allowedItem.items;
         dropdownItems.forEach((item) => {
           const subMenuItem = menuItemConfig.items.find(
-            (m) => m.text === item.text
+            (m) => m.text === item.text,
           );
           if (subMenuItem) buildMenuItem(subMenuItem, navList);
         });
@@ -363,7 +367,7 @@ function buildNavigation() {
     });
 
     var dropdownElementList = [].slice.call(
-      document.querySelectorAll(".dropdown-toggle")
+      document.querySelectorAll(".dropdown-toggle"),
     );
     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
       return new bootstrap.Dropdown(dropdownToggleEl);
