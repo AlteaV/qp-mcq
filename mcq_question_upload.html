@@ -221,7 +221,6 @@
                                       />
                                     </div>
                                     <div class="col">
-                                      <!-- btl select -->
                                       <label for="btl_level" class="required"
                                         >BTL Level</label
                                       >
@@ -231,17 +230,6 @@
                                         id="btl_level"
                                         required
                                       ></select>
-                                    </div>
-                                    <div class="col">
-                                      <!-- single image upload -->
-                                      <label for="image" class="">Image</label>
-                                      <input
-                                        type="file"
-                                        class="form-control"
-                                        name="image"
-                                        id="image"
-                                        accept="image/*"
-                                      />
                                     </div>
                                   </div>
                                 </form>
@@ -283,10 +271,13 @@
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
   <script defer src="/assets/js/packages/mathjax-config.js"></script>
+  <script src="/assets/js/packages/tinymce/tinymce.min.js"></script>
   <script
     defer
-    src="  https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
+    src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
   ></script>
+  <script src="/assets/js/packages/turndown/turndown.js"></script>
+  <script src="/assets/js/packages/turndown/turndown-plugin-gfm.js"></script>
   <script src="/assets/js/cache/get_btl.js"></script>
   <script
     type="module"

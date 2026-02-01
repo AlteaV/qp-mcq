@@ -50,8 +50,25 @@
                             ></select>
                           </div>
                         </div>
+                        <div class="col mt-2">
+                          <div class="d-none" id="question_type_div">
+                            <label for="question_type" class="required mb-0">
+                              Question Type
+                            </label>
+                            <select
+                              class="form-select"
+                              id="question_type"
+                              required
+                            >
+                              <option value="" disabled selected>Select</option>
+                              <option value="MCQ">MCQ</option>
+                              <option value="NUMERICAL">Numerical</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </form>
+
                     <div class="mt-5" id="fetching_data" style="display: none">
                       <p>Fetching Data</p>
                     </div>
@@ -67,15 +84,31 @@
                             <label for="question" class="required"
                               >Question</label
                             >
-                            <textarea
-                              class="form-control"
-                              id="question"
-                              rows="9"
-                              required
-                              placeholder="Type your question here..."
-                            ></textarea>
+                            <div
+                              id="question_editor"
+                              style="height: 300px"
+                            ></div>
+                            <input type="hidden" id="question" required />
+                            <div class="invalid-feedback">
+                              Please enter a question
+                            </div>
                           </div>
                         </div>
+
+                        <div class="row mt-2 d-none" id="numerical_answer_div">
+                          <div class="col-md-4">
+                            <label for="numerical_answer" class="required">
+                              Correct Answer
+                            </label>
+                            <input
+                              type="text"
+                              id="numerical_answer"
+                              class="form-control"
+                              placeholder="Enter correct numerical answer"
+                            />
+                          </div>
+                        </div>
+
                         <div class="row mt-2">
                           <div class="col mb-2">
                             <label for="option_a" class="required"
@@ -168,7 +201,6 @@
                             />
                           </div>
                           <div class="col">
-                            <!-- btl select -->
                             <label for="btl_level" class="required"
                               >BTL Level</label
                             >
@@ -179,19 +211,7 @@
                               required
                             ></select>
                           </div>
-                          <div class="col">
-                            <!-- single image upload -->
-                            <label for="image" class="">Image</label>
-                            <input
-                              type="file"
-                              class="form-control"
-                              name="image"
-                              id="image"
-                              accept="image/*"
-                            />
-                          </div>
                           <div class="col-auto" style="align-self: flex-end">
-                            <!-- input button to submit -->
                             <input
                               type="button"
                               class="btn btn-primary"
@@ -214,5 +234,8 @@
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
   <script src="/assets/js/cache/get_btl.js"></script>
+  <script src="/assets/js/packages/tinymce/tinymce.min.js"></script>
+  <script src="/assets/js/packages/turndown/turndown.js"></script>
+  <script src="/assets/js/packages/turndown/turndown-plugin-gfm.js"></script>
   <script type="module" src="/assets/js/pages/mcq/add_question.js"></script>
 </html>

@@ -1,5 +1,46 @@
 import Autocomplete from "https://cdn.jsdelivr.net/gh/lekoala/bootstrap5-autocomplete@master/autocomplete.js";
 
+// Initialize Turndown for HTML to Markdown conversion
+const turndownService = new TurndownService({
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
+  emDelimiter: "*",
+});
+
+// Add table support to Turndown
+turndownService.addRule("table", {
+  filter: "table",
+  replacement: function (content, node) {
+    const rows = Array.from(node.querySelectorAll("tr"));
+    if (rows.length === 0) return "";
+
+    let markdown = "\n";
+    rows.forEach((row, rowIndex) => {
+      const cells = Array.from(row.querySelectorAll("th, td"));
+      markdown +=
+        "| " +
+        cells.map((cell) => cell.textContent.trim()).join(" | ") +
+        " |\n";
+
+      if (rowIndex === 0) {
+        markdown += "| " + cells.map(() => "---").join(" | ") + " |\n";
+      }
+    });
+
+    return markdown + "\n";
+  },
+});
+
+// Keep images as-is in markdown
+turndownService.addRule("images", {
+  filter: "img",
+  replacement: function (content, node) {
+    const src = node.getAttribute("src") || "";
+    const alt = node.getAttribute("alt") || "";
+    return "![" + alt + "](" + src + ")";
+  },
+});
+
 const subject = document.getElementById("subject");
 
 const fileInput = document.getElementById("file_input");
@@ -21,7 +62,7 @@ let optionDInput = document.getElementById("option_d");
 let optionEInput = document.getElementById("option_e");
 let answerInput = document.getElementById("answer");
 let btlLevelDropDown = document.getElementById("btl_level");
-let imageInput = document.getElementById("image");
+
 let correctOptionDropDown = document.getElementById("correct_option");
 let saveButton = document.getElementById("form_submit");
 
@@ -49,6 +90,51 @@ fileUplaodButton.addEventListener("click", async () => {
 saveQuestionsButton.addEventListener("click", async () => {
   await submitQuestion();
 });
+
+async function initializeTinyMCE() {
+  tinymce.init({
+    selector: "#question",
+    license_key: "gpl",
+    branding: false,
+    promotion: false,
+    height: 300,
+    plugins: "image table",
+    toolbar: "undo redo | table image",
+    menubar: "edit insert format table",
+    menu: {
+      format: {
+        title: "Format",
+        items: [
+          "superscript subscript",
+          "|",
+          "formats",
+          "blocks",
+          "fontformats",
+          "fontsizes",
+          "|",
+          "align",
+          "lineheight",
+          "|",
+          "forecolor backcolor",
+          "|",
+          "removeformat",
+        ].join(" "),
+      },
+    },
+    image_dimensions: false,
+    image_advtab: false,
+    image_title: false,
+    object_resizing: "img",
+    images_upload_handler: function (blobInfo) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject("Image upload failed");
+        reader.readAsDataURL(blobInfo.blob());
+      });
+    },
+  });
+}
 
 let subjects = [];
 let sectionTopics = [];
@@ -224,6 +310,7 @@ async function previewQuestions() {
 //     return [];
 //   }
 // }
+
 async function showReportSection(data) {
   fetchingData.style.display = "none";
   if (data.length === 0) {
@@ -252,7 +339,15 @@ async function showReportSection(data) {
   questionsFormat = [];
   data.forEach((record, index) => {
     const choices = record.choices || {};
-    let questionHTML = `<p class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${record.question}</p>`;
+
+    // Convert question markdown to HTML for display
+    let questionText = record.question;
+    if (typeof showdown !== "undefined") {
+      const converter = new showdown.Converter();
+      questionText = converter.makeHtml(record.question);
+    }
+
+    let questionHTML = `<div class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${questionText}</div>`;
 
     if (record.images && record.images.length > 0) {
       record.images.forEach((imgObj) => {
@@ -362,10 +457,18 @@ async function showReportSection(data) {
         const inputId = `answer_${index}_${key}`;
         const isChecked = record.correct_answer == key ? "checked" : "";
 
+        // Convert choice markdown to HTML for display
+        let choiceText = choices[key];
+        if (typeof showdown !== "undefined") {
+          const converter = new showdown.Converter();
+          choiceText = converter.makeHtml(choices[key]);
+          choiceText = choiceText.replace(/^<p>|<\/p>$/g, "");
+        }
+
         choiceHTML += `
       <label for="${inputId}" style="display: flex; align-items: left; gap: 5px;">
         <input type="radio" id="${inputId}" name="answer_${index}" value="${key}" ${isChecked} />
-        <span class="latex">${choices[key]}</span>
+        <span class="latex">${choiceText}</span>
       </label>`;
       }
       choiceHTML += `</div>`;
@@ -388,6 +491,7 @@ async function showReportSection(data) {
       question: record.question,
       question_type: record.question_type,
       images: record.images || [],
+      table: record.table || null,
       choices: record.choices || null,
       correct_answer: record.correct_answer,
       section: record.section,
@@ -482,6 +586,7 @@ function setTopic(index, label, clear = true) {
   }
   setAutoComplete(topicField, Array.isArray(topicData) ? topicData : []);
 }
+
 function renderTableFromMarkdown(markdown) {
   if (!markdown) return "";
 
@@ -519,9 +624,38 @@ function deleteQuestion(data) {
   showReportSection(questions);
 }
 
-function editQuestion(data) {
+function buildEditorContent(questionData) {
+  // Convert question markdown to HTML for editor
+  let html = questionData.question || "";
+
+  if (typeof showdown !== "undefined") {
+    const converter = new showdown.Converter();
+    html = converter.makeHtml(questionData.question || "");
+  }
+
+  if (questionData.table) {
+    const converter = new showdown.Converter({
+      tables: true,
+    });
+    html += "<br>" + converter.makeHtml(questionData.table);
+  }
+
+  if (questionData.images && questionData.images.length > 0) {
+    questionData.images.forEach((img) => {
+      html += `<p><img src="${img.image_base64}" style="max-width:100%;height:auto;"></p>`;
+    });
+  }
+
+  return html;
+}
+
+async function editQuestion(data) {
   let questionData = data.question;
   let index = data.index;
+
+  await initializeTinyMCE();
+
+  const editor = tinymce.get("question");
 
   if (data.question.question_type == "Numerical") {
     optionRow.style.display = "none";
@@ -536,6 +670,9 @@ function editQuestion(data) {
     answerInput.setAttribute("required", "required");
     questionInput.value = questionData.question;
     answerInput.value = questionData.correct_answer || "";
+
+    const editorContent = buildEditorContent(questionData);
+    editor.setContent(editorContent);
   } else {
     optionRow.style.display = "flex";
     answerGroup.style.display = "none";
@@ -544,8 +681,12 @@ function editQuestion(data) {
   }
 
   if (data.question.question_type == "Mcq") {
+    const editorContent = buildEditorContent(questionData);
+    editor.setContent(editorContent);
+
     questionInput.value = questionData.question;
     answerInput.removeAttribute("required");
+
     optionAInput.value = questionData.choices.A || "";
     optionBInput.value = questionData.choices.B || "";
     optionCInput.value = questionData.choices.C || "";
@@ -574,6 +715,60 @@ function editQuestion(data) {
 
       const questionType = questionsFormat[index].question_type;
 
+      questionForm.classList.add("was-validated");
+      if (!questionForm.checkValidity()) return;
+
+      const editor = tinymce.get("question");
+
+      if (!editor) {
+        alert("Editor not initialized properly. Please try again.");
+        return;
+      }
+
+      const editorHTML = editor.getContent();
+
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = editorHTML;
+
+      let tableMarkdown = null;
+
+      // Extract table and convert to markdown
+      const tableEl = tempDiv.querySelector(
+        "figure.table table, .mce-item-table table, table",
+      );
+
+      if (tableEl) {
+        const rawTableHTML = tableEl.outerHTML;
+
+        // Convert table HTML to markdown using turndownService
+        tableMarkdown = turndownService.turndown(rawTableHTML);
+
+        // Remove table from question HTML
+        const wrapper =
+          tableEl.closest("figure.table") ||
+          tableEl.closest(".mce-item-table") ||
+          tableEl;
+
+        wrapper.remove();
+      }
+
+      // Extract images
+      const images = [];
+      tempDiv.querySelectorAll("img").forEach((img) => {
+        images.push({
+          image_base64: img.src,
+        });
+        img.remove();
+      });
+
+      // Convert remaining question content (HTML) to markdown
+      let questionMarkdown = turndownService.turndown(tempDiv.innerHTML.trim());
+
+      // Update question content in markdown format
+      questionsFormat[index].question = questionMarkdown;
+      questionsFormat[index].table = tableMarkdown;
+      questionsFormat[index].images = images;
+
       if (questionType == "Mcq") {
         if (
           correctOptionDropDown.value == "E" &&
@@ -586,16 +781,15 @@ function editQuestion(data) {
           return;
         }
 
-        questionsFormat[index].question = questionInput.value;
-        questionsFormat[index].choices.A = optionAInput.value;
-        questionsFormat[index].choices.B = optionBInput.value;
-        questionsFormat[index].choices.C = optionCInput.value;
-        questionsFormat[index].choices.D = optionDInput.value;
+        questionsFormat[index].choices.A = optionAInput.value.trim();
+        questionsFormat[index].choices.B = optionBInput.value.trim();
+        questionsFormat[index].choices.C = optionCInput.value.trim();
+        questionsFormat[index].choices.D = optionDInput.value.trim();
         if (
           questionsFormat[index].choices.E ||
           optionEInput.value.trim() != ""
         ) {
-          questionsFormat[index].choices.E = optionEInput.value;
+          questionsFormat[index].choices.E = optionEInput.value.trim();
         }
 
         let selectedBtlOption =
@@ -607,9 +801,10 @@ function editQuestion(data) {
         questionsFormat[index].correct_answer =
           correctOptionDropDown.value || questionData.correct_answer;
       } else if (questionType == "Numerical") {
-        questionsFormat[index].question = questionInput.value;
         questionsFormat[index].correct_answer = answerInput.value.trim();
       }
+
+      questions[index] = questionsFormat[index];
 
       showReportSection(questionsFormat);
       $("#modal").modal("hide");
@@ -739,11 +934,10 @@ async function submitQuestion() {
         temp.choices = null;
       }
 
-      for (let question of questions) {
-        if (question.question.trim() == q.question.trim() && question.table) {
-          temp.table = question.table;
-        }
+      if (q.table) {
+        temp.table = q.table;
       }
+
       if (q.correct_answer == null || q.correct_answer == "") {
         if (q.question_type == "Mcq") {
           alert(`Please choose a valid answer for question ${index + 1}`);
@@ -771,6 +965,7 @@ async function submitQuestion() {
       alert(response.message);
       hideOverlay();
     }
+    hideOverlay();
   } catch (error) {
     console.error("submitQuestion Error:", error);
     alert("Error submitting questions.");

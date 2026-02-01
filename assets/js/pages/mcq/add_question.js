@@ -1,3 +1,89 @@
+// Initialize Turndown for HTML to Markdown conversion
+const turndownService = new TurndownService({
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
+  emDelimiter: "*",
+});
+
+// Add table support to Turndown
+turndownService.addRule("table", {
+  filter: "table",
+  replacement: function (content, node) {
+    const rows = Array.from(node.querySelectorAll("tr"));
+    if (rows.length === 0) return "";
+
+    let markdown = "\n";
+    rows.forEach((row, rowIndex) => {
+      const cells = Array.from(row.querySelectorAll("th, td"));
+      markdown +=
+        "| " +
+        cells.map((cell) => cell.textContent.trim()).join(" | ") +
+        " |\n";
+
+      if (rowIndex === 0) {
+        markdown += "| " + cells.map(() => "---").join(" | ") + " |\n";
+      }
+    });
+
+    return markdown + "\n";
+  },
+});
+
+// Keep images as-is in markdown (preserve base64)
+turndownService.addRule("images", {
+  filter: "img",
+  replacement: function (content, node) {
+    const src = node.getAttribute("src") || "";
+    const alt = node.getAttribute("alt") || "";
+    return "![" + alt + "](" + src + ")";
+  },
+});
+
+async function initializeTinyMCE() {
+  tinymce.init({
+    selector: "#question_editor",
+    license_key: "gpl",
+    branding: false,
+    promotion: false,
+    height: 300,
+    plugins: "image table",
+    toolbar: "undo redo | table image",
+    menubar: "edit insert format table",
+    menu: {
+      format: {
+        title: "Format",
+        items: [
+          "superscript subscript",
+          "|",
+          "formats",
+          "blocks",
+          "fontformats",
+          "fontsizes",
+          "|",
+          "align",
+          "lineheight",
+          "|",
+          "forecolor backcolor",
+          "|",
+          "removeformat",
+        ].join(" "),
+      },
+    },
+    image_dimensions: false,
+    image_advtab: false,
+    image_title: false,
+    object_resizing: "img",
+    images_upload_handler: function (blobInfo) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject("Image upload failed");
+        reader.readAsDataURL(blobInfo.blob());
+      });
+    },
+  });
+}
+
 let subjectDropDown = document.getElementById("subject");
 var sectionDiv = document.getElementById("section_div");
 let sectionDropDown = document.getElementById("section");
@@ -19,6 +105,11 @@ let markInput = document.getElementById("mark");
 let btlLevelDropDown = document.getElementById("btl_level");
 let imageInput = document.getElementById("image");
 let correctOptionDropDown = document.getElementById("correct_option");
+let questionTypeDiv = document.getElementById("question_type_div");
+let questionTypeDropDown = document.getElementById("question_type");
+let numericalAnswerDiv = document.getElementById("numerical_answer_div");
+let numericalAnswerInput = document.getElementById("numerical_answer");
+let editor;
 
 var resultDiv = document.getElementById("result_div");
 
@@ -34,6 +125,7 @@ addQuestionBtn.addEventListener("click", async () => {
   if (!filterForm.checkValidity()) {
     return;
   }
+
   questionForm.classList.add("was-validated");
   if (!questionForm.checkValidity()) {
     return;
@@ -43,10 +135,21 @@ addQuestionBtn.addEventListener("click", async () => {
     alert("Please provide option E text\nOr select a different correct option");
     return;
   }
+  if (questionTypeDropDown.value === "Numerical") {
+    if (!isValidNumerical(numericalAnswerInput.value)) {
+      alert("Please provide valid Numerical input");
+      return;
+    }
+  }
+  function isValidNumerical(value) {
+    const regex = /^-?(\d+|\d+\/\d+)(i)?$/;
+    return regex.test(value.trim());
+  }
   uploadQuestion();
 });
 
 async function init() {
+  await initializeTinyMCE();
   await getSubjectsSectionsTopics();
   await fetchBtl();
 
@@ -62,24 +165,29 @@ subjectDropDown.addEventListener("change", () => {
   }
   let id = subjectDropDown.value;
   let new_sections = [];
-  let section = subjects.find((sub) => sub.subject_id == id);
+  let subject = subjects.find((sub) => sub.subject_id == id);
 
-  const data = JSON.parse(section.sections);
-
+  const data = JSON.parse(subject.sections);
   for (let s in data) {
     new_sections.push(data[s]);
   }
-
   renderSections(new_sections);
+
+  topicDropDown.innerHTML = "";
+  topicDiv.classList.add("d-none");
+
+  questionTypeDropDown.value = "";
+  questionTypeDropDown.disabled = true;
+  questionTypeDiv.classList.add("d-none");
+
   resultDiv.style.display = "none";
 });
 
 sectionDropDown.addEventListener("change", () => {
   if (sectionDropDown.value) {
     topicDiv.classList.remove("d-none");
-  } else {
-    topicDiv.classList.remove("d-none");
   }
+  // Populate topics
   let sectionId = sectionDropDown.value;
   let subjectId = subjectDropDown.value;
 
@@ -92,16 +200,31 @@ sectionDropDown.addEventListener("change", () => {
     new_topics.push(topics[t]);
   }
   renderTopics(new_topics);
+  questionTypeDropDown.value = "";
+  questionTypeDropDown.disabled = true;
+  questionTypeDiv.classList.add("d-none");
   resultDiv.style.display = "none";
 });
 
 topicDropDown.addEventListener("change", () => {
-  resultDiv.style.display = "block";
+  if (topicDropDown.value) {
+    questionTypeDiv.classList.remove("d-none");
+    questionTypeDropDown.disabled = false;
+    renderQuestionTypes();
+  } else {
+    questionTypeDropDown.disabled = true;
+    questionTypeDropDown.value = "";
+    questionTypeDiv.classList.add("d-none");
+  }
+  resultDiv.style.display = "none";
 });
 
 function renderSubjects(subjects) {
   let sub = subjects.map((subject) => {
-    return { html: subject["subject_name"], value: subject["subject_id"] };
+    return {
+      html: subject["subject_name"],
+      value: subject["subject_id"],
+    };
   });
   sub.unshift({
     html: "Please select the subject",
@@ -114,7 +237,10 @@ function renderSubjects(subjects) {
 
 function renderSections(sections) {
   let new_sections = sections.map((s) => {
-    return { html: s["section_name"], value: s["section_id"] };
+    return {
+      html: s["section_name"],
+      value: s["section_id"],
+    };
   });
   new_sections.unshift({
     html: "Please select the subject",
@@ -127,7 +253,10 @@ function renderSections(sections) {
 
 function renderTopics(topics) {
   let new_topics = topics.map((t) => {
-    return { html: t["topic_name"], value: t["topic_id"] };
+    return {
+      html: t["topic_name"],
+      value: t["topic_id"],
+    };
   });
   new_topics.unshift({
     html: "Please select the topic",
@@ -138,9 +267,33 @@ function renderTopics(topics) {
   setDropDown(new_topics, topicDropDown);
 }
 
+function renderQuestionTypes() {
+  const questionTypes = [
+    {
+      html: "Mcq",
+      value: "Mcq",
+    },
+    {
+      html: "Numerical",
+      value: "Numerical",
+    },
+  ];
+
+  questionTypes.unshift({
+    html: "Please select the question type",
+    value: "",
+    selected: true,
+    disabled: true,
+  });
+  setDropDown(questionTypes, questionTypeDropDown);
+}
+
 function renderBtlLevels(btlLevels) {
   let new_btl_levels = btlLevels.map((btl) => {
-    return { html: btl["level_name"], value: btl["level"] };
+    return {
+      html: btl["level_name"],
+      value: btl["level"],
+    };
   });
   new_btl_levels.unshift({
     html: "Please select the BTL level",
@@ -172,31 +325,124 @@ async function getSubjectsSectionsTopics() {
   }
 }
 
+questionTypeDropDown.addEventListener("change", () => {
+  const isMCQ = questionTypeDropDown.value === "Mcq";
+  const isNUM = questionTypeDropDown.value === "Numerical";
+  resultDiv.style.display = questionTypeDropDown.value ? "block" : "none";
+  document
+    .querySelectorAll("#option_a, #option_b, #option_c, #option_d, #option_e")
+    .forEach((input) => {
+      const col = input.closest(".col");
+      col.classList.toggle("d-none", isNUM);
+      if (input.id != "option_e") {
+        input.required = isMCQ;
+      }
+    });
+
+  const correctCol = correctOptionDropDown.closest(".col");
+  correctCol.classList.toggle("d-none", isNUM);
+  correctOptionDropDown.required = isMCQ;
+
+  numericalAnswerDiv.classList.toggle("d-none", isMCQ);
+  numericalAnswerInput.required = isNUM;
+});
+
+function extractEditorContent() {
+  const editorInstance = tinymce.get("question_editor");
+
+  if (!editorInstance) {
+    console.error("Editor instance not found");
+    return null;
+  }
+
+  const editorHTML = editorInstance.getContent();
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = editorHTML;
+
+  const result = {
+    question: "",
+    images: [],
+    table: null,
+  };
+
+  // Extract table and convert to markdown
+  const tableEl = tempDiv.querySelector("table");
+  if (tableEl) {
+    result.table = turndownService.turndown(tableEl.outerHTML);
+    tableEl.remove();
+  }
+
+  // Extract images
+  tempDiv.querySelectorAll("img").forEach((img) => {
+    result.images.push({
+      image_base64: img.src,
+    });
+    img.remove();
+  });
+
+  // Convert remaining content to markdown
+  result.question = turndownService.turndown(tempDiv.innerHTML.trim());
+  return result;
+}
+
 async function uploadQuestion() {
   let out = {};
   out["function"] = "isq";
 
-  out.question = sanitizeInput(questionInput.value);
-  out.choices = {
-    A: sanitizeInput(optionAInput.value),
-    B: sanitizeInput(optionBInput.value),
-    C: sanitizeInput(optionCInput.value),
-    D: sanitizeInput(optionDInput.value),
-  };
-  if (optionEInput.value.trim() != "") {
-    out.choices["E"] = sanitizeInput(optionEInput.value);
+  let question = {};
+
+  const editorContent = extractEditorContent();
+
+  // Store question in markdown format
+  question.question = editorContent.question;
+
+  // Store images array
+  question.img = editorContent.images.map((imgObj) => ({
+    img_id: "",
+    img_base: imgObj.image_base64,
+  }));
+
+  // Store table in markdown format
+  if (editorContent.table) {
+    question.table = editorContent.table;
   }
-  out.correct_answer = correctOptionDropDown.value;
-  out.topic_id = topicDropDown.value;
-  out.btl_level = btlLevelDropDown.value;
-  if (imageInput.files.length > 0) {
-    let files = imageInput.files;
-    out.image = await convertToBase64(files[0]);
-  } else {
-    out.image = null;
+
+  if (
+    question.question == "" &&
+    question.img.length == 0 &&
+    question.table == null
+  ) {
+    alert("Please enter a valid question");
+    hideOverlay();
+    return;
   }
-  out.mark = markInput.value;
-  out.staff_id = loggedInUser.staff_id;
+
+  const questionType = questionTypeDropDown.value;
+  question.question_type = questionType;
+
+  if (questionType === "Mcq") {
+    question.choices = {
+      A: sanitizeInput(optionAInput.value),
+      B: sanitizeInput(optionBInput.value),
+      C: sanitizeInput(optionCInput.value),
+      D: sanitizeInput(optionDInput.value),
+    };
+    if (optionEInput.value.trim() != "") {
+      question.choices["E"] = sanitizeInput(optionEInput.value);
+    }
+    question.correct_answer = correctOptionDropDown.value;
+  }
+
+  if (questionType === "Numerical") {
+    question.correct_answer = numericalAnswerInput.value.trim();
+    question.choices = null;
+  }
+
+  question.topic_id = topicDropDown.value;
+  question.btl_level = btlLevelDropDown.value;
+  question.mark = markInput.value;
+  out.staff_id = loggedInUser.user_id;
+  out.questions = [question];
 
   showOverlay();
   try {
@@ -238,4 +484,7 @@ document.addEventListener("readystatechange", async () => {
 
 function initializePage() {
   init();
+  resultDiv.style.display = "none";
+  questionTypeDiv.classList.add("d-none");
+  questionTypeDropDown.disabled = true;
 }
