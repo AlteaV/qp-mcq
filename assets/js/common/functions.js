@@ -197,15 +197,17 @@ function removeTags(str) {
   return str.replace(/(<([^>]+)>)/gi, "");
 }
 
-class TableStructure {
-  constructor(data, colSpan, rowSpan, classes, style, attributes) {
-    this.data = data;
-    this.colSpan = colSpan ?? "";
-    this.rowSpan = rowSpan ?? "";
-    this.classes = classes ?? "";
-    this.style = style ?? "";
-    this.attributes = attributes ?? "";
-  }
+if (typeof window.TableStructure === "undefined") {
+  window.TableStructure = class TableStructure {
+    constructor(data, colSpan, rowSpan, classes, style, attributes) {
+      this.data = data;
+      this.colSpan = colSpan ?? "";
+      this.rowSpan = rowSpan ?? "";
+      this.classes = classes ?? "";
+      this.style = style ?? "";
+      this.attributes = attributes ?? "";
+    }
+  };
 }
 
 function displayResult(tableData, element) {

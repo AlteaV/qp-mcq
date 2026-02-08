@@ -141,6 +141,10 @@ const menuItems = [
     dropdown: true,
     items: [
       {
+        href: "/qp_scan.html",
+        text: "Question Upload (Scan)",
+      },
+      {
         href: "/qp_excel_upload.html",
         text: "Question Upload (Excel)",
       },
