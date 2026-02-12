@@ -10,6 +10,8 @@ var subName = document.getElementById("subject_name");
 var secName = document.getElementById("sec_name");
 var formTitle = document.getElementById("form_title");
 var addBtnDiv = document.getElementById("add_btn_div");
+var levelDropdown = document.getElementById("level");
+var levelDiv = document.getElementById("level_div");
 
 var mcqSub = null;
 var mcqSubsec = null;
@@ -17,6 +19,7 @@ var curr_id = null;
 var mcqSec = null;
 var curr_data = null;
 var isEditing = true;
+var allLevel = null;
 
 submitButton.addEventListener("click", () => {
   if (!form.checkValidity()) {
@@ -34,6 +37,17 @@ submitButton.addEventListener("click", () => {
     addnewmcqSubsec();
   }
 });
+
+function populateLevel() {
+  allLevel.forEach((lev) => {
+    const option = document.createElement("option");
+    option.value = lev.level;
+    option.textContent = lev.level;
+    levelDropdown.appendChild(option);
+  });
+}
+
+levelDropdown.addEventListener("change", rendersubject);
 
 addNewmcqsub.addEventListener("click", () => {
   resetForm();
@@ -60,17 +74,25 @@ subName.addEventListener("change", () => {
   showResult(sections);
 });
 
-function rendersubject(data) {
-  let newData = data.map((subject) => {
-    return { html: subject["subject_name"], value: subject["subject_id"] };
+function rendersubject() {
+  resetResult(fetchingDataSection, resultDiv);
+  let existingSubjectId = [];
+  let level = levelDropdown.value;
+  let subjects = [];
+  mcqSub.forEach((s) => {
+    if (s.level == level && !existingSubjectId.includes(s.subject_id)) {
+      subjects.push({ html: s["subject_name"], value: s["subject_id"] });
+      existingSubjectId.push(s.subject_id);
+    }
   });
-  newData.unshift({
+
+  subjects.unshift({
     html: "Please select subject",
     value: "",
     disabled: true,
     selected: true,
   });
-  setDropDown(newData, subName);
+  setDropDown(subjects, subName);
 }
 
 function showResult(data) {
@@ -142,10 +164,6 @@ function resetForm() {
   $("#modal").modal("hide");
 }
 
-async function init() {
-  getSubname();
-}
-
 async function getSubname() {
   showOverlay();
   try {
@@ -164,7 +182,6 @@ async function getSubname() {
       mcqSub.forEach((s) => {
         s["sections"] = JSON.parse(s["sections"]);
       });
-      rendersubject(mcqSub);
     } else {
       alert("An error occurred while fetching McQ Subject data");
     }
@@ -277,6 +294,10 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
-function initializePage() {
-  init();
+async function initializePage() {
+  await Promise.all([fetchLevel()]);
+  allLevel = JSON.parse(sessionStorage.getItem("levels"));
+  await getSubname();
+  populateLevel();
+  hideOverlay();
 }

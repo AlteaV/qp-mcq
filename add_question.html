@@ -18,13 +18,26 @@
                     <form id="filter_form">
                       <div class="row mb-3 align-items-end">
                         <div class="col mt-2">
-                          <label for="subject" class="required">Subject</label>
+                          <label for="level" class="required">Level</label>
                           <select
                             class="form-select"
-                            name="subject"
-                            id="subject"
+                            name="level"
+                            id="level"
                             required
                           ></select>
+                        </div>
+                        <div class="col mt-2">
+                          <div class="d-none" id="subject_div">
+                            <label for="subject" class="required"
+                              >Subject</label
+                            >
+                            <select
+                              class="form-select"
+                              name="subject"
+                              id="subject"
+                              required
+                            ></select>
+                          </div>
                         </div>
                         <div class="col mt-2">
                           <div class="d-none" id="section_div">

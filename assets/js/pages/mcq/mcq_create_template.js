@@ -8,6 +8,7 @@ let createTemplateBtn = document.getElementById("create_template_btn");
 // add part fields
 let addPartsForm = document.getElementById("part_form");
 let partName = document.getElementById("part_name");
+let partLevel = document.getElementById("part_level");
 let partSubject = document.getElementById("part_subject");
 let partMarks = document.getElementById("part_marks");
 
@@ -19,6 +20,11 @@ let newPartDiv = document.getElementById("new_part_div");
 let btlLevels = [];
 let subjects = [];
 let parts = [];
+
+// event listener
+partLevel.addEventListener("change", () => {
+  setSubjects();
+});
 
 function createTemplate() {
   templateDetailsForm.classList.add("was-validated");
@@ -41,7 +47,8 @@ async function getSubjects() {
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
-      setSubjects();
+      // setSubjects();
+      setLevel();
     } else {
       throw new Error(response.message);
     }
@@ -66,15 +73,35 @@ function setPartName() {
   partName.value = letter;
 }
 
-function setSubjects() {
-  partSubject.innerHTML =
-    "<option value='' disabled selected>Select Subject</option>";
+function setLevel() {
+  partLevel.innerHTML =
+    "<option value='' disabled selected>Select Level</option>";
+
+  let levelId = [];
 
   subjects.forEach((subject) => {
     let option = document.createElement("option");
-    option.value = subject.subject_id;
-    option.text = subject.subject_name;
-    partSubject.appendChild(option);
+    if (!levelId.includes(subject.level_id)) {
+      option.value = subject.level_id;
+      option.text = subject.level;
+      partLevel.appendChild(option);
+      levelId.push(subject.level_id);
+    }
+  });
+}
+
+function setSubjects() {
+  partSubject.innerHTML =
+    "<option value='' disabled selected>Select Subject</option>";
+  let levelId = partLevel.value;
+
+  subjects.forEach((subject) => {
+    let option = document.createElement("option");
+    if (subject.level_id == levelId) {
+      option.value = subject.subject_id;
+      option.text = subject.subject_name;
+      partSubject.appendChild(option);
+    }
   });
 }
 
@@ -229,6 +256,7 @@ function assignQuestionsToSubject() {
   setPartName();
   newPartDiv.style.display = "none";
   partCreateBtn.style.display = "block";
+  partLevel.value = "";
   partSubject.value = "";
   partMarks.value = "";
 }

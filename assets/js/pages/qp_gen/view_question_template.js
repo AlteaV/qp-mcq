@@ -27,7 +27,7 @@ var table = $("#template_table").DataTable({
 
         for (let ques of questions) {
           text += `Part ${ques.part_name}<br>
-          ${ques.subject} : ${ques.max_marks} marks`;
+          ${ques.level} - ${ques.subject} : ${ques.max_marks} marks`;
         }
         return text;
       },

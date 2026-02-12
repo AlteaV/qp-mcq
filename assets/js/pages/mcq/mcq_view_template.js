@@ -18,7 +18,7 @@ var table = $("#template_table").DataTable({
         let questions = JSON.parse(full.template);
         let text = "";
         for (let ques of questions) {
-          text += `Part ${ques.part_name}  :  ${ques.subject}`;
+          text += `Part ${ques.part_name}  : ${ques.level} - ${ques.subject}`;
           text += `  :  ${ques.mark} marks<br>`;
         }
         return text;
@@ -107,6 +107,10 @@ function createQuestion(questionGroup) {
 
 function buildQuestionRow(ques) {
   let row = `<div class="row question mb-2">
+              <div class="col">
+                <label>Level</label>
+                <input type="text" class="form-control" value="${ques.level}" disabled/>
+              </div>
               <div class="col">
                 <label>Subject</label>
                 <input type="text" class="form-control" value="${ques.subject}" disabled/>

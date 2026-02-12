@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -36,6 +36,17 @@
                         </select>
                       </div>
                       <div class="col mt-2">
+                        <label for="level" class="required">Level</label>
+                        <select
+                          class="form-select"
+                          name="level"
+                          id="level"
+                          required
+                        >
+                          <option>Please select a Level</option>
+                        </select>
+                      </div>
+                      <div class="col mt-2 d-none" id="subject_div">
                         <label for="subject" class="required">Subject</label>
                         <select
                           class="form-select"

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -92,6 +92,19 @@
                                     </div>
                                   </div>
                                   <div class="col">
+                                    <label for="part_level" class="required"
+                                      >Choose a level:</label
+                                    >
+                                    <select
+                                      class="form-control part-questions"
+                                      id="part_level"
+                                      required
+                                    ></select>
+                                    <div class="invalid-feedback">
+                                      Please choose a level.
+                                    </div>
+                                  </div>
+                                  <div class="col">
                                     <label for="part_subject" class="required"
                                       >Choose a subject:</label
                                     >
@@ -99,12 +112,7 @@
                                       class="form-control part-questions"
                                       id="part_subject"
                                       required
-                                    >
-                                      <option value="">Select a subject</option>
-                                      <option value="Math">Math</option>
-                                      <option value="Science">Science</option>
-                                      <option value="History">History</option>
-                                    </select>
+                                    ></select>
                                     <div class="invalid-feedback">
                                       Please choose a subject.
                                     </div>

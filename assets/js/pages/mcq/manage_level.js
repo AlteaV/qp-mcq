@@ -5,13 +5,12 @@ var resultDiv = document.getElementById("result_div");
 var resultTable = document.getElementById("result_table");
 var fetchButton = document.getElementById("fetch_button");
 var submitButton = document.getElementById("form_submit");
-var addNewmcqsub = document.getElementById("network-button");
+var addNewmcqlevel = document.getElementById("network-button");
 
-var subID = document.getElementById("sub_id");
-var subName = document.getElementById("sub_name");
-var levelDropdown = document.getElementById("level");
-var levelDiv = document.getElementById("level_div");
-var subIdDiv = document.getElementById("sub_id_div");
+var levelID = document.getElementById("level_id");
+var levelIdDiv = document.getElementById("level_id_div");
+var levelName = document.getElementById("level_name");
+
 var isEditing = true;
 var formTitle = document.getElementById("form_title");
 
@@ -21,28 +20,18 @@ submitButton.addEventListener("click", () => {
     return;
   }
   if (isEditing) {
-    updateSubname();
+    updateLevelname();
   } else {
-    addnewMCQsubject();
+    addnewMCQLevel();
   }
 });
 
-function populateLevel() {
-  levelDropdown.value = "";
-  allLevel.forEach((lev) => {
-    const option = document.createElement("option");
-    option.value = lev.level;
-    option.textContent = lev.level;
-    levelDropdown.appendChild(option);
-  });
-}
-
-addNewmcqsub.addEventListener("click", () => {
+addNewmcqlevel.addEventListener("click", () => {
   resetForm();
   $("#modal").modal("show");
-  subIdDiv.classList.add("d-none");
+  levelIdDiv.classList.add("d-none");
   isEditing = false;
-  formTitle.innerHTML = "Add Subject";
+  formTitle.innerHTML = "Add Level";
 });
 
 function showResult(data) {
@@ -61,19 +50,17 @@ function showResult(data) {
         [
           new TableStructure("S.No"),
           new TableStructure("Level"),
-          new TableStructure("Subject Name"),
           new TableStructure("Actions"),
         ],
       ],
       tableBody: [],
     };
 
-    data.forEach((sub, index) => {
+    data.forEach((ml, index) => {
       tableData.tableBody.push([
         new TableStructure(index + 1),
-        new TableStructure(sub.level),
-        new TableStructure(sub.subject),
-        new TableStructure(createEditButton(sub)),
+        new TableStructure(ml.level),
+        new TableStructure(createEditButton(ml)),
       ]);
     });
 
@@ -82,18 +69,17 @@ function showResult(data) {
     resultDiv.style.display = "block";
 
     $("#result_table").on("click", ".edit-button", (event) => {
-      formTitle.innerHTML = "Update Subject";
-      subIdDiv.classList.remove("d-none");
+      formTitle.innerHTML = "Update Level";
+      levelIdDiv.classList.remove("d-none");
       isEditing = true;
       form.classList.remove("was-validated");
       form.reset();
       $("#modal").modal("show");
       let $button = $(event.currentTarget);
-      let sub = JSON.parse(decodeURIComponent($button.attr("data-full")));
-      curr_id = sub["id"];
-      editButtonClicked(sub["id"]);
-      subName.value = sub["subject"];
-      levelDropdown.value = sub["level"];
+      let manlevel = JSON.parse(decodeURIComponent($button.attr("data-full")));
+      curr_id = manlevel["id"];
+      editButtonClicked(manlevel["id"]);
+      levelName.value = manlevel["level"];
     });
   } catch (error) {
     hideOverlay();
@@ -103,10 +89,10 @@ function showResult(data) {
 
 function editButtonClicked(id) {
   try {
-    subID.innerHTML = id || "";
+    levelID.innerHTML = id || "";
     id = id;
     $("#modal").modal("show");
-    subIdDiv.classList.add("d-none");
+    levelIdDiv.classList.add("d-none");
   } catch (error) {
     console.error(error);
     hideOverlay();
@@ -119,27 +105,27 @@ function resetForm() {
   form.classList.remove("was-validated");
   $("#modal").modal("hide");
 }
-var mcqSub = null;
-var curr_id = null;
-var allLevel = null;
 
+var mcqLevel = null;
+var curr_id = null;
 async function init() {
-  getSubname();
+  getlevel();
 }
 
-async function getSubname() {
+async function getlevel() {
   showOverlay();
   try {
     let payload = JSON.stringify({
-      function: "gms",
+      function: "gl",
       org_id: loggedInUser.college_code,
     });
-    let response = await postCall(staffEndPoint, payload);
+
+    let response = await postCall(examCellEndPoint, payload);
     if (response.success) {
-      mcqSub = response.result.subject;
-      showResult(mcqSub);
+      mcqLevel = response.result.levels;
+      showResult(mcqLevel);
     } else {
-      alert("An error occurred while fetching McQ Subject data");
+      alert("An error occurred while fetching McQ Level data");
     }
     hideOverlay();
   } catch (error) {
@@ -148,41 +134,35 @@ async function getSubname() {
     alert("An error occurred while fetching data: " + error.message);
   }
 }
-async function updateSubname() {
+
+async function addnewMCQLevel() {
   showOverlay();
   try {
-    const userInputLevel = levelDropdown.value;
-    const userInputSubject = subName.value;
-    const isDuplicate = mcqSub.some(
-      (item) =>
-        item.level === userInputLevel && item.subject === userInputSubject,
-    );
+    const userInput = levelName.value;
+    const isDuplicate = mcqLevel.some((item) => item.level === userInput);
     if (isDuplicate) {
-      alert("Duplicate Subject Entry.");
+      alert("Duplicate Level Entry!");
       hideOverlay();
       return;
     }
-    let levelID = allLevel.find((item) => item.level === userInputLevel);
     let out = {
-      level_id: levelID.id,
-      sub_name: subName.value,
-      sub_id: subID.innerHTML,
+      level_name: levelName.value,
+      function: "al",
       staff_id: loggedInUser.staff_id,
-      function: "ums",
+      org_id: loggedInUser.college_code,
     };
-    let response = await postCall(staffEndPoint, JSON.stringify(out));
+    let response = await postCall(examCellEndPoint, JSON.stringify(out));
     if (response.success) {
-      for (let sub in mcqSub) {
-        if (curr_id == mcqSub[sub]["id"]) {
-          mcqSub[sub]["level"] = levelDropdown.value;
-          mcqSub[sub]["subject"] = subName.value;
-        }
-      }
-      showResult(mcqSub);
-      $("#modal").modal("hide");
+      sessionStorage.removeItem("levels");
+      mcqLevel.push({
+        id: response.result.id,
+        level: levelName.value,
+      });
+      showResult(mcqLevel);
       alert(response.message);
+      $("#modal").modal("hide");
     } else {
-      alert("An error occurred while fetching data");
+      alert("An error occurred while fetching data add" + response.message);
     }
     hideOverlay();
   } catch (error) {
@@ -192,44 +172,37 @@ async function updateSubname() {
   }
 }
 
-async function addnewMCQsubject() {
+async function updateLevelname() {
   showOverlay();
   try {
-    const userInputLevel = levelDropdown.value;
-    const userInputSubject = subName.value;
-    const isDuplicate = mcqSub.some(
-      (item) =>
-        item.level === userInputLevel && item.subject === userInputSubject,
-    );
+    const userInput = levelName.value;
+    const isDuplicate = mcqLevel.some((item) => item.level === userInput);
     if (isDuplicate) {
-      alert("Duplicate Level & Subject Entry.");
+      alert("Duplicate Level Entry!");
       hideOverlay();
       return;
     }
-
-    let levelID = allLevel.find((item) => item.level === userInputLevel);
-
     let out = {
-      level_id: levelID.id,
-      sub_name: subName.value,
-      function: "ams",
+      level_name: levelName.value,
+      level_id: levelID.innerHTML,
       staff_id: loggedInUser.staff_id,
-      org_id: loggedInUser.college_code,
+      function: "ul",
     };
-    let response = await postCall(staffEndPoint, JSON.stringify(out));
+    let response = await postCall(examCellEndPoint, JSON.stringify(out));
     if (response.success) {
-      mcqSub.push({
-        id: response.result.id,
-        subject: subName.value,
-        level: levelDropdown.value,
-      });
-      showResult(mcqSub);
-      alert(response.message);
+      sessionStorage.removeItem("levels");
+      for (let ml in mcqLevel) {
+        if (curr_id == mcqLevel[ml]["id"]) {
+          mcqLevel[ml]["level"] = levelName.value;
+        }
+      }
+      showResult(mcqLevel);
       $("#modal").modal("hide");
+      alert(response.message);
     } else {
-      alert("An error occurred while fetching data add");
+      alert("An error occurred while fetching data");
+      hideOverlay();
     }
-    hideOverlay();
   } catch (error) {
     hideOverlay();
     console.error("Error fetching request: ", error);
@@ -255,10 +228,6 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
-async function initializePage() {
-  await Promise.all([fetchLevel()]);
-  allLevel = JSON.parse(sessionStorage.getItem("levels"));
-  populateLevel();
+function initializePage() {
   init();
-  hideOverlay();
 }

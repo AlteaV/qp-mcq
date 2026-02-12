@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,14 +16,30 @@
                     <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
                     <h4 class="c-grey-900 mB-20 mt-6 mb-3">Topic Management</h4>
                     <div class="row mb-3 align-items-end">
-                      <div class="col mt-2">
-                        <label for="subject" class="required">Subject</label>
+                      <div class="col" id="level_div">
+                        <label for="level_name" class="required">Level</label>
                         <select
                           class="form-select"
-                          name="subject"
-                          id="subject"
+                          id="level"
+                          name="level"
                           required
-                        ></select>
+                        >
+                          <option value="" selected disabled>
+                            Choose level
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="col mt-2">
+                        <div class="d-none" id="subject_div">
+                          <label for="subject" class="required">Subject</label>
+                          <select
+                            class="form-select"
+                            name="subject"
+                            id="subject"
+                            required
+                          ></select>
+                        </div>
                       </div>
                       <div class="col mt-2">
                         <div class="d-none" id="section_div">
@@ -94,7 +110,7 @@
                               <input type="hidden" id="editIndex" value="-1" />
                               <div class="row mb-3">
                                 <div class="col-auto">
-                                  <label for="value" class="required"
+                                  <label for="topic_name" class="required"
                                     >Topic</label
                                   >
 
@@ -148,5 +164,6 @@
     </div>
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="assets/js/cache/get_level.js"></script>
   <script type="module" src="/assets/js/pages/mcq/manage_topic.js"></script>
 </html>

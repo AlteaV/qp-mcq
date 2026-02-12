@@ -14,7 +14,7 @@ const actions = {
 
 const menuItems = [
   {
-    text: "Users",
+    text: "User Mangement",
     icon: "fas fa-chalkboard-teacher",
     dropdown: true,
     items: [
@@ -29,10 +29,14 @@ const menuItems = [
     ],
   },
   {
-    text: "Questions Management",
+    text: "Classification Mangement",
     icon: "fas fa-book",
     dropdown: true,
     items: [
+      {
+        href: "/manage_level.html",
+        text: "Manage Levels",
+      },
       {
         href: "/manage_subject.html",
         text: "Manage Subjects",
@@ -45,6 +49,13 @@ const menuItems = [
         href: "/manage_topic.html",
         text: "Manage Topics",
       },
+    ],
+  },
+  {
+    text: "Questions Management",
+    icon: "fas fa-book",
+    dropdown: true,
+    items: [
       {
         href: "/add_question.html",
         text: "Add Question",
@@ -53,6 +64,13 @@ const menuItems = [
         href: "/mcq_question_upload.html",
         text: "MCQ Question Upload",
       },
+    ],
+  },
+  {
+    text: "Template Management",
+    icon: "fab fa-figma",
+    dropdown: true,
+    items: [
       {
         href: "/mcq_create_template.html",
         text: "Create McQ Template",
@@ -60,6 +78,10 @@ const menuItems = [
       {
         href: "/mcq_view_template.html",
         text: "View McQ Template",
+      },
+      {
+        href: "/create_ui_template.html",
+        text: "Manage UI Templates",
       },
     ],
   },
@@ -83,13 +105,33 @@ const menuItems = [
     ],
   },
   {
-    text: "MCQ UI template",
-    icon: "fab fa-figma",
+    text: "QP Generator",
+    icon: "fas fa-pager",
     dropdown: true,
     items: [
       {
-        href: "/create_ui_template.html",
-        text: "Manage UI Templates",
+        href: "/qp_scan.html",
+        text: "Question Upload (Scan)",
+      },
+      {
+        href: "/qp_excel_upload.html",
+        text: "Question Upload (Excel)",
+      },
+      {
+        href: "/qp_create_question_template.html",
+        text: "Create Question Template",
+      },
+      {
+        href: "/qp_view_question_template.html",
+        text: "View Question Template",
+      },
+      {
+        href: "/qp_generate_question_paper.html",
+        text: "Generate Question Paper",
+      },
+      {
+        href: "/qp_view_question_paper.html",
+        text: "View Question Paper",
       },
     ],
   },
@@ -132,37 +174,6 @@ const menuItems = [
       {
         href: "/self_learning.html",
         text: "Self Learning",
-      },
-    ],
-  },
-  {
-    text: "QP Generator",
-    icon: "fas fa-pager",
-    dropdown: true,
-    items: [
-      {
-        href: "/qp_scan.html",
-        text: "Question Upload (Scan)",
-      },
-      {
-        href: "/qp_excel_upload.html",
-        text: "Question Upload (Excel)",
-      },
-      {
-        href: "/qp_create_question_template.html",
-        text: "Create Question Template",
-      },
-      {
-        href: "/qp_view_question_template.html",
-        text: "View Question Template",
-      },
-      {
-        href: "/qp_generate_question_paper.html",
-        text: "Generate Question Paper",
-      },
-      {
-        href: "/qp_view_question_paper.html",
-        text: "View Question Paper",
       },
     ],
   },

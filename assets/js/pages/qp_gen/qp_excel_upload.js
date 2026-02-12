@@ -1,9 +1,10 @@
+const levelDropDown = document.getElementById("level");
 const subject = document.getElementById("subject");
 
 const fileInput = document.getElementById("file_input");
 const fileUplaodButton = document.getElementById("submit_excel");
 const saveQuestionsButton = document.getElementById("save_question");
-const fetchingData = document.getElementById("fetching_data");
+const fetchingDataSection = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
 const resultTable = document.getElementById("result_table");
 const downloadButton = document.getElementById("download_excel");
@@ -19,6 +20,12 @@ let btlLevelDropDown = document.getElementById("btl_level");
 let imageInput = document.getElementById("image");
 let correctOptionDropDown = document.getElementById("correct_option");
 let saveButton = document.getElementById("form_submit");
+
+// event listener
+levelDropDown.addEventListener("change", () => {
+  resetResult(fetchingDataSection, resultDiv);
+  renderSubjects();
+});
 
 fileInput.addEventListener("click", () => {
   resultDiv.style.display = "none";
@@ -51,18 +58,54 @@ async function init() {
   getSectionTopic(selectedSubjectId);
 }
 
-function renderSubject(sub) {
-  let subj = sub.map((subject) => {
+function renderLevels() {
+  let levels = [];
+  subjects.forEach((s) => {
+    if (!levels.includes(s.level)) {
+      levels.push(s.level);
+    }
+  });
+
+  levels = levels.sort((a, b) => {
+    return a.localeCompare(b);
+  });
+  let lvl = levels.map((level) => {
     return {
-      html: subject.subject,
-      value: subject.id,
+      html: level,
+      value: level,
     };
   });
-  setDropDown(subj, subject);
+  lvl.unshift({
+    html: "Please select the Level",
+    value: "",
+    selected: true,
+    disabled: true,
+  });
+  setDropDown(lvl, levelDropDown);
+}
+
+function renderSubjects() {
+  let level = levelDropDown.value;
+  let sub = [];
+  subjects.forEach((subject) => {
+    if (subject.level == level) {
+      sub.push({
+        html: subject["subject"],
+        value: subject["id"],
+      });
+    }
+  });
+  sub.unshift({
+    html: "Please select the subject",
+    value: "",
+    selected: true,
+    disabled: true,
+  });
+  setDropDown(sub, subject);
 }
 
 // get subject
-let subjectMap = [];
+let subjects = [];
 
 async function getSubjects() {
   try {
@@ -74,9 +117,9 @@ async function getSubjects() {
     let response = await postCall(QuestionUploadEndPoint, payload);
 
     if (response.success) {
-      subjectMap = response.result.subject;
+      subjects = response.result.subject;
 
-      renderSubject(subjectMap);
+      renderLevels();
     }
     hideOverlay();
   } catch (error) {
@@ -507,98 +550,6 @@ async function showReportSection(data) {
     alert("Error rendering mathematical expressions.");
   }
 }
-
-// function renderTableFromMarkdown(markdown) {
-//     if (!markdown) return "";
-
-//     const converter = new showdown.Converter({
-//         tables: true,
-//     });
-
-//     const htmlContent = converter.makeHtml(markdown);
-
-//     return `
-//     <div class="question-table">
-//       <style>
-//         .question-table table {
-//           width: 100%;
-//           border-collapse: collapse;
-//         }
-//         .question-table th,
-//         .question-table td {
-//           border: 1px solid #333;
-//           padding: 8px;
-//           text-align: center;
-//         }
-//         .question-table th {
-//           background-color: #f2f2f2;
-//         }
-//       </style>
-//       ${htmlContent}
-//     </div>
-//   `;
-// }
-
-// function editQuestion(data) {
-//     const index = data.index;
-//     const questionData = data.question;
-
-//     questionInput.value = questionData.question || "";
-
-//     imageInput.value = "";
-
-//     $("#modal").modal("show");
-
-//     $("#modal")
-//         .off("click", "#form_submit")
-//         .on("click", "#form_submit", async (event) => {
-//             event.preventDefault();
-//             questionForm.classList.add("was-validated");
-
-//             if (!questionForm.checkValidity()) return;
-
-//             let updatedImages = questionsFormat[index].images || [];
-//             if (imageInput.files.length > 0) {
-//                 updatedImages = await getBase64Images(imageInput.files);
-//             }
-
-//             const sectionDropdown = document.getElementById(`section_input_${index}`);
-//             const topicDropdown = document.getElementById(`topic_input_${index}`);
-//             const btlDropdown = document.getElementById(`btl_input_${index}`);
-//             const marksInput = document.getElementById(`marks_input_${index}`);
-
-//             questionsFormat[index].question = questionInput.value;
-//             questionsFormat[index].images = updatedImages;
-//             questionsFormat[index].section_id = sectionDropdown ? sectionDropdown.value : questionsFormat[index].section_id;
-//             questionsFormat[index].topic_id = topicDropdown ? topicDropdown.value : questionsFormat[index].topic_id;
-//             questionsFormat[index].btl_level = btlDropdown ? btlDropdown.value : questionsFormat[index].btl_level;
-//             questionsFormat[index].marks = marksInput ? parseInt(marksInput.value, 10) || 1 : questionsFormat[index].marks;
-
-//             showReportSection(questionsFormat);
-
-//             $("#modal").modal("hide");
-//         });
-// }
-
-// async function getBase64Images(files) {
-//     const base64Images = [];
-//     for (const file of files) {
-//         const base64 = await toBase64(file);
-//         base64Images.push({
-//             image_base64: base64
-//         });
-//     }
-//     return base64Images;
-// }
-
-// function toBase64(file) {
-//     return new Promise((resolve, reject) => {
-//         const reader = new FileReader();
-//         reader.onload = () => resolve(reader.result);
-//         reader.onerror = reject;
-//         reader.readAsDataURL(file);
-//     });
-// }
 
 function deleteQuestion(data) {
   let index = data.index;

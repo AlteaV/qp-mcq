@@ -26,7 +26,7 @@ function initTable() {
           questions.sort((a, b) => a.part_name.localeCompare(b.part_name));
           let text = "";
           for (let ques of questions) {
-            text += `Part ${ques.part_name}  :  ${ques.subject}`;
+            text += `Part ${ques.part_name}  : ${ques.level} - ${ques.subject}`;
             text += `  :  ${ques.mark} marks<br>`;
           }
           return text;

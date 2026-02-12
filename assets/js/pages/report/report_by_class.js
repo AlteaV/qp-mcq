@@ -3,27 +3,35 @@ var resultTable = document.getElementById("result_table");
 var resultDiv = document.getElementById("result_div");
 var registerNumber = document.getElementById("register_num");
 var viewReport = document.getElementById("view_report");
-var subjectDropDowm = document.getElementById("subject");
+var levelDropDown = document.getElementById("level");
+var subjectDropDown = document.getElementById("subject");
 var sesctionDropDown = document.getElementById("section");
 var sectionDiv = document.getElementById("section_div");
 
 var subjects = null;
 var sections = null;
 
+// event listener
+levelDropDown.addEventListener("change", () => {
+  resetResult(fetchingDataSection, resultDiv);
+  sectionDiv.classList.add("d-none");
+  renderSubjects();
+});
+
 viewReport.addEventListener("click", async () => {
-  if (subjectDropDowm.value && sesctionDropDown.value) {
+  if (subjectDropDown.value && sesctionDropDown.value) {
     await getReportByTopic();
   } else {
     alert("Please provide subject and section. ");
   }
 });
 
-subjectDropDowm.addEventListener("change", () => {
+subjectDropDown.addEventListener("change", () => {
   resetResult(fetchingDataSection, resultDiv);
-  if (subjectDropDowm.value) {
+  if (subjectDropDown.value) {
     sectionDiv.classList.remove("d-none");
   }
-  let id = subjectDropDowm.value;
+  let id = subjectDropDown.value;
   let new_sections = [];
   let data = subjects.find((s) => s.subject_id == id)["sections"];
   try {
@@ -77,9 +85,43 @@ function showReportSection(data) {
   hideOverlay();
 }
 
-function renderSubjects(subjects) {
-  let sub = subjects.map((subject) => {
-    return { html: subject["subject_name"], value: subject["subject_id"] };
+function renderLevels() {
+  let levels = [];
+  subjects.forEach((s) => {
+    if (!levels.includes(s.level)) {
+      levels.push(s.level);
+    }
+  });
+
+  levels = levels.sort((a, b) => {
+    return a.localeCompare(b);
+  });
+
+  let lvl = levels.map((level) => {
+    return {
+      html: level,
+      value: level,
+    };
+  });
+  lvl.unshift({
+    html: "Please select the Level",
+    value: "",
+    selected: true,
+    disabled: true,
+  });
+  setDropDown(lvl, levelDropDown);
+}
+
+function renderSubjects() {
+  let level = levelDropDown.value;
+  let sub = [];
+  subjects.forEach((subject) => {
+    if (subject.level == level) {
+      sub.push({
+        html: subject["subject_name"],
+        value: subject["subject_id"],
+      });
+    }
   });
   sub.unshift({
     html: "Please select the subject",
@@ -87,7 +129,7 @@ function renderSubjects(subjects) {
     selected: true,
     disabled: true,
   });
-  setDropDown(sub, subjectDropDowm);
+  setDropDown(sub, subjectDropDown);
 }
 
 function renderSections(sections) {
@@ -119,7 +161,7 @@ async function getSubjectAndSection() {
 
     if (response.success) {
       subjects = response.result.subjects;
-      renderSubjects(subjects);
+      renderLevels();
     }
     hideOverlay();
   } catch (error) {

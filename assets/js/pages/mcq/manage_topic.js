@@ -5,6 +5,7 @@ var registerNumber = document.getElementById("register_num");
 var addBtn = document.getElementById("add_btn");
 var subjectDropDowm = document.getElementById("subject");
 var sesctionDropDown = document.getElementById("section");
+var subjectDiv = document.getElementById("subject_div");
 var sectionDiv = document.getElementById("section_div");
 var form = document.getElementById("form");
 var addBtnDiv = document.getElementById("add_btn_div");
@@ -12,11 +13,14 @@ var formSubmit = document.getElementById("form_submit");
 var modalTitle = document.getElementById("modal_title");
 var isEditing = false;
 var topicName = document.getElementById("topic_name");
+var levelDropdown = document.getElementById("level");
+var levelDiv = document.getElementById("level_div");
 
 var subjects = null;
 var sections = null;
 var topics = null;
 var cur_data = null;
+var allLevel = null;
 
 addBtn.addEventListener("click", async () => {
   resetForm();
@@ -74,6 +78,22 @@ sesctionDropDown.addEventListener("change", () => {
   showReportSection(new_topics);
 });
 
+function populateLevel() {
+  allLevel.forEach((lev) => {
+    const option = document.createElement("option");
+    option.value = lev.level;
+    option.textContent = lev.level;
+    levelDropdown.appendChild(option);
+  });
+}
+
+levelDropdown.addEventListener("change", () => {
+  resultDiv.style.display = "none";
+  sectionDiv.classList.add("d-none");
+  addBtnDiv.classList.add("d-none");
+  renderSubjects();
+});
+
 function showReportSection(data) {
   fetchingDataSection.style.display = "none";
   if (!data || data.length === 0) {
@@ -121,17 +141,26 @@ function indertDefaultData(data) {
   topicName.value = data["topic"];
 }
 
-function renderSubjects(subjects) {
-  let sub = subjects.map((subject) => {
-    return { html: subject["subject"], value: subject["id"] };
+function renderSubjects() {
+  resetResult(fetchingDataSection, resultDiv);
+  let existingSubjectId = [];
+  let level = levelDropdown.value;
+  let subjectsValues = [];
+  subjects.forEach((s) => {
+    if (s.level == level && !existingSubjectId.includes(s.id)) {
+      subjectsValues.push({ html: s["subject"], value: s["id"] });
+      existingSubjectId.push(s.id);
+    }
   });
-  sub.unshift({
-    html: "Please select the subject",
+
+  subjectsValues.unshift({
+    html: "Please select subject",
     value: "",
-    selected: true,
     disabled: true,
+    selected: true,
   });
-  setDropDown(sub, subjectDropDowm);
+  setDropDown(subjectsValues, subjectDropDowm);
+  subjectDiv.classList.remove("d-none");
 }
 
 function renderSections(sections) {
@@ -153,10 +182,6 @@ function resetForm() {
   $("#modal").modal("hide");
 }
 
-async function init() {
-  getSubjectsSectionsTopics();
-}
-
 async function getSubjectsSectionsTopics() {
   showOverlay();
   try {
@@ -171,7 +196,6 @@ async function getSubjectsSectionsTopics() {
       subjects = response.result.subjects;
       sections = response.result.sections;
       topics = response.result.topics;
-      renderSubjects(subjects);
     }
     hideOverlay();
   } catch (error) {
@@ -273,6 +297,10 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
-function initializePage() {
-  init();
+async function initializePage() {
+  await Promise.all([fetchLevel()]);
+  allLevel = JSON.parse(sessionStorage.getItem("levels"));
+  await getSubjectsSectionsTopics();
+  populateLevel();
+  hideOverlay();
 }

@@ -6,8 +6,10 @@ let subjects = [];
 let sectionTopics = [];
 let questions = [];
 let questionsFormat = [];
+let scanId = "";
 
 // DOM element references
+const levelDropDown = document.getElementById("level");
 let subjectDropDown = document.getElementById("subject");
 let scanQuestionButton = document.getElementById("scan_question");
 let fileInput = document.getElementById("file_input");
@@ -15,9 +17,17 @@ let fetchingData = document.getElementById("fetching_data");
 let resultTable = document.getElementById("result_table");
 let resultDiv = document.getElementById("result_div");
 let saveQuestionsButton = document.getElementById("save_question");
+const statusDiv = document.getElementById("status_div");
+const statusTable = document.getElementById("status_table");
+const scanQuestionInputDiv = document.getElementById("scan_question_input_div");
 
 // event listeners
 scanQuestionButton.addEventListener("click", scanQuestionPaper);
+
+levelDropDown.addEventListener("change", () => {
+  resultDiv.style.display = "none";
+  setSubjects();
+});
 
 saveQuestionsButton.addEventListener("click", async () => {
   await submitQuestion();
@@ -32,7 +42,7 @@ async function getSubjects() {
     ) {
       let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
       subjects = subjectMap;
-      setSubjects();
+      selLevel();
       hideOverlay();
       return;
     }
@@ -46,7 +56,7 @@ async function getSubjects() {
 
       subjects.sort((a, b) => a.subject.localeCompare(b.subject));
       sessionStorage.setItem("subjects", JSON.stringify(subjects));
-      setSubjects();
+      selLevel();
     }
     hideOverlay();
   } catch (error) {
@@ -55,9 +65,37 @@ async function getSubjects() {
   }
 }
 
+function selLevel() {
+  let levels = [];
+
+  levelDropDown.innerHTML =
+    "<option value='' disabled selected>Select Level</option>";
+
+  subjects.forEach((s) => {
+    if (!levels.includes(s.level)) {
+      let option = document.createElement("option");
+      option.value = s.level;
+      option.text = s.level;
+      levelDropDown.appendChild(option);
+      levels.push(s.level);
+    }
+  });
+  subject.value = "Choose a Level";
+  subject.disabled = true;
+}
+
 function setSubjects() {
-  const subjectNames = subjects.map((s) => s.subject);
+  subjectDropDown.value = "";
+  let level = levelDropDown.value;
+  let subjectNames = [];
+  subjects.forEach((s) => {
+    if (s.level == level) {
+      subjectNames.push(s.subject);
+    }
+  });
+
   setAutoComplete(subjectDropDown, subjectNames);
+  subjectDropDown.disabled = false;
 }
 
 async function scanQuestionPaper() {
@@ -81,6 +119,7 @@ async function scanQuestionPaper() {
       subject: subjectName,
       filedata: base64,
       org_id: loggedInUser.college_code,
+      created_by: loggedInUser.staff_id,
       subject_id: subjectId,
     };
     const payload = JSON.stringify(out);
@@ -89,19 +128,12 @@ async function scanQuestionPaper() {
 
     let retryCount = 0;
     let maxRetries = 10;
+    scanId = response.result.id;
 
     while (retryCount < maxRetries) {
       await new Promise((resolve) => setTimeout(resolve, 10000));
 
-      let getScannedDataPayload = JSON.stringify({
-        function: "gstd",
-        id: response.result.id,
-      });
-
-      let retryResponse = await postCall(
-        QuestionUploadEndPoint,
-        getScannedDataPayload,
-      );
+      let retryResponse = await getScannedQuestions(response.result.id);
 
       if (retryResponse.message === "Completed") {
         questions = retryResponse.result.data.questions;
@@ -124,15 +156,23 @@ async function scanQuestionPaper() {
       retryCount++;
     }
     if (retryCount === maxRetries) {
-      alert(
-        "Processing is taking longer than expected. Please try again later.",
-      );
-      hideOverlay();
+      alert("Processing is taking longer than expected. Please wait.");
+      scanQuestionInputDiv.style.display = "none";
+      checkExistingScan();
     }
   } catch (error) {
     console.error("previewQuestions Error:", error);
     alert("Error processing PDF.");
   }
+}
+
+async function getScannedQuestions(id) {
+  let getScannedDataPayload = JSON.stringify({
+    function: "gstd",
+    id: id,
+  });
+
+  return await postCall(QuestionUploadEndPoint, getScannedDataPayload);
 }
 
 async function showReportSection(data) {
@@ -326,6 +366,8 @@ async function showReportSection(data) {
 
   displayResult(tableData, resultTable);
   resultDiv.style.display = "block";
+  scanQuestionInputDiv.style.display = "flex";
+  statusDiv.style.display = "none";
 
   $("#result_table")
     .off("click", ".delete-button")
@@ -489,6 +531,7 @@ async function submitQuestion() {
     const out = {
       function: "ss",
       subject_id: subjectId,
+      scan_id: scanId,
       created_by: loggedInUser.staff_id,
       sections: [],
     };
@@ -618,6 +661,122 @@ async function submitQuestion() {
   }
 }
 
+async function checkExistingScan() {
+  try {
+    showOverlay();
+    let payload = JSON.stringify({
+      function: "cqss",
+      org_id: loggedInUser.college_code,
+      user_id:
+        loggedInUser.register_num ||
+        loggedInUser.user_id ||
+        loggedInUser.staff_id,
+    });
+    let response = await postCall(QuestionUploadEndPoint, payload);
+    if (response.success) {
+      let status = response.result.status;
+      handleExistingScan(status);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching subjects");
+    hideOverlay();
+  }
+}
+
+function handleExistingScan(data) {
+  if (data) {
+    let button = "";
+    if (data.type == "QpGen") {
+      if (data.status == "Completed") {
+        button = createButton(
+          data.id,
+          "",
+          "view-button",
+          "View Scanned Questions",
+          true,
+        );
+      } else {
+        button = createButton(
+          data.id,
+          "",
+          "reload-button",
+          "Check Status",
+          true,
+        );
+      }
+    } else {
+      button = "There is a pending scan in MCQ";
+    }
+    const tableData = {
+      tableHeader: [
+        [
+          new TableStructure("Subject"),
+          new TableStructure("Scan Date Time"),
+          new TableStructure("Status"),
+          new TableStructure("Action"),
+        ],
+      ],
+      tableBody: [
+        [
+          new TableStructure(data.subject),
+          new TableStructure(data.scan_time),
+          new TableStructure(data.status),
+          new TableStructure(button),
+        ],
+      ],
+    };
+    displayResult(tableData, statusTable);
+    statusDiv.style.display = "block";
+
+    $("#status_table").off("click", ".view-button");
+    $("#status_table").on("click", ".view-button", async (event) => {
+      showOverlay();
+      scanId = JSON.parse(
+        decodeURIComponent(event.currentTarget.getAttribute("data-full")),
+      );
+
+      let retryResponse = await getScannedQuestions(scanId);
+
+      if (retryResponse.message === "Completed") {
+        questions = retryResponse.result.data.questions;
+        questions = questions.filter(
+          (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
+        );
+        sectionTopics = retryResponse.result.data.section_topic;
+        let selectedSubject = subjects.find(
+          (s) => s.id == retryResponse.result.data.subject_id,
+        );
+
+        subject.value = selectedSubject.subject;
+        await showReportSection(questions);
+        return;
+      }
+
+      if (
+        retryResponse.message != "Processing" &&
+        retryResponse.message != "Completed"
+      ) {
+        alert(retryResponse.message);
+        await checkExistingScan();
+        hideOverlay();
+        return;
+      }
+    });
+    $("#status_table").off("click", ".reload-button");
+    $("#status_table").on("click", ".reload-button", async (event) => {
+      showOverlay();
+      checkExistingScan();
+    });
+
+    hideOverlay();
+    scanQuestionInputDiv.style.display = "none";
+    return;
+  }
+  hideOverlay();
+  scanQuestionInputDiv.style.display = "flex";
+}
+
 // page load event listener
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {
@@ -641,4 +800,5 @@ async function init() {
   await fetchBtl();
   btlLevel = getBtlLevels();
   await getSubjects();
+  await checkExistingScan();
 }

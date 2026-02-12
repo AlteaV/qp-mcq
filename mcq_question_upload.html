@@ -18,7 +18,20 @@
                         Question Upload
                       </h4>
 
-                      <div class="row">
+                      <div
+                        class="row"
+                        id="scan_question_input_div"
+                        style="display: none"
+                      >
+                        <div class="col">
+                          <label for="level" class="required">Level</label>
+                          <select
+                            class="form-select"
+                            name="level"
+                            id="level"
+                            required
+                          ></select>
+                        </div>
                         <div class="col">
                           <label for="subject" class="required">Subject</label>
                           <input
@@ -31,7 +44,7 @@
                           />
                         </div>
                         <div class="col">
-                          <label for="file" class="required"
+                          <label for="file_input" class="required"
                             >Upload Questions</label
                           >
                           <input
@@ -57,6 +70,17 @@
                         style="display: none"
                       >
                         <p>Fetching Data</p>
+                      </div>
+                      <div
+                        class="result mt-5"
+                        id="status_div"
+                        style="display: none"
+                      >
+                        <table
+                          class="table table-bordered"
+                          width="100%"
+                          id="status_table"
+                        ></table>
                       </div>
                       <div
                         class="result mt-5"

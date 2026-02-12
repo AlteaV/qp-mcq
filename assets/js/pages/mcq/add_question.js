@@ -84,6 +84,8 @@ async function initializeTinyMCE() {
   });
 }
 
+const levelDropDown = document.getElementById("level");
+let subjectDiv = document.getElementById("subject_div");
 let subjectDropDown = document.getElementById("subject");
 var sectionDiv = document.getElementById("section_div");
 let sectionDropDown = document.getElementById("section");
@@ -115,6 +117,22 @@ var resultDiv = document.getElementById("result_div");
 
 let subjects = [];
 let btlLevels = [];
+
+// event listener
+levelDropDown.addEventListener("change", () => {
+  subjectDropDown.innerHTML = "";
+  subjectDiv.classList.remove("d-none");
+  sectionDiv.classList.add("d-none");
+  topicDiv.classList.add("d-none");
+
+  questionTypeDropDown.value = "";
+  questionTypeDropDown.disabled = true;
+  questionTypeDiv.classList.add("d-none");
+
+  resultDiv.style.display = "none";
+
+  renderSubjects();
+});
 
 markInput.addEventListener("input", function () {
   this.value = this.value.replace(/[^0-9]/g, "");
@@ -155,7 +173,7 @@ async function init() {
 
   btlLevels = getBtlLevels();
   hideOverlay();
-  renderSubjects(subjects);
+  renderLevels();
   renderBtlLevels(btlLevels);
 }
 
@@ -219,12 +237,41 @@ topicDropDown.addEventListener("change", () => {
   resultDiv.style.display = "none";
 });
 
-function renderSubjects(subjects) {
-  let sub = subjects.map((subject) => {
+function renderLevels() {
+  let levels = [];
+  subjects.forEach((s) => {
+    if (!levels.includes(s.level)) {
+      levels.push(s.level);
+    }
+  });
+  levels = levels.sort((a, b) => {
+    return a.localeCompare(b);
+  });
+  let lvl = levels.map((level) => {
     return {
-      html: subject["subject_name"],
-      value: subject["subject_id"],
+      html: level,
+      value: level,
     };
+  });
+  lvl.unshift({
+    html: "Please select the Level",
+    value: "",
+    selected: true,
+    disabled: true,
+  });
+  setDropDown(lvl, levelDropDown);
+}
+
+function renderSubjects() {
+  let level = levelDropDown.value;
+  let sub = [];
+  subjects.forEach((subject) => {
+    if (subject.level == level) {
+      sub.push({
+        html: subject["subject_name"],
+        value: subject["subject_id"],
+      });
+    }
   });
   sub.unshift({
     html: "Please select the subject",

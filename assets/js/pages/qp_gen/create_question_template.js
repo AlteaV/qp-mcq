@@ -10,6 +10,7 @@ saveTemplateBtn.style.display = "none";
 
 let addPartsForm = document.getElementById("part_form");
 let partName = document.getElementById("part_name");
+let partLevel = document.getElementById("part_level");
 let partSubject = document.getElementById("part_subject");
 let partMarks = document.getElementById("part_marks");
 
@@ -20,6 +21,11 @@ let newPartDiv = document.getElementById("new_part_div");
 let btlLevels = [];
 let subjects = [];
 let parts = [];
+
+// event listener
+partLevel.addEventListener("change", () => {
+  setSubjects();
+});
 
 function createTemplate() {
   templateDetailsForm.classList.add("was-validated");
@@ -42,7 +48,7 @@ async function getSubjects() {
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
-      setSubjects();
+      setLevel();
     } else {
       throw new Error(response.message);
     }
@@ -88,15 +94,35 @@ function setPartName() {
   partName.value = letter;
 }
 
-function setSubjects() {
-  partSubject.innerHTML =
-    "<option value='' disabled selected>Select Subject</option>";
+function setLevel() {
+  partLevel.innerHTML =
+    "<option value='' disabled selected>Select Level</option>";
+
+  let levelId = [];
 
   subjects.forEach((subject) => {
     let option = document.createElement("option");
-    option.value = subject.subject_id;
-    option.text = subject.subject_name;
-    partSubject.appendChild(option);
+    if (!levelId.includes(subject.level_id)) {
+      option.value = subject.level_id;
+      option.text = subject.level;
+      partLevel.appendChild(option);
+      levelId.push(subject.level_id);
+    }
+  });
+}
+
+function setSubjects() {
+  partSubject.innerHTML =
+    "<option value='' disabled selected>Select Subject</option>";
+  let levelId = partLevel.value;
+
+  subjects.forEach((subject) => {
+    let option = document.createElement("option");
+    if (subject.level_id == levelId) {
+      option.value = subject.subject_id;
+      option.text = subject.subject_name;
+      partSubject.appendChild(option);
+    }
   });
 }
 
@@ -153,8 +179,13 @@ function checkPartsMark(form) {
 
         let marks_A = parseInt(marksInputs[0].value || 0);
         let marks_B = parseInt(marksInputs[1].value || 0);
+        let noOfQuestionsA = parseInt(noQInputs[0].value || 0);
+        let noOfQuestionsB = parseInt(noQInputs[1].value || 0);
 
-        if (!isNaN(marks_A) && !isNaN(marks_B) && marks_A !== marks_B) {
+        let totalMarksA = noOfQuestionsA * marks_A;
+        let totalMarksB = noOfQuestionsB * marks_B;
+
+        if (!isNaN(marks_A) && !isNaN(marks_B) && totalMarksA !== totalMarksB) {
           return "invalid";
         }
 
@@ -278,6 +309,7 @@ function assignQuestionsToSubject() {
 
   newPartDiv.style.display = "none";
   partCreateBtn.style.display = "block";
+  partLevel.value = "";
   partSubject.value = "";
   partMarks.value = "";
 
@@ -478,12 +510,20 @@ function addQuestionRow(questionContainer, sections, form) {
 
       let marksA = rowA.querySelector(".marks_input");
       let marksB = rowB.querySelector(".marks_input");
+      let noOfQuestionsA = rowA.querySelector(".no_of_questions_input");
+      let noOfQuestionsB = rowB.querySelector(".no_of_questions_input");
 
       function checkEitherOrMarks() {
         let valA = parseInt(marksA.value);
         let valB = parseInt(marksB.value);
 
-        if (!isNaN(valA) && !isNaN(valB) && valA !== valB) {
+        let countA = parseInt(noOfQuestionsA.value);
+        let countB = parseInt(noOfQuestionsB.value);
+
+        let totalMarksA = countA * valA;
+        let totalMarksB = countB * valB;
+
+        if (!isNaN(valA) && !isNaN(valB) && totalMarksA !== totalMarksB) {
           marksB.setCustomValidity("Marks must match for Either-Or");
         } else {
           marksB.setCustomValidity("");
