@@ -30,7 +30,7 @@ const menuItems = [
   },
   {
     text: "Classification Mangement",
-    icon: "fas fa-book",
+    icon: "fas fa-cubes",
     dropdown: true,
     items: [
       {

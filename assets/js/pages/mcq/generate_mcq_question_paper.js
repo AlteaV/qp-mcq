@@ -200,34 +200,3 @@ async function createQuestions() {
   }
   hideOverlay();
 }
-
-function renderTableFromMarkdown(markdown) {
-  if (!markdown) return "";
-
-  const converter = new showdown.Converter({
-    tables: true,
-  });
-
-  const htmlContent = converter.makeHtml(markdown);
-
-  return `
-    <div class="question-table">
-      <style>
-        .question-table table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .question-table th,
-        .question-table td {
-          border: 1px solid #333;
-          padding: 8px;
-          text-align: center;
-        }
-        .question-table th {
-          background-color: #f2f2f2;
-        }
-      </style>
-      ${htmlContent}
-    </div>
-  `;
-}
