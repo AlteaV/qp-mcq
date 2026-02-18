@@ -4,7 +4,7 @@ const subject = document.getElementById("subject");
 const fileInput = document.getElementById("file_input");
 const fileUplaodButton = document.getElementById("submit_excel");
 const saveQuestionsButton = document.getElementById("save_question");
-const fetchingDataSection = document.getElementById("fetching_data");
+const fetchingData = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
 const resultTable = document.getElementById("result_table");
 const downloadButton = document.getElementById("download_excel");
@@ -23,7 +23,7 @@ let saveButton = document.getElementById("form_submit");
 
 // event listener
 levelDropDown.addEventListener("change", () => {
-  resetResult(fetchingDataSection, resultDiv);
+  resetResult(fetchingData, resultDiv);
   renderSubjects();
 });
 
@@ -167,54 +167,61 @@ async function getSectionTopic(subjectID) {
 }
 
 function handleFileUpload() {
-  const file = fileInput.files[0];
-  if (!file) return;
+  try {
+    const file = fileInput.files[0];
 
-  const reader = new FileReader();
+    if (!file) return;
 
-  reader.onload = (e) => {
-    const data = e.target.result;
-    const workbook = XLSX.read(data, {
-      type: "binary",
-    });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    const reader = new FileReader();
 
-    const rows = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1,
-    });
-
-    const expectedHeaders = ["Question", "Mark", "BTL"];
-
-    const headers = rows[0];
-    if (
-      !headers ||
-      headers.length !== expectedHeaders.length ||
-      !expectedHeaders.every((header, index) => header === headers[index])
-    ) {
-      alert("Invalid Excel format. Expected: Question | Mark | BTL");
-      this.view.fileInput.value = "";
-      this.view.resultTable.innerHTML = "";
-      return;
-    }
-
-    const questionData = [];
-
-    for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      if (!row[0]) continue;
-
-      questionData.push({
-        question: row[0],
-        mark: row[1],
-        btl: row[2],
+    reader.onload = (e) => {
+      const data = e.target.result;
+      const workbook = XLSX.read(data, {
+        type: "binary",
       });
-    }
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
 
-    showReportSection(questionData);
-  };
+      const rows = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+      });
 
-  reader.readAsBinaryString(file);
+      const expectedHeaders = ["Question", "Mark", "BTL"];
+
+      const headers = rows[0];
+      if (
+        !headers ||
+        headers.length !== expectedHeaders.length ||
+        !expectedHeaders.every((header, index) => header === headers[index])
+      ) {
+        alert("Invalid Excel format. Expected: Question | Mark | BTL");
+        this.view.fileInput.value = "";
+        this.view.resultTable.innerHTML = "";
+        return;
+      }
+
+      const questionData = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row[0]) continue;
+
+        questionData.push({
+          question: row[0],
+          mark: row[1],
+          btl: row[2],
+        });
+      }
+
+      showReportSection(questionData);
+    };
+
+    reader.readAsBinaryString(file);
+  } catch (error) {
+    console.error("File upload error:", error);
+    alert("Error processing the file. Please ensure it's a valid Excel file.");
+    hideOverlay();
+  }
 }
 
 async function submitQuestion() {
@@ -233,6 +240,12 @@ async function submitQuestion() {
       questionsFormat[index].marks = parseInt(input.value.trim(), 10) || null;
     });
 
+    document
+      .querySelectorAll(".question-type-field")
+      .forEach((select, index) => {
+        questionsFormat[index].question_type = select.value;
+      });
+
     const topicError = questionsFormat.find((q) => !q.topic_id);
     if (topicError) {
       alert(`Please select a topic for: "${topicError.question}"`);
@@ -250,6 +263,15 @@ async function submitQuestion() {
     const markError = questionsFormat.find((q) => !q.marks || q.marks <= 0);
     if (markError) {
       alert(`Please enter valid marks for: "${markError.question}"`);
+      hideOverlay();
+      return;
+    }
+
+    const questionTypeError = questionsFormat.find((q) => !q.question_type);
+    if (questionTypeError) {
+      alert(
+        `Please select a question type for: "${questionTypeError.question}"`,
+      );
       hideOverlay();
       return;
     }
@@ -275,6 +297,7 @@ async function submitQuestion() {
         img: img.length > 0 ? img : null,
         mark: parseInt(q.mark),
         btl_level: parseInt(q.btl_level),
+        question_type: q.question_type,
       });
     });
 
@@ -346,6 +369,7 @@ async function showReportSection(data) {
         new TableStructure("Questions", "", "", "width: 28%;"),
         new TableStructure("Section", "", "", "min-width: 200px"),
         new TableStructure("Topic", "", "", "min-width: 200px;"),
+        new TableStructure("Question Type", "", "", "min-width: 200px;"),
         new TableStructure("BTL", "", "", "min-width: 100px;"),
         new TableStructure("Mark", "", "", "width: 10%;"),
         new TableStructure("Action", "", "", "width: 1%;"),
@@ -407,6 +431,17 @@ async function showReportSection(data) {
         <option value="">Select Topic</option>
         </select>`;
 
+    let questionTypeField = `
+        <select id="question_type_input_${index}" 
+        class="form-control question-type-field" 
+        data-index="${index}" 
+        style="min-width: 200px;">
+          <option value="" selected disabled>Select Question Type</option>
+          <option value="Mcq">MCQ</option>
+          <option value="Fib">Fill in the blanks</option>
+          <option value="Descriptive">Descriptive</option>
+        </select>`;
+
     let btlField = `
         <select id="btl_input_${index}" 
                 class="form-control btl-field" 
@@ -449,6 +484,7 @@ async function showReportSection(data) {
       new TableStructure(record.question),
       new TableStructure(sectionField),
       new TableStructure(topicField),
+      new TableStructure(questionTypeField),
       new TableStructure(btlField),
       new TableStructure(marksField),
       // new TableStructure(editButton),
@@ -463,6 +499,7 @@ async function showReportSection(data) {
       correct_answer: record.correct_answer,
       section: record.section,
       topic: record.topic,
+      question_type: record.question_type,
       btl_level: record.btl_level,
       mark: record.mark,
     });

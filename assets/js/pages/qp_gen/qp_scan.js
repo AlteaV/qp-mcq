@@ -138,7 +138,7 @@ async function scanQuestionPaper() {
       if (retryResponse.message === "Completed") {
         questions = retryResponse.result.data.questions;
         questions = questions.filter(
-          (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
+          (q) => q.question_type == "Mcq" || q.question_type == "Fib",
         );
         sectionTopics = retryResponse.result.data.section_topic;
         await showReportSection(questions);
@@ -290,30 +290,6 @@ async function showReportSection(data) {
            )
            .join("")}</select>`;
 
-    if (record.question_type == "Numerical") {
-      const answerId = `numerical_answer_${index}`;
-      choiceHTML = `
-                <div style="
-                  margin-top: 10px;
-                  display: flex;
-                  align-items: center;
-                  gap: 10px;
-                  max-width: 400px;
-                ">
-                  <label for="${answerId}" style="font-weight: bold; white-space: nowrap;">
-                    Answer is 
-                  </label>
-                  <input 
-                    type="number"
-                    id="${answerId}"
-                    class="form-control numerical-answer"
-                    value="${record.correct_answer || ""}"
-                    data-index="${index}"
-                    style="max-width: 200px;"
-                  />
-                </div>`;
-    }
-
     if (record.question_type == "Mcq") {
       choiceHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: left; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
@@ -379,7 +355,7 @@ async function showReportSection(data) {
       deleteQuestion(fullData);
     });
 
-  document.querySelectorAll(".numerical-answer input").forEach((inputField) => {
+  document.querySelectorAll(".fib-answer input").forEach((inputField) => {
     inputField.addEventListener("input", function () {
       this.value = this.value
         .replace(/[^0-9.]/g, "")
@@ -413,6 +389,13 @@ async function showReportSection(data) {
       }
     }
   }
+
+  levelDropDown.disabled = true;
+  subjectDropDown.disabled = true;
+
+  let selectedLevel = subjects.find((s) => s.subject == subject.value)?.level;
+  levelDropDown.value = selectedLevel || "";
+
   try {
     if (window.MathJax) {
       if (typeof MathJax.typesetPromise === "function") {
@@ -510,9 +493,9 @@ async function submitQuestion() {
         }
       });
 
-    document.querySelectorAll(".numerical-answer").forEach((input) => {
+    document.querySelectorAll(".fib-answer").forEach((input) => {
       const index = parseInt(input.dataset.index, 10);
-      if (questionsFormat[index].question_type == "Numerical") {
+      if (questionsFormat[index].question_type == "Fib") {
         questionsFormat[index].correct_answer = input.value.trim();
         questionsFormat[index].choices = null;
       }
@@ -618,7 +601,7 @@ async function submitQuestion() {
 
       if (q.question_type == "Mcq") {
         temp.choices = q.choices;
-      } else if (q.question_type == "Numerical") {
+      } else if (q.question_type == "Fib") {
         temp.choices = null;
       }
 
@@ -626,12 +609,11 @@ async function submitQuestion() {
         temp.table = q.table;
       }
 
-      if (q.correct_answer == null || q.correct_answer == "") {
-        if (q.question_type == "Mcq") {
-          alert(`Please choose a valid answer for question ${index + 1}`);
-        } else if (q.question_type == "Numerical") {
-          alert(`Please input a valid answer for question ${index + 1}`);
-        }
+      if (
+        q.question_type == "Mcq" &&
+        (q.correct_answer == null || q.correct_answer == "")
+      ) {
+        alert(`Please choose a valid answer for question ${index + 1}`);
         hideOverlay();
         return;
       }
@@ -648,6 +630,9 @@ async function submitQuestion() {
       resultTable.innerHTML = "";
       fileInput.value = "";
       resultDiv.style.display = "none";
+      levelDropDown.disabled = false;
+      levelDropDown.value = "";
+      subjectDropDown.value = "";
       hideOverlay();
     } else {
       alert(response.message);
@@ -741,7 +726,7 @@ function handleExistingScan(data) {
       if (retryResponse.message === "Completed") {
         questions = retryResponse.result.data.questions;
         questions = questions.filter(
-          (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
+          (q) => q.question_type == "Mcq" || q.question_type == "Fib",
         );
         sectionTopics = retryResponse.result.data.section_topic;
         let selectedSubject = subjects.find(

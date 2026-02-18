@@ -157,9 +157,7 @@ function checkPartsMark(form) {
     let totalMarks = 0;
 
     for (let i = 0; i < questionRows.length; i++) {
-      let typeSelect = questionRows[i].getElementsByClassName(
-        "question_type_select",
-      )[0];
+      let typeSelect = questionRows[i].getElementsByClassName("type_select")[0];
       let type = typeSelect.value;
 
       if (type === "single") {
@@ -364,14 +362,14 @@ function addQuestionRow(questionContainer, sections, form) {
 
   let typeLabel = document.createElement("label");
   typeLabel.classList.add("form-label", "required");
-  typeLabel.innerText = "Question Type:";
+  typeLabel.innerText = "Type:";
 
   let typeSelect = document.createElement("select");
-  typeSelect.classList.add("form-select", "question_type_select");
+  typeSelect.classList.add("form-select", "type_select");
   typeSelect.required = true;
 
   typeSelect.innerHTML = `
-      <option value="" disabled selected>Select Question Type</option>
+      <option value="" disabled selected>Select Type</option>
       <option value="single">Single</option>
       <option value="either_or">Either-Or</option>
   `;
@@ -452,6 +450,36 @@ function addQuestionRow(questionContainer, sections, form) {
           topicSelect.appendChild(option);
         });
       };
+
+      let questionTypeCol = document.createElement("div");
+      questionTypeCol.classList.add("col");
+      let questionTypeLabel = document.createElement("label");
+      questionTypeLabel.classList.add("form-label", "required");
+      questionTypeLabel.innerText = "Question Type:";
+      let questionTypeSelect = document.createElement("select");
+      questionTypeSelect.classList.add("form-select", "question_type_select");
+      questionTypeSelect.required = true;
+      let defaultQuestionTypeOption = document.createElement("option");
+      defaultQuestionTypeOption.value = "";
+      defaultQuestionTypeOption.disabled = true;
+      defaultQuestionTypeOption.selected = true;
+      defaultQuestionTypeOption.innerText = "Select Question Type";
+      questionTypeSelect.appendChild(defaultQuestionTypeOption);
+      let mcqOption = document.createElement("option");
+      mcqOption.value = "Mcq";
+      mcqOption.innerText = "MCQ";
+      questionTypeSelect.appendChild(mcqOption);
+      let numericalOption = document.createElement("option");
+      numericalOption.value = "Fib";
+      numericalOption.innerText = "Fill in the Blanks";
+      let descriptiveOption = document.createElement("option");
+      descriptiveOption.value = "Descriptive";
+      descriptiveOption.innerText = "Descriptive";
+      questionTypeSelect.appendChild(numericalOption);
+      questionTypeSelect.appendChild(descriptiveOption);
+      questionTypeCol.appendChild(questionTypeLabel);
+      questionTypeCol.appendChild(questionTypeSelect);
+      row.appendChild(questionTypeCol);
 
       let btlCol = document.createElement("div");
       btlCol.classList.add("col");
@@ -626,9 +654,7 @@ function saveTemplate() {
 
     let questionRows = form[i].getElementsByClassName("question_row");
     for (let j = 0; j < questionRows.length; j++) {
-      let typeSelect = questionRows[j].getElementsByClassName(
-        "question_type_select",
-      )[0];
+      let typeSelect = questionRows[j].getElementsByClassName("type_select")[0];
       let type = typeSelect.value;
       let questionData = {
         type: type,
@@ -651,6 +677,11 @@ function saveTemplate() {
         )[0];
         questionData.no_of_questions = noOfQuestionsInput.value;
 
+        let questionTypeSelect = questionRows[j].getElementsByClassName(
+          "question_type_select",
+        )[0];
+        questionData.question_type = questionTypeSelect.value;
+
         let marksInput =
           questionRows[j].getElementsByClassName("marks_input")[0];
         questionData.marks_per_question = marksInput.value;
@@ -664,6 +695,9 @@ function saveTemplate() {
           "no_of_questions_input",
         );
         let marksInputs = questionRows[j].getElementsByClassName("marks_input");
+        let questionTypeSelects = questionRows[j].getElementsByClassName(
+          "question_type_select",
+        );
 
         questionData.questions = [
           {
@@ -672,6 +706,7 @@ function saveTemplate() {
             btl_level: btlSelects[0].value,
             no_of_questions: noOfQuestionsInputs[0].value,
             marks_per_question: marksInputs[0].value,
+            question_type: questionTypeSelects[0].value,
           },
           {
             section_id: sectionSelects[1].value,
@@ -679,6 +714,7 @@ function saveTemplate() {
             btl_level: btlSelects[1].value,
             no_of_questions: noOfQuestionsInputs[1].value,
             marks_per_question: marksInputs[1].value,
+            question_type: questionTypeSelects[1].value,
           },
         ];
       }
