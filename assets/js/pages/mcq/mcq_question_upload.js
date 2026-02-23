@@ -744,7 +744,8 @@ function buildEditorContent(questionData) {
 
   if (questionData.images && questionData.images.length > 0) {
     questionData.images.forEach((img) => {
-      html += `<p><img src="${img.image_base64}" style="max-width:100%;height:auto;"></p>`;
+      // Append images at the end of the question content in the editor
+      html += `<br><img src="${img.image_base64}" alt="Question Image" style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px; padding: 5px;" />`;
     });
   }
 
@@ -774,7 +775,13 @@ async function editQuestion(data) {
     answerInput.value = questionData.correct_answer || "";
 
     const editorContent = buildEditorContent(questionData);
-    editor.setContent(editorContent);
+    // Wait for editor to be fully initialized before setting content
+    setTimeout(() => {
+      const editor = tinymce.get("question");
+      if (editor) {
+        editor.setContent(editorContent);
+      }
+    }, 500);
   } else {
     optionRow.style.display = "flex";
     answerGroup.style.display = "none";
@@ -784,7 +791,13 @@ async function editQuestion(data) {
 
   if (data.question.question_type == "Mcq") {
     const editorContent = buildEditorContent(questionData);
-    editor.setContent(editorContent);
+    // Wait for editor to be fully initialized before setting content
+    setTimeout(() => {
+      const editor = tinymce.get("question");
+      if (editor) {
+        editor.setContent(editorContent);
+      }
+    }, 500);
 
     questionInput.value = questionData.question;
     answerInput.removeAttribute("required");
@@ -856,7 +869,8 @@ async function editQuestion(data) {
 
       // Extract images
       const images = [];
-      tempDiv.querySelectorAll("img").forEach((img) => {
+      const imgElements = tempDiv.querySelectorAll("img");
+      imgElements.forEach((img) => {
         images.push({
           image_base64: img.src,
         });

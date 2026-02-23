@@ -484,18 +484,18 @@ async function renderQuestionsPage() {
           ? q.images
               .map((imgObj) => {
                 if (imgObj.image_base64) {
-                  return `
-                  <div style="text-align: center; margin: 15px 0;">
-                    <img src="${imgObj.image_base64}" 
-                         alt="Question Image" 
-                         style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px; padding: 5px;" />
-                  </div>`;
+                  return `        <div style="text-align: center; margin: 10px 0;">
+          <img src="${imgObj.image_base64}" 
+               alt="Question Image" 
+               style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px;         padding: 5px;" />
+        </div>`;
                 }
                 return "";
               })
               .join("")
           : ""
       }
+
 
       <div style="font-weight: 600; margin-bottom: 10px; color: #555;">${type}</div>
       

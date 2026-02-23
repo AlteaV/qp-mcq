@@ -101,7 +101,6 @@ function showResult(data) {
 }
 
 async function getStudentList(qpId) {
-  qpId = 36;
   lockedOutUsers = [];
   showOverlay();
   try {
