@@ -1,5 +1,12 @@
 var cachedDepartment = JSON.parse(sessionStorage.getItem("program_details"));
 
+const difficultyColors = {
+  Easy: "#2ec4b6",
+  Medium: "#ffd166",
+  Hard: "#ff9f1c",
+  "Very Hard": "#e71d36",
+};
+
 function setProgramType(program) {
   if (cachedDepartment != undefined && cachedDepartment != null) {
     var uniquePrograms = cachedDepartment.map(
@@ -457,4 +464,8 @@ function renderTableFromMarkdown(markdown) {
       ${htmlContent}
     </div>
   `;
+}
+
+function getDifficultyBadge(difficulty) {
+  return `<span class="badge" style="background:${difficultyColors[difficulty] || "#ccc"}">${difficulty || "Unknown"}</span>`;
 }

@@ -33,6 +33,9 @@ function showQuestionPapers(data) {
       buttonName = "Resume Test";
     } else if (record.allow_test == "Allow") {
       buttonName = "Take Test";
+    } else if (record.allow_test == "Locked Out") {
+      buttonName = "Test Not Completed\nContact Admin";
+      allowTest = false;
     } else {
       buttonName = "Test Completed";
       allowTest = false;

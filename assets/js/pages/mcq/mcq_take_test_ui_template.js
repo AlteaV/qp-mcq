@@ -110,7 +110,6 @@ function prepareContainer() {
               document.addEventListener("fullscreenchange", async () => {
                 if (!document.fullscreenElement) {
                   await submitTempAnswer();
-                  window.history.back();
                 }
               });
               fullscreenOverlay.style.display = "none";
@@ -150,8 +149,13 @@ async function submitTempAnswer() {
     );
 
     if (response.success) {
-      hideOverlay();
-      alert(response.message);
+      if (response.status == 429) {
+        submitTest();
+      } else {
+        hideOverlay();
+        alert(response.message);
+        window.history.back();
+      }
     } else {
       hideOverlay();
       throw new Error(response.message || "Failed to submit test");
@@ -173,7 +177,12 @@ function initializeUI() {
       }
     }
   });
-  timeLeft = templateConfig.total_duration_mins * 60;
+
+  timeLeft = Math.min(
+    questionPaperDetails.qp_time_remaining * 60,
+    templateConfig.total_duration_mins * 60,
+  );
+
   examFooter.style.display = "flex";
 
   examTitle.innerHTML = questionPaperDetails.question_paper_name;

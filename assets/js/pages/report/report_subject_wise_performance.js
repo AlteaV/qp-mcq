@@ -1,33 +1,28 @@
 var testTypeDropDown = document.getElementById("test_type");
 var levelDropDown = document.getElementById("level");
-var subjectDropDown = document.getElementById("subject");
-var subjectDiv = document.getElementById("subject_div");
-var sectionDropDown = document.getElementById("section");
-var sectionDiv = document.getElementById("section_div");
 var networkButton = document.getElementById("network_button");
 var submitButton = document.getElementById("submit_button");
+var toggleBtnChart = document.getElementById("btn-chart");
+var toggleBtnTable = document.getElementById("btn-table");
 
 let infoTable = document.getElementById("info_table");
 let resultDiv = document.getElementById("result_div");
 let resultTable = document.getElementById("result_table");
 let fetchingDataSection = document.getElementById("fetching_data");
 
+var allLevel = null;
+var subjects = [];
+let currentItems = subjects;
+let myChart;
+const ctx = document.getElementById("drillChart").getContext("2d");
+
+let navStack = [{ label: "All Subjects", data: subjects, type: "Overview" }];
+
 // event listener
 levelDropDown.addEventListener("change", () => {
   reset();
-  renderSubjects();
 });
 testTypeDropDown.addEventListener("change", async () => {
-  reset();
-});
-subjectDropDown.addEventListener("change", async () => {
-  if (subjectDropDown.value) {
-    reset();
-    renderSection();
-  }
-});
-
-sectionDropDown.addEventListener("change", async () => {
   reset();
 });
 
@@ -36,235 +31,59 @@ networkButton.addEventListener("click", async () => {
   await getReport();
 });
 
+toggleBtnChart.addEventListener("click", () => toggleView("chart"));
+toggleBtnTable.addEventListener("click", () => toggleView("table"));
+
+function jumpTo(index) {
+  navStack = navStack.slice(0, index + 1);
+  renderDashboard(navStack[index].data);
+}
+
+function handleDrill(index) {
+  let selected = currentItems[index];
+
+  if (selected.children && selected.children.length > 0) {
+    const nextType = navStack.length === 1 ? "Sections" : "Topics";
+    navStack.push({
+      label: selected.name,
+      data: selected.children,
+      type: nextType,
+    });
+    renderDashboard(selected.children);
+  } else {
+    if (navStack.length === 1) {
+      checkDrillDownAvailability(selected.id, null);
+    } else if (navStack.length === 2) {
+      checkDrillDownAvailability(null, selected.id);
+    } else {
+      alert("No further details available for this item.");
+    }
+  }
+}
+
+window.jumpTo = jumpTo;
+window.handleDrill = handleDrill;
+
 async function init() {
   if (loggedInUser.type == "Student") {
     testTypeDropDown.appendChild(new Option("Self Learning", "Self"));
   }
-  await getSubjects();
+  renderLevels();
 }
 
 function reset() {
   resultDiv.style.display = "none";
-  resultTable.innerHTML = "";
   fetchingDataSection.innerHTML = "";
 }
 
-var subjects = null;
-
-async function getSubjects() {
-  showOverlay();
-  try {
-    let payload = JSON.stringify({
-      function: "gswt",
-      org_id: loggedInUser.college_code,
-    });
-
-    let response = await postCall(QuestionUploadEndPoint, payload);
-
-    if (response.success) {
-      subjects = response.result.subjects;
-      renderLevels();
-    }
-    hideOverlay();
-  } catch (error) {
-    hideOverlay();
-    console.error(error);
-    alert("An error occurred while fetching subjects and section");
-  }
-}
 function renderLevels() {
-  let levels = [];
-  subjects.forEach((s) => {
-    if (!levels.includes(s.level)) {
-      levels.push(s.level);
-    }
+  allLevel.forEach((lev) => {
+    const option = document.createElement("option");
+    option.value = lev.id;
+    option.textContent = lev.level;
+    levelDropDown.appendChild(option);
   });
-
-  levels = levels.sort((a, b) => {
-    return a.localeCompare(b);
-  });
-  let lvl = levels.map((level) => {
-    return {
-      html: level,
-      value: level,
-    };
-  });
-  lvl.unshift({
-    html: "Please select the Level",
-    value: "",
-    selected: true,
-    disabled: true,
-  });
-  setDropDown(lvl, levelDropDown);
-}
-
-function renderSubjects() {
-  subjectDropDown.innerHTML = "";
-  let option = document.createElement("option");
-  option.innerHTML = "Please select subject";
-  option.value = "";
-  option.selected = true;
-  option.disabled = true;
-  subjectDropDown.appendChild(option);
-  let level = levelDropDown.value;
-
-  subjects.forEach((subject) => {
-    if (subject.level == level) {
-      let option = document.createElement("option");
-      option.value = subject.subject_id;
-      option.text = subject.subject_name;
-      subjectDropDown.appendChild(option);
-    }
-  });
-  subjectDiv.classList.remove("d-none");
-  sectionDiv.classList.add("d-none");
-  sections.innerHTML = "";
-}
-
-function renderSection() {
-  let subjectID = subjectDropDown.value;
-  sectionDropDown.innerHTML = "";
-
-  let selectedSubject = subjects.find((s) => s.subject_id == subjectID);
-
-  if (!selectedSubject) {
-    sectionDiv.classList.add("d-none");
-    return;
-  }
-
-  let sections = JSON.parse(selectedSubject.sections);
-  let option = document.createElement("option");
-  option.innerHTML = "All sections";
-  option.value = "";
-  option.selected = true;
-  sectionDropDown.appendChild(option);
-
-  sections.forEach((section) => {
-    let option = document.createElement("option");
-    option.value = section.section_id;
-    option.text = section.section_name;
-    sectionDropDown.appendChild(option);
-  });
-
-  sectionDiv.classList.remove("d-none");
-}
-
-async function getReport() {
-  if (!testTypeDropDown.value) {
-    alert("Please select test type");
-    return;
-  }
-
-  if (!levelDropDown.value) {
-    alert("Please select level");
-    return;
-  }
-
-  if (!subjectDropDown.value) {
-    alert("Please select subject");
-    return;
-  }
-
-  let subjectID = subjectDropDown.value;
-  let sectionID = sectionDropDown.value ? sectionDropDown.value : null;
-  let out = {
-    function: "gswpr",
-    subject_id: subjectID,
-    section_id: sectionID,
-    test_type: testTypeDropDown.value,
-    org_id: loggedInUser.college_code,
-  };
-  if (loggedInUser.type == "Student") {
-    out.user_id =
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id;
-  }
-
-  let payload = JSON.stringify(out);
-
-  try {
-    showOverlay();
-    let response = await postCall(QuestionUploadEndPoint, payload);
-
-    if (response.success) {
-      let report = response.result.report;
-      showReport(report);
-    } else {
-      throw new Error(response.message || "Failed to fetch questions");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("An error occurred while fetching questions");
-    hideOverlay();
-  }
-}
-
-function showReport(report) {
-  fetchingDataSection.style.display = "none";
-  if (!report || report.length === 0) {
-    fetchingDataSection.innerHTML = "<p>There is no data</p>";
-    fetchingDataSection.style.display = "block";
-    resultDiv.style.display = "none";
-    hideOverlay();
-    return;
-  }
-  let tempHeader = [];
-  let infoHeader = [];
-
-  tempHeader.push(new TableStructure("S.NO"));
-  if (sectionDropDown.value) {
-    tempHeader.push(new TableStructure("Topics"));
-    infoHeader.push(new TableStructure("Section Name"));
-  } else {
-    tempHeader.push(new TableStructure("Sections"));
-    infoHeader.push(new TableStructure("Subject Name"));
-  }
-  tempHeader.push(new TableStructure("Total Attended"));
-  tempHeader.push(new TableStructure("Total Passed"));
-  tempHeader.push(new TableStructure("Average Time"));
-
-  infoHeader.push(new TableStructure("Total Attended"));
-  infoHeader.push(new TableStructure("Total Passed"));
-  infoHeader.push(new TableStructure("Average Time"));
-
-  let tableData = {
-    tableHeader: [tempHeader],
-    tableBody: [],
-  };
-
-  let infoData = {
-    tableHeader: [infoHeader],
-    tableBody: [
-      [
-        new TableStructure(report.details_for),
-        new TableStructure(report.total_times_attended),
-        new TableStructure(report.total_times_correct),
-        new TableStructure(report.total_average_time),
-      ],
-    ],
-  };
-
-  let data = JSON.parse(report.details);
-  data.forEach((d, index) => {
-    let avgTime = d.average_time;
-    if (avgTime && avgTime.includes(".")) {
-      avgTime = avgTime.split(".")[0];
-    }
-
-    tableData.tableBody.push([
-      new TableStructure(index + 1),
-      new TableStructure(d.name),
-      new TableStructure(d.times_attended),
-      new TableStructure(d.times_correct),
-      new TableStructure(avgTime),
-    ]);
-  });
-
-  displayResult(tableData, resultTable);
-  displayResult(infoData, infoTable);
   hideOverlay();
-  resultDiv.style.display = "block";
 }
 
 document.addEventListener("readystatechange", async () => {
@@ -285,6 +104,380 @@ document.addEventListener("readystatechange", async () => {
   }
 });
 
+function renderDashboard(data) {
+  fetchingDataSection.style.display = "none";
+  if (!data || data.length === 0) {
+    fetchingDataSection.innerHTML = "<p>There is no data</p>";
+    fetchingDataSection.style.display = "block";
+    resultDiv.style.display = "none";
+    hideOverlay();
+    return;
+  }
+
+  currentItems = data;
+
+  // update chart
+  if (myChart) myChart.destroy();
+
+  myChart = new Chart(ctx, {
+    type: "bar",
+    data: getChartConfig(data),
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+        },
+      },
+      onClick: (event, activeElements) => {
+        if (activeElements.length > 0) handleDrill(activeElements[0].index);
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => [
+              `Pass Rate: ${c.raw}%`,
+              `Attended: ${data[c.dataIndex].attended}`,
+              `Passed: ${data[c.dataIndex].passed}`,
+              `Average Time: ${data[c.dataIndex].avgTime}m`,
+              `Difficulty: ${data[c.dataIndex].difficulty_level}`,
+            ],
+          },
+        },
+      },
+    },
+  });
+
+  // update title and breadcrumb
+  const currentLevel = navStack[navStack.length - 1];
+  document.getElementById("view-title").innerText =
+    navStack.length === 1
+      ? "All Subjects Overview"
+      : `${currentLevel.type} in ${currentLevel.label}`;
+  document.getElementById("breadcrumb").innerHTML = navStack
+    .map(
+      (step, i) =>
+        `<span style="cursor:pointer; color:blue; text-decoration:underline; margin-right:5px;" onclick="window.jumpTo(${i})">${step.label}</span>`,
+    )
+    .join(" -> ");
+
+  // update stats
+  let att = data.reduce((s, i) => s + Number(i.attended || 0), 0);
+  let pass = data.reduce((s, i) => s + Number(i.passed || 0), 0);
+  let rate = att > 0 ? ((pass / att) * 100).toFixed(1) : 0;
+
+  document.getElementById("s-att").innerText = att;
+  document.getElementById("s-pass").innerText = pass;
+  document.getElementById("s-rate").innerText = rate + "%";
+  document.getElementById("s-time").innerText =
+    data.length > 0
+      ? (
+          data.reduce((s, i) => s + parseFloat(i.avgTime || 0), 0) / data.length
+        ).toFixed(1)
+      : 0;
+
+  // update table
+  document.getElementById("table-body").innerHTML = data
+    .map((item, index) => {
+      const passRate =
+        item.attended > 0
+          ? ((item.passed / item.attended) * 100).toFixed(1)
+          : 0;
+      return `
+            <tr>
+                <td><a href="javascript:void(0)" class="drill-link" onclick="handleDrill(${index})">${item.name}</a></td>
+                <td>${item.attended}</td>
+                <td>${item.passed}</td>
+                <td style="font-weight:bold;">${passRate}%</td>
+                <td>${item.avgTime || "0"}m</td>
+                <td>${getDifficultyBadge(item.difficulty_level)}</td>
+            </tr>`;
+    })
+    .join("");
+  resultDiv.style.display = "block";
+}
+
+function checkDrillDownAvailability(subjectID, sectionID) {
+  // check if drill down data is already available in the current item, if not make API call
+
+  if (subjectID) {
+    const subject = currentItems.find((s) => s.id === subjectID);
+    if (subject && subject.section) {
+      navStack.push({
+        label: subject.name,
+        data: subject.section,
+        type: "Sections",
+      });
+      renderDashboard(subject.section);
+      return;
+    }
+  } else if (sectionID) {
+    const section = currentItems.find((s) => s.id === sectionID);
+    if (section && section.topic) {
+      navStack.push({
+        label: section.name,
+        data: section.topic,
+        type: "Topics",
+      });
+      renderDashboard(section.topic);
+      return;
+    }
+  }
+
+  if (subjectID) {
+    getReport(subjectID, null); // Drill into Sections
+  } else if (sectionID) {
+    getReport(null, sectionID); // Drill into Topics
+  }
+}
+
+function getChartConfig(data) {
+  return {
+    labels: data.map((i) => i.name),
+    datasets: [
+      {
+        data: data.map((i) => ((i.passed / i.attended) * 100).toFixed(1)),
+        backgroundColor: data.map((i) => difficultyColors[i.difficulty_level]),
+        borderRadius: 8,
+        barThickness: 45,
+      },
+    ],
+  };
+}
+
+function toggleView(view) {
+  document
+    .getElementById("chart-wrapper")
+    .classList.toggle("hidden", view === "table");
+  document
+    .getElementById("table-wrapper")
+    .classList.toggle("hidden", view === "chart");
+  document
+    .getElementById("btn-chart")
+    .classList.toggle("active", view === "chart");
+  document
+    .getElementById("btn-table")
+    .classList.toggle("active", view === "table");
+}
+
+async function getReport(subjectID = null, sectionID = null) {
+  if (!testTypeDropDown.value || !levelDropDown.value) {
+    alert("Please select test type and level");
+    return;
+  }
+
+  let out = {
+    function: "gsrbl",
+    subject_id: subjectID,
+    section_id: sectionID,
+    test_type: testTypeDropDown.value,
+    level_id: levelDropDown.value,
+    org_id: loggedInUser.college_code,
+  };
+
+  if (loggedInUser.type == "Student") {
+    out.user_id =
+      loggedInUser.register_num ||
+      loggedInUser.user_id ||
+      loggedInUser.staff_id;
+  }
+
+  try {
+    showOverlay();
+    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+
+    if (response.success) {
+      let reportData = response.result.report;
+
+      if (subjectID == null && sectionID == null) {
+        subjects = reportData;
+        navStack = [
+          { label: "All Subjects", data: subjects, type: "Overview" },
+        ];
+        renderDashboard(subjects);
+      } else {
+        let parent = navStack[navStack.length - 1];
+        let nextType = navStack.length === 1 ? "Sections" : "Topics";
+
+        // find the name from the previous level to set the correct label
+        let selectedItem = parent.data.find(
+          (i) => i.id === (subjectID || sectionID),
+        );
+
+        // update subjects or sections in the previous level to avoid future API calls for the same item
+        if (subjectID) {
+          for (let subject of subjects) {
+            if (subject.id === subjectID) {
+              subject.section = reportData;
+              break;
+            }
+          }
+        } else if (sectionID) {
+          for (let subject of subjects) {
+            if (subject.section) {
+              for (let section of subject.section) {
+                if (section.id === sectionID) {
+                  section.topic = reportData;
+                  break;
+                }
+              }
+            }
+          }
+        }
+        // update navStack with new data for the drilled down level
+        navStack.push({
+          label: selectedItem ? selectedItem.name : "",
+          data: reportData,
+          type: nextType,
+        });
+        renderDashboard(reportData);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while fetching data");
+  } finally {
+    hideOverlay();
+  }
+}
+
 async function initializePage() {
+  await fetchLevel();
+  allLevel = JSON.parse(sessionStorage.getItem("levels")) || [];
   init();
+
+  // // Mock data alignment
+  // subjects = [
+  //   {
+  //     id: 25,
+  //     name: "MATH",
+  //     attended: 32,
+  //     passed: 6,
+  //     avgTime: 2.0, // Fixed naming and format
+  //     difficulty_level: "Very Hard",
+  //     // section: [
+  //     //   {
+  //     //     id: 251,
+  //     //     name: "Algebra",
+  //     //     attended: 20,
+  //     //     passed: 4,
+  //     //     avgTime: 1.5,
+  //     //     difficulty_level: "Hard",
+  //     //     topic: [
+  //     //       {
+  //     //         id: 2511,
+  //     //         name: "Linear Equations",
+  //     //         attended: 10,
+  //     //         passed: 2,
+  //     //         avgTime: 1.0,
+  //     //         difficulty_level: "Medium",
+  //     //       },
+  //     //       {
+  //     //         id: 2512,
+  //     //         name: "Quadratic Equations",
+  //     //         attended: 10,
+  //     //         passed: 2,
+  //     //         avgTime: 2.0,
+  //     //         difficulty_level: "Hard",
+  //     //       },
+  //     //     ],
+  //     //   },
+  //     //   {
+  //     //     id: 252,
+  //     //     name: "Geometry",
+  //     //     attended: 12,
+  //     //     passed: 2,
+  //     //     avgTime: 2.5,
+  //     //     difficulty_level: "Medium",
+  //     //     topic: [
+  //     //       {
+  //     //         id: 2521,
+  //     //         name: "Triangles",
+  //     //         attended: 6,
+  //     //         passed: 1,
+  //     //         avgTime: 2.0,
+  //     //         difficulty_level: "Medium",
+  //     //       },
+  //     //       {
+  //     //         id: 2522,
+  //     //         name: "Circles",
+  //     //         attended: 6,
+  //     //         passed: 1,
+  //     //         avgTime: 3.0,
+  //     //         difficulty_level: "Very Hard",
+  //     //       },
+  //     //     ],
+  //     //   },
+  //     // ],
+  //   },
+  //   {
+  //     id: 26,
+  //     name: "SCIENCE",
+  //     attended: 50,
+  //     passed: 25,
+  //     avgTime: 1.5,
+  //     difficulty_level: "Medium",
+  //     section: [
+  //       {
+  //         id: 261,
+  //         name: "Physics",
+  //         attended: 30,
+  //         passed: 15,
+  //         avgTime: 1.0,
+  //         difficulty_level: "Medium",
+  //         topic: [
+  //           {
+  //             id: 2611,
+  //             name: "Mechanics",
+  //             attended: 15,
+  //             passed: 8,
+  //             avgTime: 0.8,
+  //             difficulty_level: "Easy",
+  //           },
+  //           {
+  //             id: 2612,
+  //             name: "Optics",
+  //             attended: 15,
+  //             passed: 7,
+  //             avgTime: 1.2,
+  //             difficulty_level: "Medium",
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         id: 262,
+  //         name: "Chemistry",
+  //         attended: 20,
+  //         passed: 10,
+  //         avgTime: 2.0,
+  //         difficulty_level: "Hard",
+  //         topic: [
+  //           {
+  //             id: 2621,
+  //             name: "Organic Chemistry",
+  //             attended: 10,
+  //             passed: 5,
+  //             avgTime: 1.5,
+  //             difficulty_level: "Hard",
+  //           },
+  //           {
+  //             id: 2622,
+  //             name: "Inorganic Chemistry",
+  //             attended: 10,
+  //             passed: 5,
+  //             avgTime: 2.5,
+  //             difficulty_level: "Very Hard",
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ];
+
+  // navStack = [{ label: "All Subjects", data: subjects, type: "Overview" }];
+  // renderDashboard(subjects);
+  // resultDiv.style.display = "block";
 }

@@ -54,6 +54,7 @@ async function showIndividualPerformanceSection(data) {
         new TableStructure("Question"),
         new TableStructure("Is Correct"),
         new TableStructure("Time Taken"),
+        new TableStructure("Question Difficulty"),
       ],
     ],
     tableBody: [],
@@ -180,6 +181,7 @@ async function showIndividualPerformanceSection(data) {
       new TableStructure(questionHTML),
       new TableStructure(isCorrect),
       new TableStructure(row.time_taken),
+      new TableStructure(getDifficultyBadge(row.difficulty_level)),
     ]);
   });
   displayResult(tableData, individualPerformanceTable);

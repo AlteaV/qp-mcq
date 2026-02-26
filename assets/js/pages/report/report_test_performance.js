@@ -41,12 +41,18 @@ function showReportSection(data) {
     tableData.tableHeader[0].push(new TableStructure(`Total Questions`));
     tableData.tableHeader[0].push(new TableStructure(`Total Mark Obtained`));
   } else {
+    let totalQues = null;
+    for (let i = 0; i < data.length; i++) {
+      let element = data[i];
+      if (element.total_questions) {
+        totalQues = element.total_questions;
+        break;
+      }
+    }
     tableData.tableHeader[0].push(new TableStructure("User ID"));
     tableData.tableHeader[0].push(new TableStructure("User Name"));
     tableData.tableHeader[0].push(
-      new TableStructure(
-        `Total Score<br><small>(out of ${data[0].total_questions})</small>`,
-      ),
+      new TableStructure(`Total Score<br><small>(out of ${totalQues})</small>`),
     );
   }
 
