@@ -13841,3 +13841,30 @@ table.dataTable tfoot td {
 .hidden {
   display: none;
 }
+
+.stat-comparison {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  padding-top: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-sub-val {
+  font-size: 1.4em; /* Slightly smaller than the main stat-number */
+  font-weight: 600;
+}
+
+.stat-sub-label {
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}

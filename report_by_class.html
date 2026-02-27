@@ -15,9 +15,37 @@
                   <div class="col-md-12">
                     <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
                     <h4 class="c-grey-900 mB-20 mt-6 mb-3">
-                      Test Performance Analysis By Class
+                      Group Wise Report
                     </h4>
                     <div class="row mb-3 align-items-end">
+                      <div class="col mt-2">
+                        <label for="group" class="required">Group</label>
+                        <select
+                          class="form-select"
+                          name="group"
+                          id="group"
+                          required
+                        >
+                          <option>Please select a Group</option>
+                        </select>
+                      </div>
+                      <div class="col mt-2">
+                        <label for="test_type" class="required"
+                          >Test Type</label
+                        >
+                        <select
+                          class="form-select"
+                          name="test_type"
+                          id="test_type"
+                          required
+                        >
+                          <option value="" selected disabled>
+                            Select Test Type
+                          </option>
+                          <option value="Practice">Practice</option>
+                          <option value="Actual">Actual</option>
+                        </select>
+                      </div>
                       <div class="col mt-2">
                         <label for="level" class="required">Level</label>
                         <select
@@ -25,32 +53,15 @@
                           name="level"
                           id="level"
                           required
-                        ></select>
+                        >
+                          <option>Please select a Level</option>
+                        </select>
                       </div>
-                      <div class="col mt-2">
-                        <label for="subject" class="required">Subject</label>
-                        <select
-                          class="form-select"
-                          name="subject"
-                          id="subject"
-                          required
-                        ></select>
-                      </div>
-                      <div class="col mt-2 d-none" id="section_div">
-                        <label for="section" class="required">Section</label>
-                        <select
-                          class="form-select"
-                          name="section"
-                          id="section"
-                          required
-                        ></select>
-                      </div>
-
                       <div class="col mt-4">
                         <button
                           class="btn btn-primary btn-color"
                           type="button"
-                          id="view_report"
+                          id="network_button"
                         >
                           View Report
                         </button>
@@ -61,15 +72,114 @@
                     </div>
 
                     <div
-                      class="result mt-4"
+                      class="result mt-4 p-3"
                       id="result_div"
                       style="display: none"
                     >
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
+                      <div class="row">
+                        <div class="stats-grid">
+                          <div class="stat-card">
+                            <div class="stat-comparison">
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-att-o">0</div>
+                                <div class="stat-sub-label">Overall</div>
+                              </div>
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-att-g">0</div>
+                                <div class="stat-sub-label">Group</div>
+                              </div>
+                            </div>
+                            <div class="stat-label">Attended</div>
+                          </div>
+
+                          <div class="stat-card">
+                            <div class="stat-comparison">
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-pass-o">0</div>
+                                <div class="stat-sub-label">Overall</div>
+                              </div>
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-pass-g">0</div>
+                                <div class="stat-sub-label">Group</div>
+                              </div>
+                            </div>
+                            <div class="stat-label">Passed</div>
+                          </div>
+                          <div class="stat-card">
+                            <div class="stat-comparison">
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-rate-o">0</div>
+                                <div class="stat-sub-label">Overall</div>
+                              </div>
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-rate-g">0</div>
+                                <div class="stat-sub-label">Group</div>
+                              </div>
+                            </div>
+                            <div class="stat-label">Pass Rate</div>
+                          </div>
+                          <div class="stat-card">
+                            <div class="stat-comparison">
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-time-o">0</div>
+                                <div class="stat-sub-label">Overall</div>
+                              </div>
+                              <div class="stat-item">
+                                <div class="stat-sub-val" id="s-time-g">0</div>
+                                <div class="stat-sub-label">Group</div>
+                              </div>
+                            </div>
+                            <div class="stat-label">Avg Time (m)</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="report-card">
+                          <div class="card-header">
+                            <h2
+                              id="view-title"
+                              style="
+                                margin: 0;
+                                font-size: 1.4rem;
+                                color: var(--dark);
+                              "
+                            >
+                              All Subjects Overview
+                            </h2>
+                            <div class="toggle-group">
+                              <button class="toggle-btn active" id="btn-chart">
+                                Chart
+                              </button>
+                              <button class="toggle-btn" id="btn-table">
+                                Table
+                              </button>
+                            </div>
+                          </div>
+
+                          <div class="breadcrumb" id="breadcrumb"></div>
+
+                          <div id="chart-wrapper" style="height: 400px">
+                            <canvas id="drillChart"></canvas>
+                          </div>
+
+                          <div id="table-wrapper" class="hidden">
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Type</th>
+                                  <th>Attended</th>
+                                  <th>Passed</th>
+                                  <th>Success Rate</th>
+                                  <th>Avg Time</th>
+                                  <th>Difficulty</th>
+                                </tr>
+                              </thead>
+                              <tbody id="table-body"></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -82,6 +192,8 @@
     </div>
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="assets/js/cache/get_level.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script
     type="module"
     src="/assets/js/pages/report/report_by_class.js"

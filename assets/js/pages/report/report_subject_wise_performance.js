@@ -142,7 +142,7 @@ function renderDashboard(data) {
               `Pass Rate: ${c.raw}%`,
               `Attended: ${data[c.dataIndex].attended}`,
               `Passed: ${data[c.dataIndex].passed}`,
-              `Average Time: ${data[c.dataIndex].avgTime}m`,
+              `Average Time: ${data[c.dataIndex].avg_time}m`,
               `Difficulty: ${data[c.dataIndex].difficulty_level}`,
             ],
           },
@@ -175,7 +175,12 @@ function renderDashboard(data) {
   document.getElementById("s-time").innerText =
     data.length > 0
       ? (
-          data.reduce((s, i) => s + parseFloat(i.avgTime || 0), 0) / data.length
+          data.reduce((s, i) => {
+            const timeParts = (i.avg_time || "0:0:0").split(":");
+            const minutes =
+              parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
+            return s + minutes;
+          }, 0) / data.length
         ).toFixed(1)
       : 0;
 
@@ -192,7 +197,7 @@ function renderDashboard(data) {
                 <td>${item.attended}</td>
                 <td>${item.passed}</td>
                 <td style="font-weight:bold;">${passRate}%</td>
-                <td>${item.avgTime || "0"}m</td>
+                <td>${item.avg_time || "0"}m</td>
                 <td>${getDifficultyBadge(item.difficulty_level)}</td>
             </tr>`;
     })
@@ -348,136 +353,4 @@ async function initializePage() {
   await fetchLevel();
   allLevel = JSON.parse(sessionStorage.getItem("levels")) || [];
   init();
-
-  // // Mock data alignment
-  // subjects = [
-  //   {
-  //     id: 25,
-  //     name: "MATH",
-  //     attended: 32,
-  //     passed: 6,
-  //     avgTime: 2.0, // Fixed naming and format
-  //     difficulty_level: "Very Hard",
-  //     // section: [
-  //     //   {
-  //     //     id: 251,
-  //     //     name: "Algebra",
-  //     //     attended: 20,
-  //     //     passed: 4,
-  //     //     avgTime: 1.5,
-  //     //     difficulty_level: "Hard",
-  //     //     topic: [
-  //     //       {
-  //     //         id: 2511,
-  //     //         name: "Linear Equations",
-  //     //         attended: 10,
-  //     //         passed: 2,
-  //     //         avgTime: 1.0,
-  //     //         difficulty_level: "Medium",
-  //     //       },
-  //     //       {
-  //     //         id: 2512,
-  //     //         name: "Quadratic Equations",
-  //     //         attended: 10,
-  //     //         passed: 2,
-  //     //         avgTime: 2.0,
-  //     //         difficulty_level: "Hard",
-  //     //       },
-  //     //     ],
-  //     //   },
-  //     //   {
-  //     //     id: 252,
-  //     //     name: "Geometry",
-  //     //     attended: 12,
-  //     //     passed: 2,
-  //     //     avgTime: 2.5,
-  //     //     difficulty_level: "Medium",
-  //     //     topic: [
-  //     //       {
-  //     //         id: 2521,
-  //     //         name: "Triangles",
-  //     //         attended: 6,
-  //     //         passed: 1,
-  //     //         avgTime: 2.0,
-  //     //         difficulty_level: "Medium",
-  //     //       },
-  //     //       {
-  //     //         id: 2522,
-  //     //         name: "Circles",
-  //     //         attended: 6,
-  //     //         passed: 1,
-  //     //         avgTime: 3.0,
-  //     //         difficulty_level: "Very Hard",
-  //     //       },
-  //     //     ],
-  //     //   },
-  //     // ],
-  //   },
-  //   {
-  //     id: 26,
-  //     name: "SCIENCE",
-  //     attended: 50,
-  //     passed: 25,
-  //     avgTime: 1.5,
-  //     difficulty_level: "Medium",
-  //     section: [
-  //       {
-  //         id: 261,
-  //         name: "Physics",
-  //         attended: 30,
-  //         passed: 15,
-  //         avgTime: 1.0,
-  //         difficulty_level: "Medium",
-  //         topic: [
-  //           {
-  //             id: 2611,
-  //             name: "Mechanics",
-  //             attended: 15,
-  //             passed: 8,
-  //             avgTime: 0.8,
-  //             difficulty_level: "Easy",
-  //           },
-  //           {
-  //             id: 2612,
-  //             name: "Optics",
-  //             attended: 15,
-  //             passed: 7,
-  //             avgTime: 1.2,
-  //             difficulty_level: "Medium",
-  //           },
-  //         ],
-  //       },
-  //       {
-  //         id: 262,
-  //         name: "Chemistry",
-  //         attended: 20,
-  //         passed: 10,
-  //         avgTime: 2.0,
-  //         difficulty_level: "Hard",
-  //         topic: [
-  //           {
-  //             id: 2621,
-  //             name: "Organic Chemistry",
-  //             attended: 10,
-  //             passed: 5,
-  //             avgTime: 1.5,
-  //             difficulty_level: "Hard",
-  //           },
-  //           {
-  //             id: 2622,
-  //             name: "Inorganic Chemistry",
-  //             attended: 10,
-  //             passed: 5,
-  //             avgTime: 2.5,
-  //             difficulty_level: "Very Hard",
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ];
-
-  // navStack = [{ label: "All Subjects", data: subjects, type: "Overview" }];
-  // renderDashboard(subjects);
-  // resultDiv.style.display = "block";
 }
