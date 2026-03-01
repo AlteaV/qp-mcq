@@ -167,15 +167,40 @@ async function showIndividualPerformanceSection(data) {
 
     choiceHTML += `</div>`;
 
+    if (typeof row.images === "string") {
+      try {
+        row.images = JSON.parse(row.images);
+      } catch {
+        console.error("Error parsing images for question", index);
+      }
+    }
     let questionHTML = `
                 <div style="margin-bottom: 20px;">
                     <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
                     ${row.question}
                     </p>
+
+                    ${row.table ? `<p>${renderTableFromMarkdown(row.table)}</p>` : ""}
+                    ${
+                      row.images && row.images.length > 0
+                        ? row.images
+                            .map((imgObj) => {
+                              if (imgObj.image_base64) {
+                                return `        <div style="text-align: center; margin: 10px 0;">
+                        <img src="${imgObj.image_base64}" 
+                            alt="Question Image" 
+                            style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px;         padding: 5px;" />
+                      </div>`;
+                              }
+                              return "";
+                            })
+                            .join("")
+                        : ""
+                    }
+
                     ${choiceHTML}
                 </div>
             `;
-
     tableData.tableBody.push([
       new TableStructure(index + 1),
       new TableStructure(questionHTML),
