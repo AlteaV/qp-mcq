@@ -116,6 +116,7 @@ function postCallPreProcess(functionName) {
     functionName == "cqss" ||
     functionName == "gsrbl" ||
     functionName == "ggwr" ||
+    functionName == "ghg" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

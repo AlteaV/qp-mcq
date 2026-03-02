@@ -131,7 +131,7 @@ function renderTopic() {
   let selectedSubject = subjects.find((s) => s.subject_id == subjectID);
 
   let selectedSection = JSON.parse(selectedSubject.sections).find(
-    (sec) => sec.section_id == sectionID
+    (sec) => sec.section_id == sectionID,
   );
   if (!selectedSection) {
     topicDiv.classList.add("d-none");
@@ -175,8 +175,6 @@ async function takeTest() {
     showOverlay();
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
-      questions = response.result.questions;
-
       questions = {
         question_paper_id: null,
         questions: [],

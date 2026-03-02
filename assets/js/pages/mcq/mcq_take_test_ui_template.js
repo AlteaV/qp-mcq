@@ -254,7 +254,17 @@ function initializeUI() {
   }
 
   submitTestBtn.onclick = async () => {
-    submitTest();
+    let result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to submit the test?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, submit it!",
+      cancelButtonText: "No, cancel",
+    });
+    if (result.isConfirmed) {
+      submitTest();
+    }
   };
 
   renderQuestionsPage();

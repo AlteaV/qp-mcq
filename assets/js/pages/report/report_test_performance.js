@@ -6,6 +6,7 @@ var viewReport = document.getElementById("view_report");
 var questionPaperDropDown = document.getElementById("question_paper");
 var toggleBtnChart = document.getElementById("btn-chart");
 var toggleBtnTable = document.getElementById("btn-table");
+var downloadButton = document.getElementById("donwload_button");
 
 var qp = null;
 var sections = null;
@@ -20,6 +21,14 @@ let navStack = [{ label: "All Sections", data: summary, type: "Overview" }];
 
 toggleBtnChart.addEventListener("click", () => toggleView("chart"));
 toggleBtnTable.addEventListener("click", () => toggleView("table"));
+
+downloadButton.addEventListener("click", () => {
+  let selectedQp = qp.find((q) => q.question_id == questionPaperDropDown.value);
+  exportFullTableToExcel(
+    resultTable,
+    `${selectedQp.name} - Test Performance Report`,
+  );
+});
 
 function jumpTo(index) {
   navStack = navStack.slice(0, index + 1);

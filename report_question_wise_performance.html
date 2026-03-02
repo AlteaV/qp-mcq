@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -54,6 +54,15 @@
                         width="100%"
                         id="result_table"
                       ></table>
+
+                      <div class="col-2 mb-2" style="align-self: flex-end">
+                        <input
+                          class="btn btn-success btn-color"
+                          type="button"
+                          value="Download Report"
+                          id="donwload_button"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -67,6 +76,8 @@
   </body>
   <script id="rendered-js" src="/assets/js/scripts.js"></script>
   <script defer src="/assets/js/packages/mathjax-config.js"></script>
+  <script src="/assets/js/packages/xlxs/xlsx.full.min.js"></script>
+  <script src="/assets/js/common/xl_export_function.js"></script>
   <script
     type="module"
     src="/assets/js/pages/report/report_question_wise_performance.js"

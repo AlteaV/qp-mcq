@@ -26,10 +26,10 @@ function setQuestionNumber(q_no) {
 
 function saveAnswer() {
   let answerIndex = answers.findIndex(
-    (a) => a.question_id == currentQuestion.question_id
+    (a) => a.question_id == currentQuestion.question_id,
   );
   let selectedOption = document.querySelector(
-    `input[name="question_${currentQuestion.question_id}"]:checked`
+    `input[name="question_${currentQuestion.question_id}"]:checked`,
   );
 
   if (selectedOption) {
@@ -42,7 +42,7 @@ function saveAnswer() {
 function setCompletionTime() {
   let completionTime = new Date().toISOString();
   let answerIndex = answers.findIndex(
-    (a) => a.question_id == currentQuestion.question_id
+    (a) => a.question_id == currentQuestion.question_id,
   );
   if (answers[answerIndex].hasOwnProperty("completion_time")) {
     answers[answerIndex].completion_time.push(completionTime);
@@ -73,7 +73,7 @@ function nextQuestion() {
     }
     answers.push(selectedQuestion);
     questions.questions = questions.questions.filter(
-      (q) => q.question_id != selectedQuestion.question_id
+      (q) => q.question_id != selectedQuestion.question_id,
     );
     setQuestionNumber(answers.length);
   }
@@ -121,7 +121,7 @@ async function showQuestion(question) {
   let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
   let alreadyAnswered = answers.find(
-    (q) => q.question_id == question.question_id
+    (q) => q.question_id == question.question_id,
   );
 
   for (let key in choices) {
@@ -154,12 +154,98 @@ async function showQuestion(question) {
                     ${choiceHTML}
                 </div>
             `;
+
+  let questionId = question.question_id;
+  let helpDiv = document.createElement("div");
+  helpDiv.style.display = "none";
+  helpDiv.className = "accordion mb-3 mt-3";
+  helpDiv.id = `accordion_hint_${questionId}`;
+  helpDiv.innerHTML = `
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-heading-hint-${questionId}">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-hint-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-hint-${questionId}">
+          Hint
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapse-hint-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-hint-${questionId}">
+        <div class="accordion-body" id="hint_body_${questionId}">
+          Loading hint...
+        </div>
+      </div>
+    </div>
+  `;
+
+  let helpButton = document.createElement("button");
+  helpButton.id = `help_button_${questionId}`;
+  helpButton.innerText = "Show hint";
+  helpButton.className = "mb-3 mt-3";
+  helpButton.style.textDecoration = "underline";
+  helpButton.style.background = "none";
+  helpButton.style.border = "none";
+  helpButton.style.color = "blue";
+  helpButton.style.cursor = "pointer";
+  helpButton.onclick = async () => {
+    let hint = await getHelp(questionId, "hint");
+    if (hint) {
+      showHint(questionId, hint);
+      hideOverlay();
+    }
+  };
+
+  let answerDiv = document.createElement("div");
+  answerDiv.style.display = "none";
+  answerDiv.className = "accordion mb-3 mt-3";
+  answerDiv.id = `accordion_answer_${questionId}`;
+  answerDiv.innerHTML = `
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-heading-answer-${questionId}">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-answer-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-answer-${questionId}">
+          Answer
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapse-answer-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-answer-${questionId}">
+        <div class="accordion-body" id="answer_body_${questionId}">
+          Loading answer...
+        </div>
+      </div>
+    </div>
+  `;
+
+  let answerButton = document.createElement("button");
+  answerButton.id = `answer_button_${questionId}`;
+  answerButton.innerText = "Show Answer";
+  answerButton.style.display = "none";
+  answerButton.className = "mb-3 mt-3";
+  answerButton.style.textDecoration = "underline";
+  answerButton.style.background = "none";
+  answerButton.style.border = "none";
+  answerButton.style.color = "blue";
+  answerButton.style.cursor = "pointer";
+  answerButton.onclick = async () => {
+    let answer = await getHelp(questionId, "answer");
+    if (answer) {
+      showAnswer(questionId, answer);
+      hideOverlay();
+    }
+  };
+
   questionDiv.innerHTML = questionHTML;
+  questionDiv.appendChild(helpDiv);
+  questionDiv.appendChild(helpButton);
+  questionDiv.appendChild(answerDiv);
+  questionDiv.appendChild(answerButton);
+
+  if (question.llm_hint) {
+    showHint(questionId, question.llm_hint);
+  }
+  if (question.llm_answer) {
+    showAnswer(questionId, question.llm_answer);
+  }
 
   let startTime = new Date().toISOString();
 
   let currentAnswerIndex = answers.findIndex(
-    (q) => q.question_id == question.question_id
+    (q) => q.question_id == question.question_id,
   );
 
   if (answers[currentAnswerIndex].hasOwnProperty("start_time")) {
@@ -167,6 +253,38 @@ async function showQuestion(question) {
   } else {
     answers[currentAnswerIndex].start_time = [startTime];
   }
+  await mathJaxTypeset();
+
+  $("input[type=radio]").click(function () {
+    saveAnswer();
+  });
+
+  resultDiv.style.display = "block";
+}
+
+async function showHint(questionId, hint) {
+  let hintBody = document.getElementById(`hint_body_${questionId}`);
+  hintBody.innerText = hint;
+  let helpDiv = document.getElementById(`accordion_hint_${questionId}`);
+  helpDiv.style.display = "block";
+  let helpButton = document.getElementById(`help_button_${questionId}`);
+  helpButton.style.display = "none";
+  let answerButton = document.getElementById(`answer_button_${questionId}`);
+  answerButton.style.display = "block";
+  await mathJaxTypeset();
+}
+
+async function showAnswer(questionId, answer) {
+  let answerBody = document.getElementById(`answer_body_${questionId}`);
+  answerBody.innerText = answer;
+  let answerDiv = document.getElementById(`accordion_answer_${questionId}`);
+  answerDiv.style.display = "block";
+  let answerButton = document.getElementById(`answer_button_${questionId}`);
+  answerButton.style.display = "none";
+  await mathJaxTypeset();
+}
+
+async function mathJaxTypeset() {
   try {
     if (window.MathJax) {
       if (typeof MathJax.typesetPromise === "function") {
@@ -179,12 +297,42 @@ async function showQuestion(question) {
     console.error("MathJax typeset error:", error);
     alert("Error rendering mathematical expressions.");
   }
+}
 
-  $("input[type=radio]").click(function () {
-    saveAnswer();
-  });
+async function getHelp(id, type) {
+  showOverlay();
+  console.log(questions);
+  console.log(id, type);
 
-  resultDiv.style.display = "block";
+  try {
+    let question = answers.find((a) => a.question_id == id);
+
+    let out = {
+      question: question.question,
+      answers: question.choices,
+      type: type,
+      function: "ghg",
+    };
+    if (type != "hint") {
+      out.hint = question.llm_hint;
+    }
+    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    if (response.success) {
+      if (type == "hint") {
+        question.llm_hint = response.result.help;
+      } else {
+        question.llm_answer = response.result.help;
+      }
+      return response.result.help;
+    } else {
+      throw new Error(response.message || "Failed to fetch help content");
+    }
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Error fetching help content.");
+    hideOverlay();
+    return;
+  }
 }
 
 async function submitTest() {
@@ -225,7 +373,7 @@ async function submitTest() {
     };
     if (testType == "Self") {
       let ques = questions.questions.find(
-        (q) => q.question_id == a.question_id
+        (q) => q.question_id == a.question_id,
       );
       if (!ques) {
         ques = answers.find((q) => q.question_id == a.question_id);

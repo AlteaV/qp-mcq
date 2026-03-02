@@ -4,9 +4,52 @@ let resultDiv = document.getElementById("result_div");
 let registerNumber = document.getElementById("register_num");
 let viewReport = document.getElementById("view_report");
 let questionPaperDropDown = document.getElementById("question_paper");
+var downloadButton = document.getElementById("donwload_button");
 
 let qpAttendCount = document.getElementById("qp_attend_count");
 let qp = null;
+let report = null;
+
+downloadButton.addEventListener("click", () => {
+  let selectedQp = qp.find((q) => q.question_id == questionPaperDropDown.value);
+  let tempTable = document.createElement("table");
+  tempTable.style.display = "none";
+  let tableData = {
+    tableHeader: [
+      [
+        new TableStructure("S.NO"),
+        new TableStructure("Topic"),
+        new TableStructure("Question"),
+        new TableStructure("BTL Level"),
+        new TableStructure("Total Attended"),
+        new TableStructure("Total Correct"),
+        new TableStructure("Total Unattended"),
+        new TableStructure("Average Time"),
+      ],
+    ],
+    tableBody: [],
+  };
+  report.forEach((row, index) => {
+    tableData.tableBody.push([
+      new TableStructure(index + 1),
+      new TableStructure(row.topic),
+      new TableStructure(row.question, "", "", "", "text-align: left;"),
+      new TableStructure(row.btl_level),
+      new TableStructure(row.total_attended ?? 0),
+      new TableStructure(row.total_correct ?? 0),
+      new TableStructure(row.total_unattended ?? 0),
+      new TableStructure(row.average_time),
+    ]);
+  });
+
+  document.body.appendChild(tempTable);
+  displayResult(tableData, tempTable);
+  exportFullTableToExcel(
+    tempTable,
+    `${selectedQp.name} - Question wise Report`,
+  );
+  document.body.removeChild(tempTable);
+});
 
 viewReport.addEventListener("click", async () => {
   if (questionPaperDropDown.value) {
@@ -127,9 +170,11 @@ async function getReport() {
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
+      report = response.result.report;
       showReportSection(response.result.report);
     }
   } catch (error) {
+    report = null;
     hideOverlay();
     console.error(error);
     alert("An error occurred while fetching subjects and section");
