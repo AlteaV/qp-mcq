@@ -14,6 +14,37 @@ const actions = {
 
 const menuItems = [
   {
+    text: "Reports",
+    icon: "fas fa-tachometer-alt",
+    dropdown: true,
+    items: [
+      {
+        href: "/report_leaderboard.html",
+        text: "Leaderboard",
+      },
+      {
+        href: "/report_test_performance.html",
+        text: "Test Report",
+      },
+      {
+        href: "/report_subject_wise_performance.html",
+        text: "Subject Wise Report",
+      },
+      {
+        href: "/student_report.html",
+        text: "Test Analysis",
+      },
+      {
+        href: "/report_by_class.html",
+        text: "Group Wise Report",
+      },
+      {
+        href: "/report_question_wise_performance.html",
+        text: "Question Wise Report",
+      },
+    ],
+  },
+  {
     text: "User Mangement",
     icon: "fas fa-chalkboard-teacher",
     dropdown: true,
@@ -132,33 +163,6 @@ const menuItems = [
       {
         href: "/qp_view_question_paper.html",
         text: "View Question Paper",
-      },
-    ],
-  },
-  {
-    text: "Reports",
-    icon: "fas fa-tachometer-alt",
-    dropdown: true,
-    items: [
-      {
-        href: "/report_test_performance.html",
-        text: "Test Report",
-      },
-      {
-        href: "/report_subject_wise_performance.html",
-        text: "Subject Wise Report",
-      },
-      {
-        href: "/student_report.html",
-        text: "Test Analysis",
-      },
-      {
-        href: "/report_by_class.html",
-        text: "Group Wise Report",
-      },
-      {
-        href: "/report_question_wise_performance.html",
-        text: "Question Wise Report",
       },
     ],
   },

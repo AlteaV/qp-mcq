@@ -145,7 +145,7 @@ async function logIn() {
       function: "gup",
       type: type,
       org_id: org_id,
-    })
+    }),
   );
 
   if (type === "Student") {
@@ -171,7 +171,7 @@ async function logIn() {
         branch: branchCode,
         std_year: currentYear,
         section: section,
-      })
+      }),
     );
 
     if (!storeUser.success) {
@@ -211,6 +211,6 @@ async function logIn() {
       permissions: permission.result.permissions.permissions,
     };
     sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));
-    window.location.href = "mcq_question_upload.html";
+    window.location.href = "report_leaderboard.html";
   }
 }
