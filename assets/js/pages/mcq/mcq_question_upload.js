@@ -370,7 +370,10 @@ async function previewQuestions() {
     showOverlay();
     let file = fileInput.files[0];
     let subjectName = document.getElementById("subject").value;
-    let matchedSubject = subjects.find((s) => s.subject == subjectName);
+    let level = levelDropDown.value;
+    let matchedSubject = subjects.find(
+      (s) => s.subject == subjectName && s.level == level,
+    );
 
     if (!matchedSubject) {
       alert("Please select a valid subject.");

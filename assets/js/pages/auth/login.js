@@ -192,6 +192,10 @@ async function logIn() {
       college_code: studentDetails.college_code,
       org_id: studentDetails.college_code,
       permissions: permission.result.permissions.permissions,
+      practice: permission.result.permissions.practice,
+      qp_suite: permission.result.permissions.qp_suite,
+      test_suite: permission.result.permissions.test_suite,
+      agentic_learning: permission.result.permissions.agentic_learning,
       type: "Student", // have to change this based on login
     };
     sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));

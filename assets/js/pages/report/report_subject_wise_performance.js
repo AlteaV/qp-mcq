@@ -65,7 +65,7 @@ window.jumpTo = jumpTo;
 window.handleDrill = handleDrill;
 
 async function init() {
-  if (loggedInUser.type == "Student") {
+  if (loggedInUser.type == "Student" && loggedInUser.practice) {
     testTypeDropDown.appendChild(new Option("Self Learning", "Self"));
   }
   renderLevels();

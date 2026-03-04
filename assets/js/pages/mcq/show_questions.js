@@ -155,12 +155,15 @@ async function showQuestion(question) {
                 </div>
             `;
 
-  let questionId = question.question_id;
-  let helpDiv = document.createElement("div");
-  helpDiv.style.display = "none";
-  helpDiv.className = "accordion mb-3 mt-3";
-  helpDiv.id = `accordion_hint_${questionId}`;
-  helpDiv.innerHTML = `
+  questionDiv.innerHTML = questionHTML;
+
+  if (loggedInUser.agentic_learning) {
+    let questionId = question.question_id;
+    let helpDiv = document.createElement("div");
+    helpDiv.style.display = "none";
+    helpDiv.className = "accordion mb-3 mt-3";
+    helpDiv.id = `accordion_hint_${questionId}`;
+    helpDiv.innerHTML = `
     <div class="accordion-item">
       <h2 class="accordion-header" id="panelsStayOpen-heading-hint-${questionId}">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-hint-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-hint-${questionId}">
@@ -175,28 +178,28 @@ async function showQuestion(question) {
     </div>
   `;
 
-  let helpButton = document.createElement("button");
-  helpButton.id = `help_button_${questionId}`;
-  helpButton.innerText = "Show hint";
-  helpButton.className = "mb-3 mt-3";
-  helpButton.style.textDecoration = "underline";
-  helpButton.style.background = "none";
-  helpButton.style.border = "none";
-  helpButton.style.color = "blue";
-  helpButton.style.cursor = "pointer";
-  helpButton.onclick = async () => {
-    let hint = await getHelp(questionId, "hint");
-    if (hint) {
-      showHint(questionId, hint);
-      hideOverlay();
-    }
-  };
+    let helpButton = document.createElement("button");
+    helpButton.id = `help_button_${questionId}`;
+    helpButton.innerText = "Show hint";
+    helpButton.className = "mb-3 mt-3";
+    helpButton.style.textDecoration = "underline";
+    helpButton.style.background = "none";
+    helpButton.style.border = "none";
+    helpButton.style.color = "blue";
+    helpButton.style.cursor = "pointer";
+    helpButton.onclick = async () => {
+      let hint = await getHelp(questionId, "hint");
+      if (hint) {
+        showHint(questionId, hint);
+        hideOverlay();
+      }
+    };
 
-  let answerDiv = document.createElement("div");
-  answerDiv.style.display = "none";
-  answerDiv.className = "accordion mb-3 mt-3";
-  answerDiv.id = `accordion_answer_${questionId}`;
-  answerDiv.innerHTML = `
+    let answerDiv = document.createElement("div");
+    answerDiv.style.display = "none";
+    answerDiv.className = "accordion mb-3 mt-3";
+    answerDiv.id = `accordion_answer_${questionId}`;
+    answerDiv.innerHTML = `
     <div class="accordion-item">
       <h2 class="accordion-header" id="panelsStayOpen-heading-answer-${questionId}">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-answer-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-answer-${questionId}">
@@ -211,35 +214,35 @@ async function showQuestion(question) {
     </div>
   `;
 
-  let answerButton = document.createElement("button");
-  answerButton.id = `answer_button_${questionId}`;
-  answerButton.innerText = "Show Answer";
-  answerButton.style.display = "none";
-  answerButton.className = "mb-3 mt-3";
-  answerButton.style.textDecoration = "underline";
-  answerButton.style.background = "none";
-  answerButton.style.border = "none";
-  answerButton.style.color = "blue";
-  answerButton.style.cursor = "pointer";
-  answerButton.onclick = async () => {
-    let answer = await getHelp(questionId, "answer");
-    if (answer) {
-      showAnswer(questionId, answer);
-      hideOverlay();
+    let answerButton = document.createElement("button");
+    answerButton.id = `answer_button_${questionId}`;
+    answerButton.innerText = "Show Answer";
+    answerButton.style.display = "none";
+    answerButton.className = "mb-3 mt-3";
+    answerButton.style.textDecoration = "underline";
+    answerButton.style.background = "none";
+    answerButton.style.border = "none";
+    answerButton.style.color = "blue";
+    answerButton.style.cursor = "pointer";
+    answerButton.onclick = async () => {
+      let answer = await getHelp(questionId, "answer");
+      if (answer) {
+        showAnswer(questionId, answer);
+        hideOverlay();
+      }
+    };
+
+    questionDiv.appendChild(helpDiv);
+    questionDiv.appendChild(helpButton);
+    questionDiv.appendChild(answerDiv);
+    questionDiv.appendChild(answerButton);
+
+    if (question.llm_hint) {
+      showHint(questionId, question.llm_hint);
     }
-  };
-
-  questionDiv.innerHTML = questionHTML;
-  questionDiv.appendChild(helpDiv);
-  questionDiv.appendChild(helpButton);
-  questionDiv.appendChild(answerDiv);
-  questionDiv.appendChild(answerButton);
-
-  if (question.llm_hint) {
-    showHint(questionId, question.llm_hint);
-  }
-  if (question.llm_answer) {
-    showAnswer(questionId, question.llm_answer);
+    if (question.llm_answer) {
+      showAnswer(questionId, question.llm_answer);
+    }
   }
 
   let startTime = new Date().toISOString();
