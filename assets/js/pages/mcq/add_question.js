@@ -466,6 +466,7 @@ async function uploadQuestion() {
 
   const questionType = questionTypeDropDown.value;
   question.question_type = questionType;
+  question.is_ai_generated = null;
 
   if (questionType === "Mcq") {
     question.choices = {

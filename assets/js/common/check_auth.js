@@ -92,8 +92,12 @@ const menuItems = [
         text: "Add Question",
       },
       {
-        href: "/mcq_question_upload.html",
+        href: "/mcq_question_upload.html?type=upload",
         text: "MCQ Question Upload",
+      },
+      {
+        href: "/mcq_question_upload.html?type=generate",
+        text: "MCQ Question Generate",
       },
     ],
   },

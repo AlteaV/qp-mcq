@@ -45,7 +45,7 @@ const levelDropDown = document.getElementById("level");
 const subject = document.getElementById("subject");
 
 const fileInput = document.getElementById("file_input");
-const fileUplaodButton = document.getElementById("submit_excel");
+const fileUplaodButton = document.getElementById("network_button");
 const saveQuestionsButton = document.getElementById("save_question");
 const fetchingData = document.getElementById("fetching_data");
 const resultDiv = document.getElementById("result_div");
@@ -67,32 +67,105 @@ let optionEInput = document.getElementById("option_e");
 let answerInput = document.getElementById("answer");
 let btlLevelDropDown = document.getElementById("btl_level");
 
+let filterBtl = document.getElementById("filter_btl");
+let filterSection = document.getElementById("filter_section");
+let filterTopic = document.getElementById("filter_topic");
+let btlDiv = document.getElementById("btl_div");
+let sectionDiv = document.getElementById("section_div");
+let topicDiv = document.getElementById("topic_div");
+let pageType = document.getElementById("page_type");
+let pageTypeDiv = document.getElementById("page_type_div");
+let fileInputDiv = document.getElementById("file_input_div");
+let levelDiv = document.getElementById("level_div");
+
 let correctOptionDropDown = document.getElementById("correct_option");
 let saveButton = document.getElementById("form_submit");
+let title = document.getElementById("title");
+var type = null;
+let selectedSection = null;
+let selectedTopic = null;
 
 // event listener
 levelDropDown.addEventListener("change", () => {
   resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
   setSubjects();
 });
 
 fileInput.addEventListener("click", () => {
   resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
   fileInput.value = "";
 });
 
 subject.addEventListener("input", () => {
   resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
+});
+
+filterSection.addEventListener("input", () => {
+  resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
+});
+filterTopic.addEventListener("input", () => {
+  resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
+});
+filterBtl.addEventListener("change", () => {
+  resultDiv.style.display = "none";
+  fileUplaodButton.style.display = "block";
+});
+
+pageType.addEventListener("change", () => {
+  if (pageType.value === "Using Sample Question Paper") {
+    topicDiv.style.display = "none";
+    sectionDiv.style.display = "none";
+    btlDiv.style.display = "none";
+    fileInputDiv.style.display = "block";
+    fileUplaodButton.value = "Scan Questions";
+  } else {
+    topicDiv.style.display = "block";
+    sectionDiv.style.display = "block";
+    btlDiv.style.display = "block";
+    fileInputDiv.style.display = "none";
+    fileUplaodButton.value = "Generate Questions";
+  }
 });
 
 fileUplaodButton.addEventListener("click", async () => {
-  if (subject.value.trim() == "") {
-    alert("Please select a subject before uploading the question.");
-    return;
-  }
-  if (!fileInput.files || fileInput.files.length == 0) {
-    alert("Please upload a file!.");
-    return;
+  if (pageType.value === "Using Sample Question Paper") {
+    if (subject.value.trim() == "") {
+      alert("Please select a subject before uploading the question.");
+      return;
+    }
+    if (!fileInput.files || fileInput.files.length == 0) {
+      alert("Please upload a file!.");
+      return;
+    }
+  } else {
+    let matchedSubject = subjects.find(
+      (s) => s.subject == subject.value && s.level == levelDropDown.value,
+    );
+    if (!matchedSubject) {
+      alert("Please select a valid subject.");
+      return;
+    }
+    let sectionName = filterSection.value;
+    let matchedSection = sections.find(
+      (s) => s.section == sectionName && s.subject_id == matchedSubject.id,
+    );
+    if (!matchedSection) {
+      alert("Please select a valid section.");
+      return;
+    }
+    let topicName = filterTopic.value;
+    let matchedTopic = topics.find(
+      (t) => t.topic == topicName && t.section_id == matchedSection.id,
+    );
+    if (!matchedTopic) {
+      alert("Please select a valid topic.");
+      return;
+    }
   }
   await previewQuestions();
 });
@@ -152,6 +225,8 @@ let btlLevel = [];
 let questions = [];
 let questionsFormat = [];
 let scanId = "";
+var sections = null;
+var topics = null;
 
 function setAutoComplete(field, data) {
   try {
@@ -173,6 +248,12 @@ function setAutoComplete(field, data) {
         if (field.id.includes("section_input_")) {
           let index = field.id.split("_")[2];
           setTopic(index, label);
+        }
+        if (field.id == "subject") {
+          setFilterSection();
+        }
+        if (field.id == "filter_section") {
+          setFilterTopic();
         }
       },
     });
@@ -198,6 +279,8 @@ async function checkExistingScan() {
     if (response.success) {
       let status = response.result.status;
       handleExistingScan(status);
+      // TODO remove this
+      // handleExistingScan();
     }
   } catch (error) {
     console.error(error);
@@ -209,7 +292,7 @@ async function checkExistingScan() {
 function handleExistingScan(data) {
   if (data) {
     let button = "";
-    if (data.type == "Mcq") {
+    if (data.type == "Mcq" && type == "upload") {
       if (data.status == "Completed") {
         button = createButton(
           data.id,
@@ -227,8 +310,37 @@ function handleExistingScan(data) {
           true,
         );
       }
-    } else {
+    } else if (
+      (data.type == "GeneratedWithTopic" ||
+        data.type == "GeneratedWithTopic") &&
+      type == "generate"
+    ) {
+      if (data.status == "Completed") {
+        button = createButton(
+          data.id,
+          "",
+          "view-button",
+          "View Scanned Questions",
+          true,
+        );
+      } else {
+        button = createButton(
+          data.id,
+          "",
+          "reload-button",
+          "Check Status",
+          true,
+        );
+      }
+    } else if (type == "QpGen") {
       button = "There is a pending scan in Question Paper Generator";
+    } else if (data.type == "Mcq") {
+      button = "There is a pending scan in MCQ Question Upload";
+    } else if (
+      data.type == "GeneratedWithQp" ||
+      data.type == "GeneratedWithTopic"
+    ) {
+      button = "There is a pending scan in MCQ Question Generate";
     }
     const tableData = {
       tableHeader: [
@@ -270,6 +382,11 @@ function handleExistingScan(data) {
           (s) => s.id == retryResponse.result.data.subject_id,
         );
         subject.value = selectedSubject.subject;
+        levelDropDown.value = selectedSubject.level;
+
+        if (retryResponse.result.type == "GeneratedWithTopic") {
+          changePageType();
+        }
         await showReportSection(questions);
         return;
       }
@@ -298,31 +415,51 @@ function handleExistingScan(data) {
   scanQuestionInputDiv.style.display = "flex";
 }
 
+function changePageType() {
+  pageType.value = "By Topic";
+  var event = new Event("change");
+  pageType.dispatchEvent(event);
+  subject.value = questions[0].subject;
+  filterSection.value = questions[0].section;
+  filterTopic.value = questions[0].topic;
+  filterBtl.value = questions[0].btl_level;
+  fileUplaodButton.style.display = "none";
+}
+
 async function getSubjects() {
   try {
     showOverlay();
     if (
       sessionStorage.getItem("subjects") &&
-      sessionStorage.getItem("subjects") != "undefined"
+      sessionStorage.getItem("subjects") != "undefined" &&
+      sessionStorage.getItem("sections") &&
+      sessionStorage.getItem("sections") != "undefined" &&
+      sessionStorage.getItem("topics") &&
+      sessionStorage.getItem("topics") != "undefined"
     ) {
       let subjectMap = JSON.parse(sessionStorage.getItem("subjects"));
       subjects = subjectMap;
-      // setSubjects();
+      let sectionMap = JSON.parse(sessionStorage.getItem("sections"));
+      sections = sectionMap;
+      let topicMap = JSON.parse(sessionStorage.getItem("topics"));
+      topics = topicMap;
       selLevel();
       hideOverlay();
       return;
     }
     let payload = JSON.stringify({
-      function: "gss",
+      function: "gsst",
       org_id: loggedInUser.college_code,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
-      subjects = response.result.subject;
-
-      subjects.sort((a, b) => a.subject.localeCompare(b.subject));
+      subjects = response.result.subjects;
+      sections = response.result.sections;
+      topics = response.result.topics;
+      subjects.sort((a, b) => a.subject.localeCompare(b.subjects));
       sessionStorage.setItem("subjects", JSON.stringify(subjects));
-      // setSubjects();
+      sessionStorage.setItem("sections", JSON.stringify(sections));
+      sessionStorage.setItem("topics", JSON.stringify(topics));
       selLevel();
     }
     hideOverlay();
@@ -349,6 +486,15 @@ function selLevel() {
   });
   subject.value = "Choose a Level";
   subject.disabled = true;
+  setFilterBtl();
+}
+
+function setFilterBtl() {
+  filterBtl.innerHTML = btlLevel
+    .map(
+      (level) => `<option value="${level.level}" >${level.level_name}</option>`,
+    )
+    .join("");
 }
 
 function setSubjects() {
@@ -363,12 +509,69 @@ function setSubjects() {
 
   setAutoComplete(subject, subjectNames);
   subject.disabled = false;
+  filterSection.value = "";
+  filterTopic.value = "";
+  removeAutoComplete(filterSection);
+  removeAutoComplete(filterTopic);
+
+  filterSection.innerHTML = "";
+  filterTopic.innerHTML = "";
 }
 
+function removeAutoComplete(field) {
+  let nextSibling = field.nextElementSibling;
+  while (nextSibling) {
+    if (nextSibling.classList.contains("autocomplete-menu")) {
+      nextSibling.remove();
+      break;
+    }
+    nextSibling = nextSibling.nextElementSibling;
+  }
+}
+
+function setFilterSection() {
+  let level = levelDropDown.value;
+  let subjectName = subject.value;
+  let matchedSubject = subjects.find(
+    (s) => s.subject == subjectName && s.level == level,
+  );
+  if (matchedSubject) {
+    let sectionsValues = [];
+    sections.forEach((s) => {
+      if (s.subject_id == matchedSubject.id) {
+        sectionsValues.push(s.section);
+      }
+    });
+    setAutoComplete(filterSection, sectionsValues);
+    filterSection.disabled = false;
+  }
+}
+
+function setFilterTopic() {
+  let level = levelDropDown.value;
+  let subjectName = subject.value;
+  let matchedSubject = subjects.find(
+    (s) => s.subject == subjectName && s.level == level,
+  );
+  let sectionName = filterSection.value;
+  let matchedSection = sections.find(
+    (s) => s.section == sectionName && s.subject_id == matchedSubject.id,
+  );
+  if (matchedSubject && matchedSection) {
+    let topicsValues = [];
+    topics.forEach((t) => {
+      if (t.section_id == matchedSection.id) {
+        topicsValues.push(t.topic);
+      }
+    });
+    setAutoComplete(filterTopic, topicsValues);
+    filterTopic.disabled = false;
+  }
+}
 async function previewQuestions() {
   try {
     showOverlay();
-    let file = fileInput.files[0];
+
     let subjectName = document.getElementById("subject").value;
     let level = levelDropDown.value;
     let matchedSubject = subjects.find(
@@ -381,17 +584,55 @@ async function previewQuestions() {
       return;
     }
 
-    const subjectId = matchedSubject.id;
-    const base64 = await convertToBase64(file);
+    let qpType = "Mcq";
+
+    if (type == "generate" && pageType.value == "Using Sample Question Paper") {
+      qpType = "GeneratedWithQp";
+    } else if (type == "generate" && pageType.value == "By Topic") {
+      qpType = "GeneratedWithTopic";
+    }
 
     let out = {
-      function: "ecg",
-      subject: subjectName,
-      filedata: base64,
       org_id: loggedInUser.college_code,
       created_by: loggedInUser.staff_id,
-      subject_id: subjectId,
+      subject_id: matchedSubject.id,
+      type: qpType,
+      generate_using_ai: type === "generate" ? 1 : 0,
     };
+
+    if (pageType.value === "Using Sample Question Paper") {
+      let file = fileInput.files[0];
+      const base64 = await convertToBase64(file);
+      out.function = "ecg";
+      out.filedata = base64;
+    } else {
+      let sectionName = filterSection.value;
+      let matchedSection = sections.find(
+        (s) => s.section == sectionName && s.subject_id == matchedSubject.id,
+      );
+      if (!matchedSection) {
+        alert("Please select a valid section.");
+        hideOverlay();
+        return;
+      }
+
+      let topicName = filterTopic.value;
+      let matchedTopic = topics.find(
+        (t) => t.topic == topicName && t.section_id == matchedSection.id,
+      );
+      if (!matchedTopic) {
+        alert("Please select a valid topic.");
+        hideOverlay();
+        return;
+      }
+      out.subject = matchedSubject.subject;
+      out.section = matchedSection.section;
+      out.topic = matchedTopic.topic;
+      out.btl_level = filterBtl.value;
+      out.filedata = null;
+      out.function = "ecg";
+    }
+
     const payload = JSON.stringify(out);
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -411,6 +652,9 @@ async function previewQuestions() {
           (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
         );
         sectionTopics = retryResponse.result.data.section_topic;
+        if (retryResponse.result.type == "GeneratedWithTopic") {
+          changePageType();
+        }
         await showReportSection(questions);
         return;
       }
@@ -1046,6 +1290,7 @@ async function submitQuestion() {
         mark: q.marks,
         btl_level: q.btl_level,
         question_type: q.question_type,
+        is_ai_generated: type === "generate" ? 1 : null,
       };
 
       if (q.question_type == "Mcq") {
@@ -1080,6 +1325,7 @@ async function submitQuestion() {
       resultTable.innerHTML = "";
       fileInput.value = "";
       resultDiv.style.display = "none";
+      fileUplaodButton.style.display = "block";
       hideOverlay();
     } else {
       alert(response.message);
@@ -1111,6 +1357,21 @@ document.addEventListener("readystatechange", async () => {
 });
 
 async function init() {
+  const urlParams = new URLSearchParams(window.location.search);
+  type = urlParams.get("type");
+  if (type === "generate") {
+    title.innerHTML = `MCQ Question Generate`;
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "info-container mt-2 mb-3";
+    infoDiv.innerHTML = `
+      AI will generate questions similar to the uploaded question paper. You can edit the generated questions before submitting.<br>
+      Questions in Uploaded question paper will not be uploaded.<br>`;
+    title.parentNode.insertBefore(infoDiv, title.nextSibling);
+    pageTypeDiv.style.display = "block";
+  } else {
+    title.textContent = "MCQ Question Upload";
+    pageTypeDiv.style.display = "none";
+  }
   await fetchBtl();
   btlLevel = getBtlLevels();
   await getSubjects();

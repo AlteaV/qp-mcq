@@ -14,16 +14,26 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <h4 class="c-grey-900 mB-20 mt-6 mb-4">
-                        Question Upload
-                      </h4>
+                      <h4 class="c-grey-900 mB-20 mt-6 mb-4" id="title"></h4>
 
                       <div
                         class="row"
                         id="scan_question_input_div"
                         style="display: none"
                       >
-                        <div class="col">
+                        <div class="col" id="page_type_div">
+                          <label for="page_type" class="required">Type</label>
+                          <select
+                            class="form-select"
+                            name="page_type"
+                            id="page_type"
+                            required
+                          >
+                            <option>Using Sample Question Paper</option>
+                            <option>By Topic</option>
+                          </select>
+                        </div>
+                        <div class="col" id="level_div">
                           <label for="level" class="required">Level</label>
                           <select
                             class="form-select"
@@ -32,7 +42,7 @@
                             required
                           ></select>
                         </div>
-                        <div class="col">
+                        <div class="col" id="subject_div">
                           <label for="subject" class="required">Subject</label>
                           <input
                             class="form-control"
@@ -43,7 +53,44 @@
                             required
                           />
                         </div>
-                        <div class="col">
+                        <div class="col" id="section_div" style="display: none">
+                          <label for="filter_section" class="required"
+                            >Section</label
+                          >
+                          <input
+                            class="form-control"
+                            id="filter_section"
+                            type="text"
+                            name="filter_section"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                        <div class="col" id="topic_div" style="display: none">
+                          <label for="filter_topic" class="required"
+                            >Topic</label
+                          >
+                          <input
+                            class="form-control"
+                            id="filter_topic"
+                            type="text"
+                            name="filter_topic"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                        <div class="col" id="btl_div" style="display: none">
+                          <label for="filter_btl" class="required"
+                            >BTL Level</label
+                          >
+                          <select
+                            class="form-select"
+                            name="filter_btl"
+                            id="filter_btl"
+                            required
+                          ></select>
+                        </div>
+                        <div class="col" id="file_input_div">
                           <label for="file_input" class="required"
                             >Upload Questions</label
                           >
@@ -59,7 +106,7 @@
                             class="btn btn-primary btn-color"
                             type="button"
                             value="Scan Questions"
-                            id="submit_excel"
+                            id="network_button"
                           />
                         </div>
                       </div>
