@@ -39,6 +39,22 @@ function saveAnswer() {
   }
 }
 
+function saveSimilarQuestionAnswer() {
+  let answerIndex = answers.findIndex(
+    (a) => a.question_id == currentQuestion.question_id,
+  );
+  let selectedOption = document.querySelector(
+    `input[name="similar_question_${currentQuestion.question_id}"]:checked`,
+  );
+
+  if (selectedOption) {
+    answers[answerIndex].similar_question_selected_option =
+      selectedOption.value;
+  } else {
+    answers[answerIndex].similar_question_selected_option = null;
+  }
+}
+
 function setCompletionTime() {
   let completionTime = new Date().toISOString();
   let answerIndex = answers.findIndex(
@@ -51,7 +67,84 @@ function setCompletionTime() {
   }
 }
 
-function nextQuestion() {
+async function nextQuestion() {
+  if (
+    answers.length > 0 &&
+    loggedInUser.agentic_learning &&
+    (currentQuestion.llm_similar_question == null ||
+      currentQuestion.llm_similar_question == undefined)
+  ) {
+    let selectedOption = document.querySelector(
+      `input[name="question_${currentQuestion.question_id}"]:checked`,
+    );
+    if (selectedOption) {
+      if (selectedOption.value != currentQuestion.correct_answer) {
+        let result = await Swal.fire({
+          title: "Your answer is not correct",
+          text: "Do you want to see how to solve the question?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, show me the solution",
+          cancelButtonText: "No, Go to next question",
+        });
+
+        if (result.isConfirmed) {
+          let answer = null;
+          if (currentQuestion.llm_answer) {
+            answer = currentQuestion.llm_answer;
+          } else {
+            answer = await getHelp(currentQuestion.question_id, "answer");
+          }
+          if (answer) {
+            showAnswer(currentQuestion.question_id);
+          }
+          return;
+        }
+      }
+    }
+  }
+  let similarQuestionAnswer = null;
+  if (
+    answers.length > 0 &&
+    loggedInUser.agentic_learning &&
+    currentQuestion.llm_similar_question != null &&
+    currentQuestion.llm_similar_question != undefined
+  ) {
+    let selectedOption = document.querySelector(
+      `input[name="similar_question_${currentQuestion.question_id}"]:checked`,
+    );
+    similarQuestionAnswer = selectedOption ? selectedOption.value : null;
+    if (selectedOption) {
+      if (
+        selectedOption.value !=
+        currentQuestion.llm_similar_question.correct_answer
+      ) {
+        let result = await Swal.fire({
+          title: "Your answer is not correct",
+          text: "Do you want to see the explanation again?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, show me the explanation",
+          cancelButtonText: "No, Go to next question",
+        });
+
+        if (result.isConfirmed) {
+          let explanationDiv = document.getElementById(
+            `answer_body_${currentQuestion.question_id}`,
+          );
+          explanationDiv.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+      } else {
+        Swal.fire({
+          title: "Your answer is correct",
+          icon: "success",
+          confirmButtonText: "Great!",
+        });
+      }
+    }
+  }
+
   if (answers.length > 0) {
     setCompletionTime();
   } else {
@@ -138,6 +231,7 @@ async function showQuestion(question) {
                             id="${inputId}" 
                             name="question_${question.question_id}"  
                             value="${key}" 
+                            class="question_option"
                             ${selected}
                         />
                         <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
@@ -188,11 +282,14 @@ async function showQuestion(question) {
     helpButton.style.color = "blue";
     helpButton.style.cursor = "pointer";
     helpButton.onclick = async () => {
-      let hint = await getHelp(questionId, "hint");
-      if (hint) {
-        showHint(questionId, hint);
-        hideOverlay();
+      let hint = null;
+      if (question.llm_hint) {
+        hint = question.llm_hint;
+      } else {
+        hint = await getHelp(questionId, "hint");
       }
+      showHint(questionId);
+      hideOverlay();
     };
 
     let answerDiv = document.createElement("div");
@@ -225,23 +322,61 @@ async function showQuestion(question) {
     answerButton.style.color = "blue";
     answerButton.style.cursor = "pointer";
     answerButton.onclick = async () => {
-      let answer = await getHelp(questionId, "answer");
-      if (answer) {
-        showAnswer(questionId, answer);
+      showAnswer(questionId);
+    };
+
+    // after answer div show a button for Try similar question
+    let trySimilarButton = document.createElement("button");
+    trySimilarButton.id = `try_similar_button_${questionId}`;
+    trySimilarButton.innerText = "Try Similar Question";
+    trySimilarButton.style.display = "none";
+    trySimilarButton.className = "mb-3 mt-3";
+    trySimilarButton.style.textDecoration = "underline";
+    trySimilarButton.style.background = "none";
+    trySimilarButton.style.border = "none";
+    trySimilarButton.style.color = "blue";
+    trySimilarButton.style.cursor = "pointer";
+    trySimilarButton.onclick = async () => {
+      let similarQuestion = await getHelp(questionId, "similar_question");
+      if (similarQuestion) {
+        showSimilarQuestion(questionId, similarQuestion);
         hideOverlay();
       }
     };
+
+    let similarQuestionDiv = document.createElement("div");
+    similarQuestionDiv.id = `similar_question_div_${questionId}`;
+    similarQuestionDiv.style.display = "none";
+    similarQuestionDiv.className = "accordion mb-3 mt-3";
+    similarQuestionDiv.innerHTML = `
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-heading-similar-${questionId}">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-similar-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-similar-${questionId}">
+          Similar Question
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapse-similar-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-similar-${questionId}">
+        <div class="accordion-body" id="similar_question_body_${questionId}">
+        </div>
+      </div>
+    </div>
+  `;
 
     questionDiv.appendChild(helpDiv);
     questionDiv.appendChild(helpButton);
     questionDiv.appendChild(answerDiv);
     questionDiv.appendChild(answerButton);
+    questionDiv.appendChild(trySimilarButton);
+    questionDiv.appendChild(similarQuestionDiv);
 
     if (question.llm_hint) {
       showHint(questionId, question.llm_hint);
     }
     if (question.llm_answer) {
       showAnswer(questionId, question.llm_answer);
+    }
+    if (question.llm_similar_question) {
+      showSimilarQuestion(questionId, question.llm_similar_question);
     }
   }
 
@@ -258,16 +393,20 @@ async function showQuestion(question) {
   }
   await mathJaxTypeset();
 
-  $("input[type=radio]").click(function () {
+  $("input[type=radio].question_option").click(function () {
     saveAnswer();
   });
 
   resultDiv.style.display = "block";
 }
 
-async function showHint(questionId, hint) {
+async function showHint(questionId) {
+  let question = answers.find((q) => q.question_id == questionId);
+  if (question == null) {
+    question = questions.find((q) => q.question_id == questionId);
+  }
   let hintBody = document.getElementById(`hint_body_${questionId}`);
-  hintBody.innerText = hint;
+  hintBody.innerText = question.llm_hint;
   let helpDiv = document.getElementById(`accordion_hint_${questionId}`);
   helpDiv.style.display = "block";
   let helpButton = document.getElementById(`help_button_${questionId}`);
@@ -277,13 +416,94 @@ async function showHint(questionId, hint) {
   await mathJaxTypeset();
 }
 
-async function showAnswer(questionId, answer) {
+async function showAnswer(questionId) {
+  let question = answers.find((q) => q.question_id == questionId);
+  if (question == null) {
+    question = questions.find((q) => q.question_id == questionId);
+  }
+  if (question.llm_answer == null) {
+    showOverlay();
+    await getAnswer(question.question_id);
+  }
   let answerBody = document.getElementById(`answer_body_${questionId}`);
-  answerBody.innerText = answer;
+  answerBody.innerText = question.llm_answer;
   let answerDiv = document.getElementById(`accordion_answer_${questionId}`);
   answerDiv.style.display = "block";
   let answerButton = document.getElementById(`answer_button_${questionId}`);
   answerButton.style.display = "none";
+  let trySimilarButton = document.getElementById(
+    `try_similar_button_${questionId}`,
+  );
+  trySimilarButton.style.display = "block";
+  hideOverlay();
+  await mathJaxTypeset();
+}
+
+async function showSimilarQuestion(questionId, similarQuestion) {
+  if (!similarQuestion || !similarQuestion.choices) {
+    console.error("Invalid similar question data:", similarQuestion);
+    return;
+  }
+
+  let alreadyAnswered = answers.find((q) => q.question_id == questionId);
+  let selected = "";
+  if (
+    alreadyAnswered &&
+    alreadyAnswered.similar_question_selected_option == key
+  ) {
+    selected = "checked";
+  }
+
+  let truSimilarButton = document.getElementById(
+    `try_similar_button_${questionId}`,
+  );
+  truSimilarButton.style.display = "none";
+  let similarQuestionBody = document.getElementById(
+    `similar_question_body_${questionId}`,
+  );
+  let choices = similarQuestion.choices;
+  if (typeof choices === "string") {
+    try {
+      choices = JSON.parse(choices);
+    } catch {
+      choices = similarQuestion.choices;
+    }
+  }
+  similarQuestionBody.innerHTML = `
+    <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
+         ${similarQuestion.question}
+    </p>
+    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">
+      ${Object.keys(choices)
+        .map(
+          (key) => `
+        <label  style="display: flex; align-items: left; gap: 5px;">
+            <input 
+                type="radio" 
+                name="similar_question_${questionId}"  
+                class="similar_question_option"
+                value="${key}" 
+                ${selected}
+            />
+            <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
+                ${choices[key]}
+            </span>
+        </label>
+      `,
+        )
+        .join("")}
+    </div>
+  `;
+
+  let similarQuestionDiv = document.getElementById(
+    `similar_question_div_${questionId}`,
+  );
+  similarQuestionDiv.style.display = "block";
+
+  $("input[type=radio].similar_question_option").click(function () {
+    saveSimilarQuestionAnswer();
+  });
+
   await mathJaxTypeset();
 }
 
@@ -302,29 +522,56 @@ async function mathJaxTypeset() {
   }
 }
 
+async function getAnswer(id) {
+  try {
+    let question = answers.find((a) => a.question_id == id);
+    let out = {
+      question_id: question.question_id,
+      function: "gae",
+    };
+    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    if (response.success) {
+      question.llm_answer = response.result.explanation;
+      return response.result.explanation;
+    } else {
+      throw new Error(response.message || "Failed to fetch help content");
+    }
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Error fetching help content.");
+    hideOverlay();
+    return;
+  }
+}
+
 async function getHelp(id, type) {
   showOverlay();
-  console.log(questions);
-  console.log(id, type);
-
   try {
     let question = answers.find((a) => a.question_id == id);
 
     let out = {
       question: question.question,
+      question_id: question.question_id,
       answers: question.choices,
       type: type,
       function: "ghg",
     };
-    if (type != "hint") {
-      out.hint = question.llm_hint;
+    if (type == "answer") {
+      out.hint = question.llm_hint ? question.llm_hint : "No hint available";
     }
+    if (type == "similar_question") {
+      out.explanation = question.llm_answer
+        ? question.llm_answer
+        : "No explanation available";
+    }
+
     let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
     if (response.success) {
       if (type == "hint") {
-        question.llm_hint = response.result.help;
-      } else {
-        question.llm_answer = response.result.help;
+        question.llm_hint = response.result.hint;
+        question.llm_answer = response.result.answer;
+      } else if (type == "similar_question") {
+        question.llm_similar_question = response.result.help;
       }
       return response.result.help;
     } else {

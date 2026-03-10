@@ -596,6 +596,7 @@ async function previewQuestions() {
       org_id: loggedInUser.college_code,
       created_by: loggedInUser.staff_id,
       subject_id: matchedSubject.id,
+      level: level,
       type: qpType,
       generate_using_ai: type === "generate" ? 1 : 0,
     };

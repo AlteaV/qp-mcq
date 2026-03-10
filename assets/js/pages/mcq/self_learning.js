@@ -169,6 +169,7 @@ async function takeTest() {
     subject_id: subjectID,
     section_id: sectionID,
     topic_id: topicID,
+    org_id: loggedInUser.college_code,
   });
 
   try {
