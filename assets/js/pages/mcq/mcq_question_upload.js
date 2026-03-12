@@ -78,6 +78,8 @@ let pageTypeDiv = document.getElementById("page_type_div");
 let fileInputDiv = document.getElementById("file_input_div");
 let levelDiv = document.getElementById("level_div");
 
+let cancelButton = document.getElementById("cancel_button");
+
 let correctOptionDropDown = document.getElementById("correct_option");
 let saveButton = document.getElementById("form_submit");
 let title = document.getElementById("title");
@@ -114,6 +116,9 @@ filterTopic.addEventListener("input", () => {
 filterBtl.addEventListener("change", () => {
   resultDiv.style.display = "none";
   fileUplaodButton.style.display = "block";
+});
+cancelButton.addEventListener("click", async () => {
+  await deleteScannedData();
 });
 
 pageType.addEventListener("change", () => {
@@ -279,8 +284,6 @@ async function checkExistingScan() {
     if (response.success) {
       let status = response.result.status;
       handleExistingScan(status);
-      // TODO remove this
-      // handleExistingScan();
     }
   } catch (error) {
     console.error(error);
@@ -311,8 +314,7 @@ function handleExistingScan(data) {
         );
       }
     } else if (
-      (data.type == "GeneratedWithTopic" ||
-        data.type == "GeneratedWithTopic") &&
+      (data.type == "GeneratedWithQp" || data.type == "GeneratedWithTopic") &&
       type == "generate"
     ) {
       if (data.status == "Completed") {
@@ -800,7 +802,10 @@ async function showReportSection(data) {
            .map(
              (level) =>
                `<option value="${level.level}" ${
-                 record.btl_level == level.level_name ? "selected" : ""
+                 record.btl_level == level.level_name ||
+                 record.btl_level == level.level
+                   ? "selected"
+                   : ""
                }>${level.level_name}</option>`,
            )
            .join("")}</select>`;
@@ -1175,6 +1180,32 @@ async function editQuestion(data) {
     });
 
   $("#modal").modal("show");
+}
+
+async function deleteScannedData() {
+  showOverlay();
+  try {
+    const out = {
+      function: "dtsd",
+      scan_id: scanId,
+    };
+
+    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+
+    if (data.success) {
+      resultTable.innerHTML = "";
+      fileInput.value = "";
+      resultDiv.style.display = "none";
+      fileUplaodButton.style.display = "block";
+      hideOverlay();
+    } else {
+      alert("Failed to delete scanned data: " + data.message);
+    }
+    hideOverlay();
+  } catch (error) {
+    console.error("Failed to delete scanned data:", error);
+    hideOverlay();
+  }
 }
 
 async function submitQuestion() {

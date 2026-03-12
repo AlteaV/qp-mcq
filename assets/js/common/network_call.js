@@ -125,6 +125,7 @@ function postCallPreProcess(functionName) {
     functionName == "eu" ||
     functionName == "uus" ||
     functionName == "biud" ||
+    functionName == "dtsd" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
