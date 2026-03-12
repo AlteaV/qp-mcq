@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #0061f2;
+        --primary-hover: #0052ce;
+        --bg-main: #f8f9fc;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --success: #10b981;
+      }
+
+      /* Table Section */
+      .card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      tbody tr {
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      tbody tr.selected-row {
+        background-color: #f0f7ff;
+      }
+
+      tbody td {
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .checkbox-col {
+        width: 40px;
+      }
+
+      .actions-col {
+        text-align: right;
+        width: 60px;
+      }
+      /* Table Links */
+      .user-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 1px solid transparent;
+      }
+
+      .user-link:hover {
+        border-bottom-color: var(--primary);
+      }
+
+      /* Custom Checkbox */
+      .custom-checkbox {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .custom-checkbox.checked {
+        background: var(--primary);
+        border-color: var(--primary);
+      }
+
+      .custom-checkbox.checked::after {
+        content: "\f00c";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        color: white;
+        font-size: 10px;
+      }
+      /* Toggle Switch */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: 0.3s;
+        border-radius: 20px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--success);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(16px);
+      }
+
+      .status-active {
+        color: var(--text-main);
+        font-weight: 500;
+      }
+
+      .status-inactive {
+        color: var(--text-muted);
+      }
+      /* Actions Dropdown Content */
+      .actions-cell {
+        position: relative;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        width: 160px;
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem 0;
+      }
+
+      .dropdown-item {
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+        color: var(--text-main);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .dropdown-item:hover {
+        background: #f1f5f9;
+      }
+
+      .dropdown-item i {
+        width: 16px;
+        color: var(--text-muted);
+      }
+      /* Footer & Pagination */
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        background: white;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .show-count {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .pagination {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .page-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: var(--text-muted);
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+
+      .page-btn.active {
+        background: var(--primary);
+        color: white !important;
+      }
+
+      .page-btn:hover:not(.active) {
+        background: #f1f5f9;
+      }
+
+      .page-arrow {
+        color: var(--text-muted);
+      }
+
+      .btn-add {
+        background: var(--primary);
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-add:hover {
+        background: var(--primary-hover);
+      }
+    </style>
+  </head>
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div id="management-div">
+                    <div class="col-md-12">
+                      <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
+                      <h4 class="c-grey-900 mB-20 mt-6 mb-3">
+                        User Management
+                      </h4>
+
+                      <div class="row">
+                        <div class="col-3 mb-2">
+                          <label for="search" class="">Search:</label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            placeholder="Search by name or email"
+                            id="search"
+                          />
+                        </div>
+                        <div class="col mb-2" style="align-self: flex-end">
+                          <input
+                            class="btn btn-primary btn-color"
+                            type="button"
+                            value="Search"
+                            id="search_button"
+                          />
+                        </div>
+                        <div
+                          class="col mb-2 d-flex justify-content-end align-items-end"
+                        >
+                          <input
+                            class="btn btn-primary btn-color"
+                            type="button"
+                            value="Add user"
+                            id="add_user"
+                          />
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-3 mb-2">
+                          <label for="filter-role" class="required"
+                            >Filter by Role:</label
+                          >
+                          <select
+                            class="form-select"
+                            name="filter-role"
+                            id="filter-role"
+                            required
+                          >
+                            <option value="All">All Roles</option>
+                            <option value="TestTaker" selected>Students</option>
+                            <option value="Admin">Teachers</option>
+                          </select>
+                        </div>
+
+                        <div class="col-3 mb-2">
+                          <label for="filter-status" class="required"
+                            >Filter by Status:</label
+                          >
+                          <select
+                            class="form-select"
+                            name="filter-status"
+                            id="filter-status"
+                            required
+                          >
+                            <option value="All">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-5" id="fetching_data" style="display: none">
+                      <p>Fetching Data</p>
+                    </div>
+
+                    <div
+                      class="result mt-4"
+                      id="result_div"
+                      style="display: none"
+                    >
+                      <table
+                        class="table table-bordered"
+                        width="100%"
+                        id="result_table"
+                      ></table>
+                    </div>
+
+                    <div class="card mt-5">
+                      <table id="user-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 50px; text-align: center">#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                            <th class="actions-col" style="text-align: right">
+                              Status
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="user-table-body"></tbody>
+                      </table>
+
+                      <footer class="footer">
+                        <div class="show-count" id="user-count-footer">
+                          Showing <span id="current-user-start">0</span> to
+                          <span id="current-user-end">0</span> of
+                          <span id="current-user-count">0</span> users
+                        </div>
+                        <div class="pagination" id="pagination-controls"></div>
+                      </footer>
+                    </div>
+                  </div>
+                  <!-- MODAL :: START -->
+
+                  <div id="user-modal" class="modal-overlay hidden">
+                    <div class="modal-content">
+                      <h2
+                        id="modal-title"
+                        style="
+                          font-size: 1.5rem;
+                          font-weight: 700;
+                          margin-bottom: 1rem;
+                        "
+                      >
+                        Add New User
+                      </h2>
+                      <p
+                        id="modal-desc"
+                        style="color: var(--text-muted); margin-bottom: 2rem"
+                      >
+                        Fill in the details below.
+                      </p>
+
+                      <form id="user-form">
+                        <input type="hidden" id="edit-user-id" />
+
+                        <div
+                          id="add-method-selector"
+                          style="
+                            display: flex;
+                            gap: 1rem;
+                            margin-bottom: 1rem;
+                            padding-bottom: 0.5rem;
+                            border-bottom: 1px solid var(--border-color);
+                          "
+                        >
+                          <label style="cursor: pointer">
+                            <input
+                              type="radio"
+                              name="addMethod"
+                              value="individual"
+                              checked
+                            />
+                            Individual User
+                          </label>
+                          <label style="cursor: pointer">
+                            <input type="radio" name="addMethod" value="bulk" />
+                            Bulk Add (Excel)
+                          </label>
+                        </div>
+
+                        <div
+                          style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 1rem;
+                          "
+                        >
+                          <form id="user-section">
+                            <!-- Individual Section -->
+                            <div
+                              id="individual-add-section"
+                              style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 1rem;
+                              "
+                            >
+                              <div>
+                                <label
+                                  class="form-label required"
+                                  style="
+                                    font-size: 0.875rem;
+                                    color: var(--text-muted);
+                                    margin-bottom: 0.25rem;
+                                  "
+                                  >Full Name</label
+                                >
+                                <input
+                                  type="text"
+                                  id="user-name-input"
+                                  placeholder="Full Name"
+                                  class="form-control"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  class="form-label required"
+                                  style="
+                                    font-size: 0.875rem;
+                                    color: var(--text-muted);
+                                    margin-bottom: 0.25rem;
+                                  "
+                                  >Email Address</label
+                                >
+                                <input
+                                  type="email"
+                                  id="user-email-input"
+                                  placeholder="Email Address"
+                                  class="form-control"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  class="form-label required"
+                                  style="
+                                    font-size: 0.875rem;
+                                    color: var(--text-muted);
+                                    margin-bottom: 0.25rem;
+                                  "
+                                  >Role</label
+                                >
+                                <select
+                                  id="user-role-input"
+                                  class="form-select"
+                                  required
+                                >
+                                  <option value="TestTaker">Student</option>
+                                  <option value="Admin">Teacher</option>
+                                </select>
+                              </div>
+                            </div>
+                          </form>
+
+                          <!-- Bulk Add Section -->
+                          <div
+                            id="bulk-add-section"
+                            style="
+                              display: none;
+                              flex-direction: column;
+                              gap: 1rem;
+                            "
+                          >
+                            <div
+                              style="
+                                background: #f8fafc;
+                                padding: 1rem;
+                                border-radius: 8px;
+                                border: 1px solid var(--border-color);
+                              "
+                            >
+                              <p
+                                style="
+                                  font-size: 0.875rem;
+                                  color: var(--text-muted);
+                                  margin-bottom: 0.5rem;
+                                "
+                              >
+                                <i
+                                  class="fa-solid fa-circle-info"
+                                  style="color: var(--primary)"
+                                ></i>
+                                Excel must contain the columns:
+                                <b>User Name</b>, <b>Email</b>,
+                                <b>Role (Student/Teacher)</b>.
+                              </p>
+                            </div>
+                            <div>
+                              <label
+                                class="form-label"
+                                style="
+                                  font-size: 0.875rem;
+                                  color: var(--text-muted);
+                                  margin-bottom: 0.25rem;
+                                "
+                                >Upload Excel File</label
+                              >
+                              <input
+                                type="file"
+                                id="bulk-excel-input"
+                                accept=".xlsx, .xls, .csv"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <button
+                            type="submit"
+                            class="btn-add"
+                            style="
+                              justify-content: center;
+                              width: 100%;
+                              margin-top: 0.5rem;
+                            "
+                          >
+                            Save User
+                          </button>
+                          <button
+                            type="button"
+                            id="close-modal-btn"
+                            style="
+                              background: none;
+                              border: none;
+                              color: var(--text-muted);
+                              cursor: pointer;
+                              width: 100%;
+                            "
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <!-- MODAL :: END -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="dashboard-footer" id="footer-placeholder"></footer>
+  </body>
+  <script id="rendered-js" src="/assets/js/scripts.js"></script>
+  <script src="/assets/js/packages/xlxs/xlsx.full.min.js"></script>
+  <script
+    type="module"
+    src="/assets/js/pages/group_management/user_management.js"
+  ></script>
+</html>

@@ -120,6 +120,11 @@ function postCallPreProcess(functionName) {
     functionName == "co" ||
     functionName == "gqbt" ||
     functionName == "gae" ||
+    functionName == "gubo" ||
+    functionName == "au" ||
+    functionName == "eu" ||
+    functionName == "uus" ||
+    functionName == "biud" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

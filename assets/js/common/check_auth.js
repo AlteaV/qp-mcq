@@ -45,10 +45,14 @@ const menuItems = [
     ],
   },
   {
-    text: "User Mangement",
+    text: "User Management",
     icon: "fas fa-chalkboard-teacher",
     dropdown: true,
     items: [
+      {
+        href: "/user_management.html",
+        text: "User Management",
+      },
       {
         href: "/bulk_upload.html",
         text: "Bulk Upload Users",
@@ -60,7 +64,7 @@ const menuItems = [
     ],
   },
   {
-    text: "Classification Mangement",
+    text: "Classification Management",
     icon: "fas fa-cubes",
     dropdown: true,
     items: [
