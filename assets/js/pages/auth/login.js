@@ -4,6 +4,7 @@ async function getToken() {
   let url = new URLSearchParams(window.location.search);
   let code = url.get("code");
   if (code == null) {
+    overlay.style.display = "none";
     alert("Invalid URL");
     return;
   }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -75,7 +75,7 @@
                         aria-hidden="true"
                       >
                         <div
-                          class="modal-dialog modal-dialog-centered modal-l"
+                          class="modal-dialog modal-dialog-centered modal-xl"
                           role="document"
                         >
                           <div class="modal-content">
@@ -112,20 +112,55 @@
                                     </div>
                                   </div>
                                   <div id="s2-modal" class="col d-none">
-                                    <label
-                                      for="user_id"
-                                      class="required mb-3 col"
-                                      >User ID</label
+                                    <div
+                                      class="d-flex justify-content-between align-items-center mb-3"
                                     >
-                                    <textarea
-                                      class="form-control"
-                                      style="min-height: 200px"
-                                      name="user_id"
-                                      id="user_id"
-                                    ></textarea>
-                                    <div>
-                                      Each user ID should be on a seperate line
-                                      with numbers only
+                                      <label class="required"
+                                        >Select Members</label
+                                      >
+                                      <div class="d-flex align-items-center">
+                                        <input
+                                          type="text"
+                                          id="member_search"
+                                          class="form-control"
+                                          style="width: 250px"
+                                          placeholder="Search students..."
+                                        />
+                                        <button
+                                          type="button"
+                                          class="btn btn-outline-primary btn-sm ms-2"
+                                          style="white-space: nowrap"
+                                          id="select_all_btn"
+                                        >
+                                          Select All
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <div
+                                      style="
+                                        max-height: 450px;
+                                        overflow-y: auto;
+                                        border: 1px solid #dee2e6;
+                                        border-radius: 4px;
+                                      "
+                                    >
+                                      <table
+                                        class="table table-hover mb-0"
+                                        id="member_selection_table"
+                                      >
+                                        <thead
+                                          class="sticky-top bg-white shadow-sm"
+                                        >
+                                          <tr>
+                                            <th style="width: 50px">Select</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody id="member_selection_body">
+                                          <!-- Will be populated by JS -->
+                                        </tbody>
+                                      </table>
                                     </div>
                                   </div>
                                 </div>

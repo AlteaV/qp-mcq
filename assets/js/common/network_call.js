@@ -3,6 +3,12 @@ async function postCall(endPoint, data, url = null) {
   myHeaders.append("Accept", "application/json");
   myHeaders.append("Content-Type", "application/json");
 
+  const aTkn = sessionStorage.getItem("access_token");
+  if (aTkn) {
+    let authToken = "Bearer " + aTkn;
+    myHeaders.append("Authorization", authToken);
+  }
+
   const getFunc = JSON.parse(data);
   endPoint = postCallPreProcess(getFunc["function"]);
 
@@ -13,11 +19,24 @@ async function postCall(endPoint, data, url = null) {
     } else {
       urlBase = baseUrl + endPoint;
     }
-    const response = await fetch(urlBase, {
-      method: "POST",
+    let method = "POST";
+    if (endPoint == cognitoEndPoint) {
+      method = "GET";
+    }
+
+    let fetchOptions = {
+      method: method,
       headers: myHeaders,
-      body: data,
-    });
+    };
+
+    if (method === "POST") {
+      fetchOptions.body = data;
+    } else if (method === "GET") {
+      let params = new URLSearchParams(JSON.parse(data)).toString();
+      urlBase += "?" + params;
+    }
+
+    const response = await fetch(urlBase, fetchOptions);
     const responseData = await response.json();
     return responseData;
   } catch (error) {

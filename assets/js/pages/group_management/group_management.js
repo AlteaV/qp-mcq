@@ -1,5 +1,5 @@
 let StaffID = loggedInUser.user_id;
-let OrgID = loggedInUser.org_id;
+let OrgID = loggedInUser.college_code;
 let groupData = {};
 let resultDiv = document.getElementById("result_div");
 let fetchingDataSection = document.getElementById("fetching_data");
@@ -9,7 +9,6 @@ let submitBtn = document.getElementById("form_submit");
 let Type = null;
 let form = document.getElementById("form");
 let groupName = document.getElementById("grp_name");
-let userID = document.getElementById("user_id");
 let currGroupData = null;
 let setion1 = document.getElementById("section1");
 let section2 = document.getElementById("section2");
@@ -23,12 +22,18 @@ let groupMembers = [];
 let backBtn = document.getElementById("back-btn");
 let allGroup = null;
 
+let memberSearchInput = document.getElementById("member_search");
+let selectAllBtn = document.getElementById("select_all_btn");
+let memberSelectionBody = document.getElementById("member_selection_body");
+let allStudents = [];
+
 backBtn.addEventListener("click", () => {
   navigate(true);
   showReportSection(allGroup);
 });
 
 addGroupBtn.addEventListener("click", () => {
+  navigate(true); // Ensure modal and section state is correct for groups
   form.reset();
   resetForm();
   $("#modal").modal("show");
@@ -41,6 +46,29 @@ addMemberBtn.addEventListener("click", () => {
   $("#modal").modal("show");
   modalTitle.innerHTML = "Add Group Members";
   Type = "add_member";
+  memberSearchInput.value = "";
+  fetchAllOrganizationStudents();
+});
+
+memberSearchInput.addEventListener("input", () => {
+  const searchTerm = memberSearchInput.value.toLowerCase();
+  const filtered = allStudents.filter(
+    (student) =>
+      student.user_name.toLowerCase().includes(searchTerm) ||
+      String(student.user_id).includes(searchTerm) ||
+      (student.email && student.email.toLowerCase().includes(searchTerm)),
+  );
+  renderStudentSelection(filtered);
+});
+
+selectAllBtn.addEventListener("click", () => {
+  const checkboxes = memberSelectionBody.querySelectorAll(
+    'input[type="checkbox"]',
+  );
+  const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
+
+  checkboxes.forEach((cb) => (cb.checked = !allChecked));
+  selectAllBtn.innerHTML = allChecked ? "Select All" : "Deselect All";
 });
 
 submitBtn.addEventListener("click", () => {
@@ -124,7 +152,7 @@ function showReportSection(data) {
   });
 
   $("#result_table")
-    .off("click", ".edit-buton")
+    .off("click", ".edit-button")
     .on("click", ".edit-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
@@ -162,12 +190,11 @@ function showMembers(data) {
   }
 
   let tableData = {
-    //used array incase there are more than one header
     tableHeader: [
       [
         new TableStructure("#"),
-        new TableStructure("User ID"),
         new TableStructure("Name"),
+        new TableStructure("Email"),
         new TableStructure("Action"),
       ],
     ],
@@ -177,8 +204,8 @@ function showMembers(data) {
   data.forEach((user, index) => {
     tableData.tableBody.push([
       new TableStructure(index + 1),
-      new TableStructure(user.user_id),
       new TableStructure(user.user_name),
+      new TableStructure(user.email || "N/A"),
       new TableStructure(
         createButton(user, "", "delete-button btn-danger", "fas fa-trash-alt"),
       ),
@@ -207,7 +234,6 @@ function navigate(back = false) {
     section2.classList.add("d-none");
     s1Modal.classList.remove("d-none");
     s2Modal.classList.add("d-none");
-    userID.removeAttribute("required");
     groupName.setAttribute("required", "required");
     groupMembers = [];
   } else {
@@ -216,7 +242,6 @@ function navigate(back = false) {
     s1Modal.classList.add("d-none");
     s2Modal.classList.remove("d-none");
     groupName.removeAttribute("required");
-    userID.setAttribute("required", "required");
   }
 }
 
@@ -245,8 +270,12 @@ async function addGroup() {
   try {
     let grpName = groupName.value;
     if (isEsists(grpName, allGroup, "group_name")) {
-      alert("Group already exists!");
       hideOverlay();
+      Swal.fire({
+        icon: "warning",
+        title: "Already Exists",
+        text: "A group with this name already exists!",
+      });
       return;
     }
     let response = await postCall(
@@ -263,35 +292,60 @@ async function addGroup() {
       allGroup.push({ group_id: group_id, group_name: grpName });
       showReportSection(allGroup);
       resetForm();
+      Swal.fire({
+        icon: "success",
+        title: "Group Added",
+        text: `"${grpName}" was created successfully.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } else {
       form.classList.remove("was-validated");
-      alert(response.message);
       hideOverlay();
+      Swal.fire({ icon: "error", title: "Error", text: response.message });
     }
   } catch (error) {
     console.error(error);
     hideOverlay();
-    alert("An error occurred while updating the group");
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while adding the group.",
+    });
   }
 }
 
 async function addMember() {
   showOverlay();
   try {
-    let uids = userID.value.split("\n").filter((id) => id);
-    for (let id in uids) {
-      uids[id] = sanitizeInput(uids[id]);
-      if (!/^\d+$/.test(uids[id])) {
-        alert(`${uids[id]} is not a valid user ID! Only numbers are allowed.`);
-        hideOverlay();
-        return;
-      }
-      if (isEsists(uids[id], groupMembers, "user_id")) {
-        alert(`${uids[id]} already exists!`);
-        hideOverlay();
-        return;
-      }
+    const selectedCheckboxes = memberSelectionBody.querySelectorAll(
+      'input[type="checkbox"]:checked',
+    );
+    let uids = Array.from(selectedCheckboxes).map((cb) => cb.value);
+
+    if (uids.length === 0) {
+      hideOverlay();
+      Swal.fire({
+        icon: "warning",
+        title: "No Selection",
+        text: "Please select at least one member!",
+      });
+      return;
     }
+
+    // Filter out those who are already members (client-side safety)
+    uids = uids.filter((id) => !isEsists(id, groupMembers, "user_id"));
+
+    if (uids.length === 0) {
+      hideOverlay();
+      Swal.fire({
+        icon: "info",
+        title: "Already Members",
+        text: "Selected users are already members of this group.",
+      });
+      return;
+    }
+
     let response = await postCall(
       groupMgmtEndPoint,
       JSON.stringify({
@@ -305,16 +359,89 @@ async function addMember() {
       resetForm();
       groupMembers = response.result.all_members;
       showMembers(groupMembers);
+      Swal.fire({
+        icon: "success",
+        title: "Members Added",
+        text: response.message,
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } else {
       form.classList.remove("was-validated");
-      alert(response.message);
+      Swal.fire({ icon: "error", title: "Error", text: response.message });
     }
     hideOverlay();
   } catch (error) {
     console.error(error);
     hideOverlay();
-    alert("An error occurred while updating the group");
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while adding members.",
+    });
   }
+}
+
+async function fetchAllOrganizationStudents() {
+  showOverlay();
+  memberSelectionBody.innerHTML =
+    '<tr><td colspan="4" class="text-center">Loading students...</td></tr>';
+  selectAllBtn.innerHTML = "Select All";
+  try {
+    let response = await postCall(
+      groupMgmtEndPoint,
+      JSON.stringify({
+        function: "gpm",
+        org_id: OrgID,
+        group_id: currGroupID,
+      }),
+    );
+    if (response.success) {
+      hideOverlay();
+      allStudents = response.result.users;
+      renderStudentSelection(allStudents);
+    } else {
+      hideOverlay();
+      memberSelectionBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">${response.message}</td></tr>`;
+    }
+  } catch (error) {
+    console.error(error);
+    memberSelectionBody.innerHTML =
+      '<tr><td colspan="4" class="text-center text-danger">Error fetching students</td></tr>';
+  }
+
+  hideOverlay();
+}
+
+function renderStudentSelection(students) {
+  memberSelectionBody.innerHTML = "";
+  if (students.length === 0) {
+    memberSelectionBody.innerHTML =
+      '<tr><td colspan="4" class="text-center text-muted">No more students available to add</td></tr>';
+    return;
+  }
+
+  students.forEach((student) => {
+    const row = document.createElement("tr");
+    row.style.cursor = "pointer";
+
+    row.innerHTML = `
+            <td>
+                <input type="checkbox" class="form-check-input" value="${student.user_id}">
+            </td>
+            <td>${student.user_name}</td>
+            <td>${student.email || "N/A"}</td>
+        `;
+
+    row.addEventListener("click", (e) => {
+      if (e.target.type !== "checkbox") {
+        const cb = row.querySelector('input[type="checkbox"]');
+        cb.checked = !cb.checked;
+      }
+    });
+
+    memberSelectionBody.appendChild(row);
+  });
 }
 
 async function updateGroup() {
@@ -322,8 +449,12 @@ async function updateGroup() {
   try {
     let grpName = groupName.value;
     if (isEsists(grpName, allGroup, "group_name")) {
-      alert("Group already exists!");
       hideOverlay();
+      Swal.fire({
+        icon: "warning",
+        title: "Already Exists",
+        text: "A group with this name already exists!",
+      });
       return;
     }
     let response = await postCall(
@@ -347,16 +478,27 @@ async function updateGroup() {
       }
       showReportSection(allGroup);
       resetForm();
+      Swal.fire({
+        icon: "success",
+        title: "Updated",
+        text: `Group renamed to "${grpName}" successfully.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } else {
       form.classList.remove("was-validated");
-      alert(response.message);
       hideOverlay();
+      Swal.fire({ icon: "error", title: "Error", text: response.message });
     }
     currGroupData = null;
   } catch (error) {
     console.error(error);
     hideOverlay();
-    alert("An error occurred while updating the group");
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while updating the group.",
+    });
     currGroupData = null;
   }
 }
@@ -370,6 +512,7 @@ async function deleteMember(user_id, group_id) {
         function: "dgm",
         group_id: group_id,
         user_id: user_id,
+        staff_id: StaffID,
       }),
     );
 
@@ -378,15 +521,25 @@ async function deleteMember(user_id, group_id) {
         (member) => member["user_id"] != user_id,
       );
       showMembers(groupMembers);
-      alert(response.message);
+      Swal.fire({
+        icon: "success",
+        title: "Removed",
+        text: response.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } else {
-      alert(response.message);
+      Swal.fire({ icon: "error", title: "Error", text: response.message });
     }
     hideOverlay();
   } catch (error) {
     console.error(error);
     hideOverlay();
-    alert("An error occurred while fetching group members data");
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while removing the member.",
+    });
   }
 }
 
