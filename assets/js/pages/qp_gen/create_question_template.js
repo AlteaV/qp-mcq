@@ -43,7 +43,7 @@ async function getSubjects() {
   try {
     let payload = JSON.stringify({
       function: "gswt",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -64,7 +64,7 @@ async function getBtlLevels() {
   try {
     let payload = JSON.stringify({
       function: "gbl",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 
@@ -727,7 +727,7 @@ function saveTemplate() {
   var out = {};
   out.function = "amt";
   out.name = templateName.value;
-  out.org_id = loggedInUser.college_code;
+  out.org_id = loggedInUser.org_id;
   out.created_by = loggedInUser["staff_id"];
   out.template = data;
   out.is_mcq = null;

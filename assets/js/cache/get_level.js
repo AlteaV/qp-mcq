@@ -6,7 +6,7 @@ async function fetchLevel() {
       "/student",
       JSON.stringify({
         function: "gl",
-        org_id: loggedInUser.college_code,
+        org_id: loggedInUser.org_id,
       }),
     );
 

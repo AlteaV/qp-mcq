@@ -48,7 +48,7 @@ class View {
           sections.length * 4,
           "",
           "",
-          "text-align:center; font-weight:bold;"
+          "text-align:center; font-weight:bold;",
         ),
       ]);
 
@@ -60,8 +60,8 @@ class View {
             4,
             "",
             "",
-            "text-align:center; font-weight:bold;"
-          )
+            "text-align:center; font-weight:bold;",
+          ),
         );
       });
       tableData.tableBody.push(sectionRow);
@@ -74,8 +74,8 @@ class View {
             "",
             "",
             "",
-            "text-align:center; font-weight:bold;"
-          )
+            "text-align:center; font-weight:bold;",
+          ),
         );
         headerRow.push(
           new TableStructure(
@@ -83,8 +83,8 @@ class View {
             "",
             "",
             "",
-            "text-align:center; font-weight:bold;"
-          )
+            "text-align:center; font-weight:bold;",
+          ),
         );
         headerRow.push(
           new TableStructure(
@@ -92,8 +92,8 @@ class View {
             "",
             "",
             "",
-            "text-align:center; font-weight:bold;"
-          )
+            "text-align:center; font-weight:bold;",
+          ),
         );
         headerRow.push(
           new TableStructure(
@@ -101,8 +101,8 @@ class View {
             "",
             "",
             "",
-            "text-align:center; font-weight:bold;"
-          )
+            "text-align:center; font-weight:bold;",
+          ),
         );
       });
       tableData.tableBody.push(headerRow);
@@ -120,7 +120,7 @@ class View {
           let topic = sectionObj.topics[i];
           if (topic) {
             row.push(
-              new TableStructure(i + 1, "", "", "", "text-align:center;")
+              new TableStructure(i + 1, "", "", "", "text-align:center;"),
             );
             row.push(new TableStructure(topic.topic_name));
             row.push(
@@ -129,8 +129,8 @@ class View {
                 "",
                 "",
                 "",
-                "text-align:center;"
-              )
+                "text-align:center;",
+              ),
             );
             row.push(
               new TableStructure(
@@ -138,8 +138,8 @@ class View {
                 "",
                 "",
                 "",
-                "text-align:center;"
-              )
+                "text-align:center;",
+              ),
             );
           } else {
             row.push(new TableStructure(""));
@@ -170,12 +170,8 @@ class Controller {
   }
 
   async init() {
-    if (loggedInUser.type == "Student") {
-      this.getStudentMcqReport(
-        loggedInUser.register_num ||
-          loggedInUser.user_id ||
-          loggedInUser.staff_id
-      );
+    if (loggedInUser.type == "TestTaker") {
+      this.getStudentMcqReport(loggedInUser.user_id);
       this.view.registerNumberRow.style.display = "none";
     } else {
       this.view.registerNumberRow.style.display = "flex";
@@ -188,7 +184,7 @@ class Controller {
       let payload = JSON.stringify({
         function: "gesr",
         user_id: registerNumber,
-        org_id: loggedInUser.college_code,
+        org_id: loggedInUser.org_id,
       });
 
       let response = await postCall(QuestionUploadEndPoint, payload);

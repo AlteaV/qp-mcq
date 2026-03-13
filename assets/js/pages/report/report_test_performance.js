@@ -93,7 +93,7 @@ function showReportSection(data) {
     tableBody: [],
   };
 
-  if (loggedInUser.type == "Student") {
+  if (loggedInUser.type == "TestTaker") {
     tableData.tableHeader[0].push(new TableStructure("Question Paper Name"));
     tableData.tableHeader[0].push(new TableStructure(`Total Questions`));
     tableData.tableHeader[0].push(new TableStructure(`Total Mark Obtained`));
@@ -126,7 +126,7 @@ function showReportSection(data) {
 
     let temp = [];
     temp.push(new TableStructure(index + 1));
-    if (loggedInUser.type == "Student") {
+    if (loggedInUser.type == "TestTaker") {
       temp.push(new TableStructure(row.name));
       temp.push(new TableStructure(row.total_questions));
       temp.push(new TableStructure(row.total_score));
@@ -285,7 +285,7 @@ function renderQp(qp) {
 }
 
 async function init() {
-  if (loggedInUser.type == "Student") {
+  if (loggedInUser.type == "TestTaker") {
     await getStudentTests();
   } else {
     filterDiv.style.display = "flex";
@@ -298,10 +298,7 @@ async function getStudentTests() {
   try {
     let payload = JSON.stringify({
       function: "gttbs",
-      user_id:
-        loggedInUser.register_num ||
-        loggedInUser.user_id ||
-        loggedInUser.staff_id,
+      user_id: loggedInUser.user_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -321,7 +318,7 @@ async function getQuestionPaper() {
   try {
     let payload = JSON.stringify({
       function: "gaqatg",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);

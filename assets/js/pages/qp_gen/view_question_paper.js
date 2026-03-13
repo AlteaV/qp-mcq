@@ -37,7 +37,7 @@ async function getQuestionPapers() {
     showOverlay();
     let payload = JSON.stringify({
       function: "mncqp",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
       type: "non_mcq",
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -84,7 +84,7 @@ function renderQuestionPapers() {
       new TableStructure(
         '<button class="btn btn-sm btn-primary view-btn" data-id="' +
           qp.sqp_id +
-          '">View Question Paper</button>'
+          '">View Question Paper</button>',
       ),
     ];
 
@@ -111,7 +111,7 @@ async function getGroups(qp_id) {
     showOverlay();
     let payload = JSON.stringify({
       function: "gap",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -173,7 +173,7 @@ async function assignQpToGroup() {
       shuffle_questions: shuffle,
       max_attempts: attempts,
       test_type: type,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     });
     showOverlay();
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -205,7 +205,7 @@ async function getQuestionPaperDetails(qp_id) {
 
     let response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(payload)
+      JSON.stringify(payload),
     );
 
     if (response.success) {
@@ -310,7 +310,7 @@ async function displayQP(qp_id) {
       tableData.tableBody.push([
         new TableStructure(
           `<div style="text-align:center;"><strong>OR</strong></div>`,
-          2
+          2,
         ),
       ]);
 

@@ -107,7 +107,7 @@ async function getStudentList(qpId) {
     let payload = JSON.stringify({
       function: "glsd",
       qp_assignment_id: qpId,
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -182,10 +182,7 @@ async function unlockUser(id) {
     let payload = JSON.stringify({
       function: "autr",
       id: id,
-      user_id:
-        loggedInUser.register_num ||
-        loggedInUser.user_id ||
-        loggedInUser.staff_id,
+      user_id: loggedInUser.user_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -215,7 +212,7 @@ async function getAssignedQp() {
     let payload = JSON.stringify({
       function: "gaqao",
       type: type.value,
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);

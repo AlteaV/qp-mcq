@@ -187,7 +187,7 @@ async function getSubjectsSectionsTopics() {
   try {
     let payload = JSON.stringify({
       function: "gsst",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -212,7 +212,7 @@ async function addNewTopic(section_id, topic) {
       function: "ant",
       section_id: section_id,
       topic: topic,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -248,7 +248,7 @@ async function updateTopic(id, section_id, topic) {
       function: "ut",
       id: id,
       topic: topic,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);

@@ -55,7 +55,7 @@ async function getSubjects() {
   try {
     let payload = JSON.stringify({
       function: "gswt",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -169,7 +169,7 @@ async function takeTest() {
     subject_id: subjectID,
     section_id: sectionID,
     topic_id: topicID,
-    org_id: loggedInUser.college_code,
+    org_id: loggedInUser.org_id,
   });
 
   try {

@@ -26,7 +26,7 @@ var isEditing = true;
 var currentPage = 1;
 var itemsPerPage = 10;
 
-const CURRENT_ORG_ID = loggedInUser.college_code || loggedInUser.org_id;
+const CURRENT_ORG_ID = loggedInUser.org_id;
 
 searchButton.addEventListener("click", () => {
   applyFilters();
@@ -63,12 +63,18 @@ addNewUserBtn.addEventListener("click", () => {
   isEditing = false;
   formTitle.innerHTML = "Add New User";
 
-  if (addMethodSelector) addMethodSelector.style.display = "flex";
-  document.querySelector(
-    'input[name="addMethod"][value="individual"]',
-  ).checked = true;
-  individualAddSection.style.display = "flex";
-  bulkAddSection.style.display = "none";
+  if (loggedInUser.type == "TestCoordinator") {
+    if (addMethodSelector) addMethodSelector.style.display = "none";
+    individualAddSection.style.display = "flex";
+    bulkAddSection.style.display = "none";
+  } else {
+    if (addMethodSelector) addMethodSelector.style.display = "flex";
+    document.querySelector(
+      'input[name="addMethod"][value="individual"]',
+    ).checked = true;
+    individualAddSection.style.display = "flex";
+    bulkAddSection.style.display = "none";
+  }
 });
 
 if (addMethodRadios) {
@@ -282,7 +288,7 @@ async function updateUser() {
       user_name: userName.value,
       email: userEmail.value,
       role: userRole.value,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     };
     let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
 
@@ -310,7 +316,7 @@ async function addNewUser() {
       user_name: userName.value,
       email: userEmail.value,
       role: userRole.value,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     };
 
     let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
@@ -364,7 +370,7 @@ async function processBulkAdd(file) {
           return;
         }
         if (u.role === "Student") u.role = "TestTaker";
-        else if (u.role === "Teacher") u.role = "Admin";
+        else if (u.role === "Teacher") u.role = "TestCoordinator";
         else {
           alert(
             `Invalid role value: ${u.role}. Only Student and Teacher are allowed.`,
@@ -384,7 +390,7 @@ async function processBulkAdd(file) {
         function: "biud",
         org_id: CURRENT_ORG_ID,
         users: formattedUsers,
-        staff_id: loggedInUser.staff_id,
+        staff_id: loggedInUser.user_id,
       };
       showOverlay();
       let response = await postCall(
@@ -423,7 +429,7 @@ async function toggleUserStatus(userId, isActive) {
       function: "uus",
       user_id: userId,
       active: isActive ? 1 : 0,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     };
 
     let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));

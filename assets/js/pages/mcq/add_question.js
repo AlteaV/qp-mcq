@@ -356,7 +356,7 @@ async function getSubjectsSectionsTopics() {
   try {
     let payload = JSON.stringify({
       function: "gst",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);

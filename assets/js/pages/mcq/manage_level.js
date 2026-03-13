@@ -117,7 +117,7 @@ async function getlevel() {
   try {
     let payload = JSON.stringify({
       function: "gl",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(examCellEndPoint, payload);
@@ -148,8 +148,8 @@ async function addnewMCQLevel() {
     let out = {
       level_name: levelName.value,
       function: "al",
-      staff_id: loggedInUser.staff_id,
-      org_id: loggedInUser.college_code,
+      staff_id: loggedInUser.user_id,
+      org_id: loggedInUser.org_id,
     };
     let response = await postCall(examCellEndPoint, JSON.stringify(out));
     if (response.success) {
@@ -185,7 +185,7 @@ async function updateLevelname() {
     let out = {
       level_name: levelName.value,
       level_id: levelID.innerHTML,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
       function: "ul",
     };
     let response = await postCall(examCellEndPoint, JSON.stringify(out));

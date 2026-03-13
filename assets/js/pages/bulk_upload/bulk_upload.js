@@ -5,7 +5,7 @@ let fetchingDataSection = document.getElementById("fetching_data");
 let resultDiv = document.getElementById("result_div");
 let resultTable = document.getElementById("result_table");
 let networkButton = document.getElementById("network-button");
-let orgID = loggedInUser.org_id || loggedInUser.college_code || null;
+let orgID = loggedInUser.org_id;
 
 let expectHeaders = ["User ID", "User Name", "Branch Code", "Class", "Section"];
 let xlData = [];
@@ -29,7 +29,7 @@ function downloadSample() {
   } catch (error) {
     console.error(
       "An error occurred during the Excel file download process:",
-      error
+      error,
     );
   }
 }
@@ -78,7 +78,7 @@ async function checkExcel(filepath) {
       alert(
         `Either Branch Code or Class should be present at ROW: ${
           i + 1
-        }, not both`
+        }, not both`,
       );
       return false;
     }
@@ -142,9 +142,9 @@ async function uploadBulkUsers() {
       JSON.stringify({
         function: "mubu",
         org_id: orgID,
-        user_id: loggedInUser.staff_id || loggedInUser.user_id,
+        user_id: loggedInUser.user_id,
         users: xlData,
-      })
+      }),
     );
     if (response.status == 200) {
       alert(response["message"]);

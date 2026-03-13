@@ -132,7 +132,7 @@ async function getSubname() {
   try {
     let payload = JSON.stringify({
       function: "gms",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(staffEndPoint, payload);
     if (response.success) {
@@ -167,7 +167,7 @@ async function updateSubname() {
       level_id: levelID.id,
       sub_name: subName.value,
       sub_id: subID.innerHTML,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
       function: "ums",
     };
     let response = await postCall(staffEndPoint, JSON.stringify(out));
@@ -213,8 +213,8 @@ async function addnewMCQsubject() {
       level_id: levelID.id,
       sub_name: subName.value,
       function: "ams",
-      staff_id: loggedInUser.staff_id,
-      org_id: loggedInUser.college_code,
+      staff_id: loggedInUser.user_id,
+      org_id: loggedInUser.org_id,
     };
     let response = await postCall(staffEndPoint, JSON.stringify(out));
     if (response.success) {

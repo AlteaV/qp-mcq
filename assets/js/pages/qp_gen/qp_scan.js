@@ -48,7 +48,7 @@ async function getSubjects() {
     }
     let payload = JSON.stringify({
       function: "gss",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -118,8 +118,8 @@ async function scanQuestionPaper() {
       function: "sqg",
       subject: subjectName,
       filedata: base64,
-      org_id: loggedInUser.college_code,
-      created_by: loggedInUser.staff_id,
+      org_id: loggedInUser.org_id,
+      created_by: loggedInUser.user_id,
       subject_id: subjectId,
     };
     const payload = JSON.stringify(out);
@@ -515,7 +515,7 @@ async function submitQuestion() {
       function: "ss",
       subject_id: subjectId,
       scan_id: scanId,
-      created_by: loggedInUser.staff_id,
+      created_by: loggedInUser.user_id,
       sections: [],
     };
 
@@ -651,11 +651,8 @@ async function checkExistingScan() {
     showOverlay();
     let payload = JSON.stringify({
       function: "cqss",
-      org_id: loggedInUser.college_code,
-      user_id:
-        loggedInUser.register_num ||
-        loggedInUser.user_id ||
-        loggedInUser.staff_id,
+      org_id: loggedInUser.org_id,
+      user_id: loggedInUser.user_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {

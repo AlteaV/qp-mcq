@@ -9,3 +9,4 @@ var QuestionUploadEndPoint = "ExamCell";
 var groupMgmtEndPoint = "ExamCell";
 var studentEndPoint = "student";
 var helpDeskEndPoint = "helpdesk";
+var cognitoEndPoint = "myCogs";

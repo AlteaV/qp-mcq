@@ -171,7 +171,7 @@ async function getSubjectsSectionsTopics() {
   try {
     let payload = JSON.stringify({
       function: "gsst",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -197,7 +197,7 @@ async function getTopPerformers() {
   try {
     let payload = JSON.stringify({
       function: "gtp",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
       subject_id: subject_id,
       section_id: section_id,
       topic_id: topic_id,

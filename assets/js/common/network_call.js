@@ -126,6 +126,7 @@ function postCallPreProcess(functionName) {
     functionName == "uus" ||
     functionName == "biud" ||
     functionName == "dtsd" ||
+    functionName == "abe" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;
@@ -143,6 +144,8 @@ function postCallPreProcess(functionName) {
     functionName == ""
   ) {
     return helpDeskEndPoint;
+  } else if (functionName == "cog_login" || functionName == "") {
+    return cognitoEndPoint;
   }
   // Admin functions  END
   else return examCellEndPoint;

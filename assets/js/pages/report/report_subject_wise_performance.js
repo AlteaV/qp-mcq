@@ -65,7 +65,7 @@ window.jumpTo = jumpTo;
 window.handleDrill = handleDrill;
 
 async function init() {
-  if (loggedInUser.type == "Student" && loggedInUser.practice) {
+  if (loggedInUser.type == "TestTaker" && loggedInUser.practice) {
     testTypeDropDown.appendChild(new Option("Self Learning", "Self"));
   }
   renderLevels();
@@ -280,14 +280,11 @@ async function getReport(subjectID = null, sectionID = null) {
     section_id: sectionID,
     test_type: testTypeDropDown.value,
     level_id: levelDropDown.value,
-    org_id: loggedInUser.college_code,
+    org_id: loggedInUser.org_id,
   };
 
-  if (loggedInUser.type == "Student") {
-    out.user_id =
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id;
+  if (loggedInUser.type == "TestTaker") {
+    out.user_id = loggedInUser.user_id;
   }
 
   try {

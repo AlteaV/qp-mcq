@@ -112,7 +112,7 @@ async function getSubjects() {
     showOverlay();
     let payload = JSON.stringify({
       function: "gss",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 
@@ -146,7 +146,7 @@ async function getSectionTopic(subjectID) {
 
     const payload = JSON.stringify({
       function: "gstbs",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
       subject_id: subjectID,
     });
 
@@ -278,7 +278,7 @@ async function submitQuestion() {
 
     const out = {
       function: "qbue",
-      created_by: loggedInUser.staff_id,
+      created_by: loggedInUser.user_id,
       questions: [],
     };
 

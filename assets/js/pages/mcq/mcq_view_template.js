@@ -146,7 +146,7 @@ async function getTemplate() {
   allTemplates = [];
   var out = {};
   out.function = "gmt";
-  out.org_id = loggedInUser.college_code;
+  out.org_id = loggedInUser.org_id;
   out.is_mcq = 1;
   let response = await postCall(examCellEndPoint, JSON.stringify(out));
   if (response.status == 200) {

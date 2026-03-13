@@ -1,5 +1,5 @@
-let StaffID = loggedInUser.staff_id;
-let OrgID = loggedInUser.college_code;
+let StaffID = loggedInUser.user_id;
+let OrgID = loggedInUser.org_id;
 let groupData = {};
 let resultDiv = document.getElementById("result_div");
 let fetchingDataSection = document.getElementById("fetching_data");
@@ -70,7 +70,7 @@ async function getGroupData() {
       JSON.stringify({
         function: "ggd",
         org_id: OrgID,
-      })
+      }),
     );
     if (response.success) {
       allGroup = response.result.all_group;
@@ -118,7 +118,7 @@ function showReportSection(data) {
         "",
         "",
         "",
-        "width:1%"
+        "width:1%",
       ),
     ]);
   });
@@ -128,7 +128,7 @@ function showReportSection(data) {
     .on("click", ".edit-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       currGroupData = fullData;
       populateForm(fullData);
@@ -140,7 +140,7 @@ function showReportSection(data) {
       navigate();
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       currGroupID = fullData.group_id;
       getGroupMembers(fullData);
@@ -180,7 +180,7 @@ function showMembers(data) {
       new TableStructure(user.user_id),
       new TableStructure(user.user_name),
       new TableStructure(
-        createButton(user, "", "delete-button btn-danger", "fas fa-trash-alt")
+        createButton(user, "", "delete-button btn-danger", "fas fa-trash-alt"),
       ),
     ]);
   });
@@ -192,7 +192,7 @@ function showMembers(data) {
     .on("click", ".delete-button", (event) => {
       const $button = $(event.currentTarget);
       const fullData = JSON.parse(
-        decodeURIComponent($button.attr("data-full"))
+        decodeURIComponent($button.attr("data-full")),
       );
       deleteMember(fullData["user_id"], fullData["group_id"]);
     });
@@ -256,7 +256,7 @@ async function addGroup() {
         group_name: grpName,
         staff_id: StaffID,
         org_id: OrgID,
-      })
+      }),
     );
     if (response.success) {
       let group_id = response.result.group_id;
@@ -299,7 +299,7 @@ async function addMember() {
         uids: uids,
         group_id: currGroupID,
         staff_id: StaffID,
-      })
+      }),
     );
     if (response.success) {
       resetForm();
@@ -333,7 +333,7 @@ async function updateGroup() {
         group_name: grpName,
         staff_id: StaffID,
         group_id: currGroupData["group_id"],
-      })
+      }),
     );
     if (response.success) {
       for (let grp in allGroup) {
@@ -370,12 +370,12 @@ async function deleteMember(user_id, group_id) {
         function: "dgm",
         group_id: group_id,
         user_id: user_id,
-      })
+      }),
     );
 
     if (response.success) {
       groupMembers = groupMembers.filter(
-        (member) => member["user_id"] != user_id
+        (member) => member["user_id"] != user_id,
       );
       showMembers(groupMembers);
       alert(response.message);
@@ -407,7 +407,7 @@ async function getGroupMembers(data) {
       JSON.stringify({
         function: "ggm",
         group_id: data["group_id"],
-      })
+      }),
     );
     if (response.success) {
       groupMembers = response.result.all_members;

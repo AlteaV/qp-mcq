@@ -39,10 +39,7 @@ async function getQuestionPaperDetails() {
     function: "gqftt",
     qp_assignment_id: qp_assignment_id,
     template_id: template_id,
-    user_id:
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id,
+    user_id: loggedInUser.user_id,
   };
   try {
     let response = await postCall(examCellEndPoint, JSON.stringify(payload));
@@ -135,10 +132,7 @@ async function submitTempAnswer() {
     assignment_id: questionPaperDetails.assignment_id,
     attempt_id: questionPaperDetails.attempt_id,
     answer: JSON.stringify(questionStates),
-    user_id:
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id,
+    user_id: loggedInUser.user_id,
     function: "itad",
   };
 
@@ -778,10 +772,7 @@ async function submitTest() {
     attempt_end_time: testEndTime,
     total_time: totalTime.toFixed(0),
     answers: JSON.stringify(allAnswered),
-    user_id:
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id,
+    user_id: loggedInUser.user_id,
     attempt_id: questionPaperDetails.attempt_id,
     function: "uad",
   };

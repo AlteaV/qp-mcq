@@ -42,7 +42,7 @@ function getTemplate() {
   var out = {};
   out.function = "gmt";
   out.is_mcq = 1;
-  out.org_id = loggedInUser.college_code;
+  out.org_id = loggedInUser.org_id;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
@@ -65,8 +65,8 @@ function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
   out.function = "umcqqp";
   out.question = questionPaper;
   out.name = questionPaperName;
-  out.org_id = loggedInUser.college_code;
-  out.created_by = loggedInUser.staff_id;
+  out.org_id = loggedInUser.org_id;
+  out.created_by = loggedInUser.user_id;
   showOverlay();
 
   postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
@@ -122,7 +122,7 @@ async function getSubjects() {
     showOverlay();
     let payload = JSON.stringify({
       function: "gss",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
 

@@ -39,7 +39,7 @@ async function getQuestionPapers() {
     showOverlay();
     let payload = JSON.stringify({
       function: "mcqp",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -85,18 +85,18 @@ function renderQuestionPapers() {
       new TableStructure(index + 1),
       new TableStructure(qp.name),
       new TableStructure(
-        topicMarks.map((item) => `${item.topic} (${item.marks})`).join("<br>")
+        topicMarks.map((item) => `${item.topic} (${item.marks})`).join("<br>"),
       ),
       new TableStructure(totalMarks),
       new TableStructure(
         '<button class="btn btn-sm btn-primary view-btn" data-id="' +
           qp.sqp_id +
-          '">View</button>'
+          '">View</button>',
       ),
       new TableStructure(
         '<button class="btn btn-sm btn-primary assign-btn" data-id="' +
           qp.sqp_id +
-          '">Assign</button>'
+          '">Assign</button>',
       ),
     ];
 
@@ -130,7 +130,7 @@ async function getGroups(qp_id) {
     showOverlay();
     let payload = JSON.stringify({
       function: "gap",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -157,7 +157,7 @@ async function getUiTemplate(qp_id) {
     showOverlay();
     let payload = JSON.stringify({
       function: "guitn",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
@@ -239,7 +239,7 @@ async function assignQpToGroup() {
       shuffle_questions: shuffle,
       max_attempts: attempts,
       test_type: type,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
     });
     showOverlay();
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -270,7 +270,7 @@ async function getQuestionPaperDetails(qp_id) {
 
     let response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(payload)
+      JSON.stringify(payload),
     );
     if (response.success) {
       let selectQp = questions.find((qp) => qp.sqp_id === qp_id);

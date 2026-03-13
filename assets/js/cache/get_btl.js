@@ -6,7 +6,7 @@ async function fetchBtl() {
       "/student",
       JSON.stringify({
         function: "gbl",
-        org_id: loggedInUser.college_code,
+        org_id: loggedInUser.org_id,
       }),
     );
 

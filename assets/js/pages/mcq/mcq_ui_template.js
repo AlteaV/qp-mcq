@@ -1,3 +1,4 @@
+var title = document.getElementById("title");
 var form = document.getElementById("form_id");
 var modelLabel = document.getElementById("modalLabel");
 var fetchingDataSection = document.getElementById("fetching_data");
@@ -312,7 +313,7 @@ async function getUiTemplate() {
   try {
     let payload = JSON.stringify({
       function: "guit",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -324,7 +325,7 @@ async function getUiTemplate() {
       hideOverlay();
     } else {
       alert(
-        "An error occurred while fetching UI Templates: " + response.message
+        "An error occurred while fetching UI Templates: " + response.message,
       );
     }
   } catch (error) {
@@ -336,7 +337,7 @@ async function getUiTemplate() {
 function checkExistingDefaultTemplate() {
   return allTemplates.find(
     (template) =>
-      template.is_default === "Y" && template.template_id !== templateId
+      template.is_default === "Y" && template.template_id !== templateId,
   );
 }
 
@@ -396,8 +397,8 @@ async function managUiTemplate() {
 
     const payload = {
       function: "uuit",
-      staff_id: loggedInUser.staff_id,
-      org_id: loggedInUser.college_code,
+      staff_id: loggedInUser.user_id,
+      org_id: loggedInUser.org_id,
       template_name: templateName.value.trim(),
       total_duration_mins: Number(totalDuration.value),
       show_timer: showTimer.value,
@@ -423,7 +424,7 @@ async function managUiTemplate() {
 
     let response = await postCall(
       QuestionUploadEndPoint,
-      JSON.stringify(payload)
+      JSON.stringify(payload),
     );
 
     if (response.success) {
@@ -458,7 +459,7 @@ async function managUiTemplate() {
         templateId = response.result.template_id;
         allTemplates.push({
           template_id: templateId,
-          org_id: loggedInUser.college_code,
+          org_id: loggedInUser.org_id,
           template_name: templateName.value.trim(),
           total_duration_mins: Number(totalDuration.value),
           show_timer: showTimer.value,
@@ -496,6 +497,12 @@ async function managUiTemplate() {
 }
 
 async function init() {
+  if (loggedInUser.type != "TestCoordinator") {
+    addUiTemplateBtn.style.display = "flex";
+    title.innerHTML = "Create and Manage UI Templates";
+  } else {
+    title.innerHTML = "Manage UI Templates";
+  }
   await getUiTemplate();
 }
 

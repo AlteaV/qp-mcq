@@ -144,7 +144,7 @@ async function getQuestionPaper() {
   try {
     let payload = JSON.stringify({
       function: "gaqatg",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);

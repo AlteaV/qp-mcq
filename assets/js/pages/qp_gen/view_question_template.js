@@ -198,7 +198,7 @@ function getTemplate() {
   allTemplates = [];
   var out = {};
   out.function = "gnmt";
-  out.org_id = loggedInUser.college_code;
+  out.org_id = loggedInUser.org_id;
   out.is_mcq = null;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {

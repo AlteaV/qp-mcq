@@ -169,7 +169,7 @@ async function getSubname() {
   try {
     let payload = JSON.stringify({
       function: "gsas",
-      org_id: loggedInUser.college_code,
+      org_id: loggedInUser.org_id,
     });
 
     let response = await postCall(QuestionUploadEndPoint, payload);
@@ -199,7 +199,7 @@ async function updatemcqSecname() {
     let out = {
       sec_id: curr_data["section_id"],
       sec_name: secName.value,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
       type: "update",
       function: "ms",
     };
@@ -242,7 +242,7 @@ async function addnewmcqSubsec() {
     let out = {
       subject_id: subName.value,
       sec_name: secName.value,
-      staff_id: loggedInUser.staff_id,
+      staff_id: loggedInUser.user_id,
       type: "add",
       function: "ms",
     };

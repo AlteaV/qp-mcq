@@ -116,10 +116,7 @@ async function getQuestionPapers() {
   showOverlay();
   var out = {
     function: "gaq",
-    user_id:
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id,
+    user_id: loggedInUser.user_id,
   };
   try {
     let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));

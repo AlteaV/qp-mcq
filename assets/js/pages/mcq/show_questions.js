@@ -659,10 +659,7 @@ async function submitTest() {
     attempt_end_time: endTime,
     total_time: totalTime.toFixed(0),
     answers: JSON.stringify(allAnswered),
-    user_id:
-      loggedInUser.register_num ||
-      loggedInUser.user_id ||
-      loggedInUser.staff_id,
+    user_id: loggedInUser.user_id,
     get_correct_answers: false,
     function: "iusa",
   };

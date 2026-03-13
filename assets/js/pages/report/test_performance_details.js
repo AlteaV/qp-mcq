@@ -11,7 +11,7 @@ resultDiv = document.getElementById("result_div");
 
 backToReportBtn.addEventListener("click", () => {
   selectedStudent = null;
-  if (loggedInUser.type != "Student") {
+  if (loggedInUser.type != "TestTaker") {
     filterDiv.style.display = "flex";
   }
   individualPerformanceDiv.style.display = "none";
@@ -29,7 +29,7 @@ async function getIndividualPerformance(attempt_id, selectedStudent) {
 
     if (response.success) {
       showIndividualPerformanceSection(response.result.report);
-      if (selectedStudent != null && loggedInUser.type != "Student") {
+      if (selectedStudent != null && loggedInUser.type != "TestTaker") {
         studentInfo.innerHTML = `<b>Student Name: ${selectedStudent.user_name}<br><br>User ID: ${selectedStudent.user_id}</b>`;
       } else {
         studentInfo.innerHTML = ``;

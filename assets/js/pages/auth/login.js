@@ -1,220 +1,106 @@
-var organization = document.getElementById("organization");
-var userId = document.getElementById("user_id");
-var adminPassword = document.getElementById("admin_password");
-
-let orgDetails = [];
-
-document.addEventListener("readystatechange", async () => {
-  if (document.readyState === "complete") {
-    await getOrganizationDetails();
+let overlay = document.getElementById("overlay");
+async function getToken() {
+  overlay.style.display = "flex";
+  let url = new URLSearchParams(window.location.search);
+  let code = url.get("code");
+  if (code == null) {
+    alert("Invalid URL");
+    return;
   }
-});
 
-async function getOrganizationDetails() {
-  showOverlay();
   try {
     let payload = JSON.stringify({
-      function: "go",
+      function: "cog_login",
+      code: code,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(cognitoEndPoint, payload);
+
+    let id_token = response.id_token;
+    let access_token = response.access_token;
+    let user_email = response.user_email;
+
+    sessionStorage.setItem("id_token", id_token);
+    sessionStorage.setItem("access_token", access_token);
+    sessionStorage.setItem("user_email", user_email);
+
+    if (access_token) {
+      await login(user_email, access_token);
+    } else {
+      overlay.style.display = "none";
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    console.error(error.message);
+    overlay.style.display = "none";
+    alert(error.message ?? "Error while authenticating");
+  }
+}
+
+async function login(email, access_token) {
+  overlay.style.display = "flex";
+  try {
+    let endPoint = cognitoEndPoint;
+
+    let out = {
+      function: "abe",
+      email: email,
+      access_token: access_token,
+    };
+
+    let response = await postCall(endPoint, JSON.stringify(out));
 
     if (response.success) {
-      organization.innerHTML = "";
-      organization.appendChild(new Option("Select Organization", ""));
-      orgDetails = response.result.organizations;
-      if (orgDetails.length > 0) {
-        orgDetails.forEach((org) => {
-          let option = new Option(org.org_name, org.org_id);
-          organization.appendChild(option);
-        });
+      if (!response.result.user) {
+        alert("User details not found. Contact administrator.");
+        return;
+      }
+      sessionStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(response.result.user),
+      );
+      redirectPage(response.result.user);
+    } else {
+      overlay.style.display = "none";
+      alert(response.message ?? "Login failed");
+    }
+  } catch (error) {
+    overlay.style.display = "none";
+    alert("An error occurred while login: " + error.message);
+  }
+}
+
+function redirectPage(loggedInUser) {
+  if (loggedInUser) {
+    let permissions = loggedInUser.permissions;
+    let firstPage = permissions[0];
+    for (let i = 0; i < menuItems.length; i++) {
+      let menuItem = menuItems[i];
+      if (menuItem.dropdown) {
+        let found = menuItem.items.find((item) =>
+          permissions.includes(item.text),
+        );
+        if (found) {
+          firstPage = found.href;
+          break;
+        }
+      } else {
+        if (permissions.includes(menuItem.text)) {
+          firstPage = menuItem.href;
+          break;
+        }
       }
     }
-    hideOverlay();
-  } catch (error) {
-    hideOverlay();
-    console.error(error);
-    alert("An error occurred while fetching organization details");
+    window.location.href = firstPage;
   }
 }
-
-adminPassword.addEventListener("keypress", function (event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    logIn();
+document.addEventListener("readystatechange", async () => {
+  if (document.readyState === "complete") {
+    let loggedInUser = sessionStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      redirectPage(JSON.parse(loggedInUser));
+    } else {
+      await getToken();
+    }
   }
 });
-
-async function logIn() {
-  if (organization.value == "") {
-    alert("Choose an Organization");
-    return;
-  }
-
-  if (userId.value == "") {
-    alert("ID can't be empty");
-    return;
-  }
-
-  if (adminPassword.value == "") {
-    alert("Password can't be empty");
-    return;
-  }
-
-  let selectedOrg = orgDetails.find((org) => org.org_id == organization.value);
-  if (!selectedOrg) {
-    alert("Selected organization not found");
-    return;
-  }
-
-  showOverlay();
-
-  let selectedEndpoint;
-  if (typeof selectedOrg.endpoint === "string") {
-    selectedEndpoint = JSON.parse(selectedOrg.endpoint);
-  }
-
-  let out = {};
-
-  if (userId.value.length >= 7) {
-    out = {
-      password: adminPassword.value,
-      register_num: userId.value,
-      function: "stul",
-    };
-    selectedEndpoint = selectedEndpoint["student"];
-  } else {
-    out = {
-      password: adminPassword.value,
-      staff_id: userId.value,
-      function: "sln",
-    };
-    selectedEndpoint = selectedEndpoint["staff"];
-  }
-
-  let raw = JSON.stringify(out);
-
-  let response = await postCall(authEndPoint, raw, selectedEndpoint);
-
-  if (!response.success) {
-    alert(response["message"]);
-    hideOverlay();
-    return;
-  }
-
-  if (!response["result"]["loginSuccess"]) {
-    alert(response["message"]);
-    hideOverlay();
-    return;
-  }
-
-  if (!response["result"]["loginSuccess"]) {
-    alert(response["message"]);
-    hideOverlay();
-    return;
-  }
-
-  if (response["result"]["resetPassword"]) {
-    hideOverlay();
-    sessionStorage.setItem("password_reset_type", "staff");
-    window.location.href = "password_reset.html";
-    return;
-  }
-
-  let type = "Student";
-  let org_id = "";
-
-  // check if studentDetails is present in response and has values
-  if (
-    response["result"]["studentDetails"] &&
-    Object.keys(response["result"]["studentDetails"]).length > 0
-  ) {
-    type = "Student";
-    org_id = response["result"]["studentDetails"]["college_code"];
-  } else if (
-    response["result"]["staffDetails"] &&
-    Object.keys(response["result"]["staffDetails"]).length > 0
-  ) {
-    type = "Staff";
-    org_id = response["result"]["staffDetails"]["college_code"];
-  }
-
-  let permission = await postCall(
-    authEndPoint,
-    JSON.stringify({
-      function: "gup",
-      type: type,
-      org_id: org_id,
-    }),
-  );
-
-  if (type === "Student") {
-    let studentDetails = response["result"]["studentDetails"];
-    let branchCode =
-      "branch_code" in studentDetails ? studentDetails.branch_code : null;
-    let currentYear =
-      "current_year" in studentDetails ? studentDetails.current_year : "";
-    let section = "section" in studentDetails ? studentDetails.section : "";
-    let name = "name" in studentDetails ? studentDetails.name : "";
-    let user_id =
-      "register_num" in studentDetails
-        ? studentDetails.register_num
-        : studentDetails.staff_id;
-
-    let storeUser = await postCall(
-      authEndPoint,
-      JSON.stringify({
-        function: "iouud",
-        user_id: user_id,
-        org_id: studentDetails.college_code,
-        user_name: studentDetails.name || "",
-        branch: branchCode,
-        std_year: currentYear,
-        section: section,
-      }),
-    );
-
-    if (!storeUser.success) {
-      hideOverlay();
-      alert("Unable to process");
-      return;
-    }
-
-    let userDetails = {
-      user_id: user_id,
-      staff_id: user_id,
-      register_num: user_id,
-      name: name,
-      staff_name: name,
-      branch_code: branchCode,
-      current_year: currentYear,
-      section: section,
-      college_code: studentDetails.college_code,
-      org_id: studentDetails.college_code,
-      permissions: permission.result.permissions.permissions,
-      practice: permission.result.permissions.practice,
-      qp_suite: permission.result.permissions.qp_suite,
-      test_suite: permission.result.permissions.test_suite,
-      agentic_learning: permission.result.permissions.agentic_learning,
-      type: "Student", // have to change this based on login
-    };
-    sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));
-    window.location.href = "student_report.html";
-  } else {
-    let staffDetails = response["result"]["staffDetails"];
-    let name =
-      "name" in staffDetails ? staffDetails.name : staffDetails.staff_name;
-    let userDetails = {
-      user_id: staffDetails.staff_id,
-      staff_id: staffDetails.staff_id,
-      name: name,
-      staff_name: name,
-      type: staffDetails.type,
-      college_code: staffDetails.college_code,
-      org_id: staffDetails.college_code,
-      permissions: permission.result.permissions.permissions,
-    };
-    sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));
-    window.location.href = "report_leaderboard.html";
-  }
-}

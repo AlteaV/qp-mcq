@@ -32,6 +32,7 @@ function loadScriptsSequentially(scriptUrls, callback) {
 }
 
 var scriptUrls = [
+  "/assets/js/common/menu.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js",
   "/assets/js/common/functions.js",
   "/assets/js/common/network_call.js",
@@ -65,7 +66,7 @@ function scriptsLoadedCallback() {
   includeHTML("/partials/footer.html", "footer-placeholder", function () {
     $(document).ready(function () {
       var dropdownElementList = [].slice.call(
-        document.querySelectorAll(".dropdown-toggle")
+        document.querySelectorAll(".dropdown-toggle"),
       );
       var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
         return new bootstrap.Dropdown(dropdownToggleEl);
@@ -91,7 +92,7 @@ function scriptsLoadedCallback() {
     "side-bar-placeholder",
     function () {
       addCheckAuth();
-    }
+    },
   );
 }
 
