@@ -93,8 +93,8 @@ function showReportSection(data) {
     tableHeader: [
       [
         new TableStructure("S.NO"),
-        new TableStructure("User ID"),
         new TableStructure("User Name"),
+        new TableStructure("Email"),
         new TableStructure("Total Score"),
       ],
     ],
@@ -103,8 +103,8 @@ function showReportSection(data) {
   data.forEach((row, index) => {
     tableData.tableBody.push([
       new TableStructure(index + 1),
-      new TableStructure(row.user_id),
       new TableStructure(row.user_name),
+      new TableStructure(row.email),
       new TableStructure(row.total_correct),
     ]);
   });

@@ -728,7 +728,7 @@ function saveTemplate() {
   out.function = "amt";
   out.name = templateName.value;
   out.org_id = loggedInUser.org_id;
-  out.created_by = loggedInUser["staff_id"];
+  out.user_id = loggedInUser.user_id;
   out.template = data;
   out.is_mcq = null;
 

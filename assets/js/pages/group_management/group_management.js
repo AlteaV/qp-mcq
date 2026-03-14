@@ -1,5 +1,5 @@
 let StaffID = loggedInUser.user_id;
-let OrgID = loggedInUser.college_code;
+let OrgID = loggedInUser.org_id;
 let groupData = {};
 let resultDiv = document.getElementById("result_div");
 let fetchingDataSection = document.getElementById("fetching_data");

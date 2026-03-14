@@ -175,6 +175,7 @@ function showFecthingDataSection(data) {
   $("#details").hide();
   fetchingDataSection.innerHTML = "<p>" + data + "</p>";
   $("#fetching_data").show();
+  hideOverlay();
 }
 
 function displayTemplateTable() {

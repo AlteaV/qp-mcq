@@ -19,7 +19,7 @@ async function getMcqQuestions(templateID) {
           title: "No Questions Found",
           text: "No questions are available for this subject. Please choose another subject or upload questions for this subject before generating.",
         }).then(() => {
-          showInputfield(templateID);
+          changeTemplate(templateID);
         });
         hideOverlay();
       }

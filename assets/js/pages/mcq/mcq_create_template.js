@@ -593,8 +593,8 @@ function saveTemplate() {
   out.name = templateName.value;
   out.org_id = loggedInUser.org_id;
   out.is_mcq = 1;
-  out.created_by = loggedInUser["staff_id"];
   out.template = data;
+  out.user_id = loggedInUser.user_id;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {

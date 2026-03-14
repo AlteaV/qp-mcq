@@ -182,21 +182,14 @@ async function logIn() {
 
     let userDetails = {
       user_id: user_id,
-      staff_id: user_id,
-      register_num: user_id,
       name: name,
-      staff_name: name,
-      branch_code: branchCode,
-      current_year: currentYear,
-      section: section,
-      college_code: studentDetails.college_code,
       org_id: studentDetails.college_code,
       permissions: permission.result.permissions.permissions,
       practice: permission.result.permissions.practice,
       qp_suite: permission.result.permissions.qp_suite,
       test_suite: permission.result.permissions.test_suite,
       agentic_learning: permission.result.permissions.agentic_learning,
-      type: "Student", // have to change this based on login
+      type: "TestTaker", // have to change this based on login
     };
     sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));
     window.location.href = "student_report.html";
@@ -206,11 +199,8 @@ async function logIn() {
       "name" in staffDetails ? staffDetails.name : staffDetails.staff_name;
     let userDetails = {
       user_id: staffDetails.staff_id,
-      staff_id: staffDetails.staff_id,
       name: name,
-      staff_name: name,
       type: staffDetails.type,
-      college_code: staffDetails.college_code,
       org_id: staffDetails.college_code,
       permissions: permission.result.permissions.permissions,
     };

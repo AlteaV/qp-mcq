@@ -7,6 +7,7 @@ var questionPaperDropDown = document.getElementById("question_paper");
 var toggleBtnChart = document.getElementById("btn-chart");
 var toggleBtnTable = document.getElementById("btn-table");
 var downloadButton = document.getElementById("donwload_button");
+var reportDiv = document.getElementById("report_div");
 
 var qp = null;
 var sections = null;
@@ -106,8 +107,8 @@ function showReportSection(data) {
         break;
       }
     }
-    tableData.tableHeader[0].push(new TableStructure("User ID"));
     tableData.tableHeader[0].push(new TableStructure("User Name"));
+    tableData.tableHeader[0].push(new TableStructure("Email"));
     tableData.tableHeader[0].push(
       new TableStructure(`Total Score<br><small>(out of ${totalQues})</small>`),
     );
@@ -131,8 +132,8 @@ function showReportSection(data) {
       temp.push(new TableStructure(row.total_questions));
       temp.push(new TableStructure(row.total_score));
     } else {
-      temp.push(new TableStructure(row.user_id));
       temp.push(new TableStructure(row.user_name));
+      temp.push(new TableStructure(row.email));
       temp.push(new TableStructure(row.total_score));
     }
     temp.push(new TableStructure(row.average_time));
@@ -141,9 +142,11 @@ function showReportSection(data) {
   });
 
   displayResult(tableData, resultTable);
-  navStack = [{ label: "All Sections", data: summary, type: "Overview" }];
-  renderChart(summary);
 
+  if (loggedInUser.type !== "TestTaker") {
+    navStack = [{ label: "All Sections", data: summary, type: "Overview" }];
+    renderChart(summary);
+  }
   $("#result_table").off("click", ".view-button");
   $("#result_table").on("click", ".view-button", async (event) => {
     let attemptId = JSON.parse(
@@ -192,6 +195,7 @@ function renderChart(data) {
         },
       },
     });
+    reportDiv.style.display = "block";
   } catch (error) {
     console.error("Error rendering chart:", error);
     alert("An error occurred while rendering the chart.");

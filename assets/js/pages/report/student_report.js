@@ -12,7 +12,7 @@ class View {
       if (this.registerNumber.value) {
         await this.controller.getStudentMcqReport(this.registerNumber.value);
       } else {
-        alert("Please enter a register number.");
+        alert("Please enter a email.");
       }
     });
   }
