@@ -1,5 +1,5 @@
 if (loggedInUser == undefined || loggedInUser == null || loggedInUser == "") {
-  document.location.href = "/login.html";
+  document.location.href = "/auth.html";
 }
 
 function logout() {
