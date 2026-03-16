@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Background Page</title>
+    <style>
+        body {
+            /* Basic resets to ensure the image fills the screen */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            color: #000000		;
+
+            /* The Background Magic */
+            background-image: url('background-image-light.svg'); /* Replace with your image URL */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed; /* Keeps the image from scrolling with the content */
+            background-size: cover; /* Resizes the image to cover the entire container */
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 1);  
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+		/* Button Styling */
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 4px 20px;
+			line-height: 20px;
+            background-color: #006ce0;
+            color: white;
+            text-decoration: none; /* Removes the underline from the link */
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }		
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Welcome to your Testing App</h1>
+        <p><a href="https://auth.testninja.ai/login/continue?client_id=3h89ie5dc0gk2l4560a4s2tfe&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Ftestninja.ai%2Flogin.html" class="btn">Explore More</a></p>
+    </div>
+
+</body>
+</html>
