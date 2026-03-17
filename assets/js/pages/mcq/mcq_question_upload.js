@@ -60,7 +60,6 @@ const answerGroup = document.getElementById("answer_group");
 const crtOptionColumn = document.getElementById("correct_option_group");
 const statusDiv = document.getElementById("status_div");
 const statusTable = document.getElementById("status_table");
-const scanQuestionInputDiv = document.getElementById("scan_question_input_div");
 
 let questionForm = document.getElementById("question_form");
 let questionInput = document.getElementById("question");
@@ -172,7 +171,7 @@ pageType.addEventListener("change", () => {
     sectionDiv.style.display = "none";
     btlDiv.style.display = "none";
     fileInputDiv.style.display = "block";
-    fileUplaodButton.value = "Scan Questions";
+    fileUplaodButton.value = "Generate Questions";
   } else {
     topicDiv.style.display = "block";
     sectionDiv.style.display = "block";
@@ -237,6 +236,8 @@ function changeUploadType() {
     nameInputDiv.style.display = "none";
     nameInputDiv.value = "";
   }
+  qpPreviousYearRadio.checked = false;
+  qpCustomRadio.checked = false;
   filterDiv.style.display = "block";
 }
 
@@ -579,7 +580,9 @@ function handleExistingScan(data) {
     return;
   }
   hideOverlay();
-  scanQuestionInputDiv.style.display = "flex";
+  if (type == "generate") {
+    filterDiv.style.display = "block";
+  }
 }
 
 function changePageType() {
@@ -1738,6 +1741,13 @@ async function init() {
       Questions in Uploaded question paper will not be uploaded.<br>`;
     title.parentNode.insertBefore(infoDiv, title.nextSibling);
     pageTypeDiv.style.display = "block";
+    topicDiv.style.display = "none";
+    sectionDiv.style.display = "none";
+    btlDiv.style.display = "none";
+    fileInputDiv.style.display = "block";
+    pageTypeRow.style.display = "flex";
+    uploadTypeRow.style.display = "none";
+    fileUplaodButton.value = "Generate Questions";
   } else {
     title.textContent = "MCQ Question Upload";
     pageTypeDiv.style.display = "none";

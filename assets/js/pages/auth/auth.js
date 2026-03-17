@@ -150,48 +150,34 @@ async function logIn() {
 
   if (type === "Student") {
     let studentDetails = response["result"]["studentDetails"];
-    let branchCode =
-      "branch_code" in studentDetails ? studentDetails.branch_code : null;
-    let currentYear =
-      "current_year" in studentDetails ? studentDetails.current_year : "";
-    let section = "section" in studentDetails ? studentDetails.section : "";
-    let name = "name" in studentDetails ? studentDetails.name : "";
-    let user_id =
-      "register_num" in studentDetails
-        ? studentDetails.register_num
-        : studentDetails.staff_id;
-
-    let storeUser = await postCall(
-      authEndPoint,
-      JSON.stringify({
-        function: "iouud",
-        user_id: user_id,
-        org_id: studentDetails.college_code,
-        user_name: studentDetails.name || "",
-        branch: branchCode,
-        std_year: currentYear,
-        section: section,
-      }),
-    );
-
-    if (!storeUser.success) {
+    if (!studentDetails.student_email) {
+      alert(
+        "You are not allowed to login using this page. Contact administrator.",
+      );
       hideOverlay();
-      alert("Unable to process");
       return;
     }
-
-    let userDetails = {
-      user_id: user_id,
-      name: name,
-      org_id: studentDetails.college_code,
-      permissions: permission.result.permissions.permissions,
-      practice: permission.result.permissions.practice,
-      qp_suite: permission.result.permissions.qp_suite,
-      test_suite: permission.result.permissions.test_suite,
-      agentic_learning: permission.result.permissions.agentic_learning,
-      type: "TestTaker", // have to change this based on login
+    let endPoint = cognitoEndPoint;
+    let out = {
+      function: "abe",
+      email: studentDetails.student_email,
+      access_token: "access_token",
     };
-    sessionStorage.setItem("loggedInUser", JSON.stringify(userDetails));
+
+    let rsp = await postCall(endPoint, JSON.stringify(out));
+
+    if (rsp.success) {
+      if (!rsp.result.user) {
+        alert("User details not found. Contact administrator.");
+        hideOverlay();
+        return;
+      }
+      sessionStorage.setItem("loggedInUser", JSON.stringify(rsp.result.user));
+      window.location.href = "student_report.html";
+    } else {
+      overlay.style.display = "none";
+      alert(rsp.message ?? "Login failed");
+    }
     window.location.href = "student_report.html";
   } else {
     let staffDetails = response["result"]["staffDetails"];
