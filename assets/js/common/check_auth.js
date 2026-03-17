@@ -102,7 +102,7 @@ allowedActions.forEach((allowedItem) => {
   }
 });
 
-if (loggedInUser.type == "Student") {
+if (loggedInUser.type == "TestTaker") {
   allowedUrls.push("/view_ui_template.html");
 }
 
@@ -229,12 +229,7 @@ function buildNavigation() {
 
 function setUserName() {
   let userName = document.getElementById("user_name");
-
-  if (loggedInUser["type"] == "Student") {
-    userName.innerHTML = loggedInUser.name || loggedInUser.staff_name;
-  } else {
-    userName.innerHTML = loggedInUser.name || loggedInUser.staff_name;
-  }
+  userName.innerHTML = loggedInUser.name;
 }
 
 function setActiveNavItem() {
