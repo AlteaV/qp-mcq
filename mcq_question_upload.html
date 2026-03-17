@@ -2,6 +2,42 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+      .qp-pill-group .form-check {
+        padding: 0;
+      }
+
+      .qp-pill-group .form-check-input {
+        display: none;
+      }
+
+      .qp-pill-group .form-check-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.95rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        font-size: 0.86rem;
+        cursor: pointer;
+        color: #111827;
+        background-color: #fff;
+        transition: all 0.15s ease;
+      }
+
+      .qp-pill-group .form-check-input:checked + .form-check-label {
+        background: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+        box-shadow: 0 6px 14px rgba(79, 70, 229, 0.35);
+      }
+
+      .qp-section {
+        border-radius: 1rem;
+        border: 1px dashed rgba(148, 163, 184, 0.7);
+        background-color: #f9fafb;
+      }
+    </style>
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
@@ -16,100 +52,261 @@
                     <div class="bgc-white bd bdrs-3 p-20 mB-20">
                       <h4 class="c-grey-900 mB-20 mt-6 mb-4" id="title"></h4>
 
+                      <div class="row" id="upload_type_row">
+                        <div class="mb-4">
+                          <div class="qp-section-title mb-2">
+                            <span>What do you want to upload?</span>
+                          </div>
+                          <p class="qp-helper mb-3">
+                            Choose whether you are uploading only questions or
+                            the full question paper along with questions.
+                          </p>
+
+                          <div class="d-flex flex-wrap gap-2 qp-pill-group">
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="uploadType"
+                                id="only_questions"
+                                value="only_questions"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="only_questions"
+                              >
+                                Only questions
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="uploadType"
+                                id="questions_and_qp"
+                                value="questions_and_qp"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="questions_and_qp"
+                              >
+                                Questions + Question Paper
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="qp-section mb-3 p-3"
+                        id="filter_div"
+                        style="display: none"
+                      >
+                        <div
+                          class="mb-3"
+                          id="upload_type_div"
+                          style="display: none"
+                        >
+                          <label class="form-label mb-2 required"
+                            >Question paper type</label
+                          >
+                          <div class="d-flex flex-wrap gap-2 qp-pill-group">
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="qpType"
+                                id="qp_previous_year"
+                                value="qp_previous_year"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="qp_previous_year"
+                              >
+                                Previous year QP
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="qpType"
+                                id="qp_custom"
+                                value="qp_custom"
+                              />
+                              <label class="form-check-label" for="qp_custom">
+                                Custom QP
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="row mb-3"
+                          id="page_type_row"
+                          style="display: none"
+                        >
+                          <div class="col" id="page_type_div">
+                            <label for="page_type" class="required">Type</label>
+                            <select
+                              class="form-select"
+                              name="page_type"
+                              id="page_type"
+                              required
+                            >
+                              <option>Using Sample Question Paper</option>
+                              <option>By Topic</option>
+                            </select>
+                          </div>
+                          <div class="col" id="level_div">
+                            <label for="level" class="required">Level</label>
+                            <select
+                              class="form-select"
+                              name="level"
+                              id="level"
+                              required
+                            ></select>
+                          </div>
+                          <div
+                            class="col"
+                            id="category_div"
+                            style="display: none"
+                          >
+                            <label for="category" class="required"
+                              >Category</label
+                            >
+                            <select
+                              class="form-select"
+                              name="category"
+                              id="category"
+                              required
+                            ></select>
+                          </div>
+                          <div
+                            class="col"
+                            id="exam_month_div"
+                            style="display: none"
+                          >
+                            <label for="exam_month" class="required"
+                              >Exam Month</label
+                            >
+                            <select
+                              class="form-select"
+                              name="exam_month"
+                              id="exam_month"
+                              required
+                            ></select>
+                          </div>
+                          <div
+                            class="col"
+                            id="exam_year_div"
+                            style="display: none"
+                          >
+                            <label for="exam_year" class="required"
+                              >Exam Year</label
+                            >
+                            <select
+                              class="form-select"
+                              name="exam_year"
+                              id="exam_year"
+                              required
+                            ></select>
+                          </div>
+                          <div class="col" id="subject_div">
+                            <label for="subject" class="required"
+                              >Subject</label
+                            >
+                            <input
+                              class="form-control"
+                              id="subject"
+                              type="text"
+                              name="subject"
+                              autocomplete="off"
+                              required
+                            />
+                          </div>
+                          <div
+                            class="col"
+                            id="section_div"
+                            style="display: none"
+                          >
+                            <label for="filter_section" class="required"
+                              >Section</label
+                            >
+                            <input
+                              class="form-control"
+                              id="filter_section"
+                              type="text"
+                              name="filter_section"
+                              autocomplete="off"
+                              required
+                            />
+                          </div>
+                          <div class="col" id="topic_div" style="display: none">
+                            <label for="filter_topic" class="required"
+                              >Topic</label
+                            >
+                            <input
+                              class="form-control"
+                              id="filter_topic"
+                              type="text"
+                              name="filter_topic"
+                              autocomplete="off"
+                              required
+                            />
+                          </div>
+                          <div class="col" id="btl_div" style="display: none">
+                            <label for="filter_btl" class="required"
+                              >BTL Level</label
+                            >
+                            <select
+                              class="form-select"
+                              name="filter_btl"
+                              id="filter_btl"
+                              required
+                            ></select>
+                          </div>
+                          <div
+                            class="col"
+                            id="name_input_div"
+                            style="display: none"
+                          >
+                            <label for="qp_name" class="required"
+                              >Question Paper Name</label
+                            >
+                            <input
+                              class="form-control"
+                              type="text"
+                              id="qp_name"
+                            />
+                          </div>
+                          <div class="col" id="file_input_div">
+                            <label for="file_input" class="required"
+                              >Upload Questions</label
+                            >
+                            <input
+                              class="form-control"
+                              type="file"
+                              id="file_input"
+                              accept="application/pdf"
+                            />
+                          </div>
+
+                          <div class="col-auto d-flex align-items-end">
+                            <input
+                              class="btn btn-primary btn-color"
+                              type="button"
+                              value="Scan Questions"
+                              id="network_button"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
                       <div
                         class="row"
                         id="scan_question_input_div"
                         style="display: none"
-                      >
-                        <div class="col" id="page_type_div">
-                          <label for="page_type" class="required">Type</label>
-                          <select
-                            class="form-select"
-                            name="page_type"
-                            id="page_type"
-                            required
-                          >
-                            <option>Using Sample Question Paper</option>
-                            <option>By Topic</option>
-                          </select>
-                        </div>
-                        <div class="col" id="level_div">
-                          <label for="level" class="required">Level</label>
-                          <select
-                            class="form-select"
-                            name="level"
-                            id="level"
-                            required
-                          ></select>
-                        </div>
-                        <div class="col" id="subject_div">
-                          <label for="subject" class="required">Subject</label>
-                          <input
-                            class="form-control"
-                            id="subject"
-                            type="text"
-                            name="subject"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                        <div class="col" id="section_div" style="display: none">
-                          <label for="filter_section" class="required"
-                            >Section</label
-                          >
-                          <input
-                            class="form-control"
-                            id="filter_section"
-                            type="text"
-                            name="filter_section"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                        <div class="col" id="topic_div" style="display: none">
-                          <label for="filter_topic" class="required"
-                            >Topic</label
-                          >
-                          <input
-                            class="form-control"
-                            id="filter_topic"
-                            type="text"
-                            name="filter_topic"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                        <div class="col" id="btl_div" style="display: none">
-                          <label for="filter_btl" class="required"
-                            >BTL Level</label
-                          >
-                          <select
-                            class="form-select"
-                            name="filter_btl"
-                            id="filter_btl"
-                            required
-                          ></select>
-                        </div>
-                        <div class="col" id="file_input_div">
-                          <label for="file_input" class="required"
-                            >Upload Questions</label
-                          >
-                          <input
-                            class="form-control"
-                            type="file"
-                            id="file_input"
-                            accept="application/pdf"
-                          />
-                        </div>
-                        <div class="col d-flex align-items-end">
-                          <input
-                            class="btn btn-primary btn-color"
-                            type="button"
-                            value="Scan Questions"
-                            id="network_button"
-                          />
-                        </div>
-                      </div>
+                      ></div>
 
                       <div
                         class="mt-5"
