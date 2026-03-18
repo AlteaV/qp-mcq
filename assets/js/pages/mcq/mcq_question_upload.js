@@ -132,6 +132,7 @@ levelDropDown.addEventListener("change", () => {
   if (type === "generate") {
     setSubjects();
   } else {
+    setSubjects();
     renderCategoryOptions();
     renderExamMonth();
     renderExamYear();
@@ -231,7 +232,7 @@ function changeUploadType() {
   } else if (onlyQuestionsRadio.checked) {
     uploadTypeDiv.style.display = "none";
     uploadTypeRow.style.display = "block";
-    subjectDiv.style.display = "none";
+    subjectDiv.style.display = "block";
     pageTypeRow.style.display = "flex";
     nameInputDiv.style.display = "none";
     nameInputDiv.value = "";
@@ -254,7 +255,7 @@ function changeQpType() {
     examYearDiv.style.display = "none";
     nameInputDiv.style.display = "block";
   }
-  subjectDiv.style.display = "none";
+  subjectDiv.style.display = "block";
   pageTypeRow.style.display = "flex";
 }
 
@@ -534,15 +535,15 @@ function handleExistingScan(data) {
           changePageType();
         }
 
+        let event = new Event("change");
         onlyQuestionsRadio.checked =
           retryResponse.result.data.only_questions == 1;
         questionsAndQPRadio.checked =
           retryResponse.result.data.also_generate_qp == 1;
+        onlyQuestionsRadio.dispatchEvent(event);
         qpPreviousYearRadio.checked =
           retryResponse.result.data.previous_year_qp == 1;
         qpCustomRadio.checked = retryResponse.result.data.custom_qp == 1;
-        let event = new Event("change");
-        onlyQuestionsRadio.dispatchEvent(event);
         qpPreviousYearRadio.dispatchEvent(event);
         qpType = retryResponse.result.type;
         levelDropDown.value = retryResponse.result.data.level;
@@ -554,6 +555,19 @@ function handleExistingScan(data) {
           examMonth.value = retryResponse.result.data.exam_month;
           examYear.value = retryResponse.result.data.exam_year;
         }
+
+        if (retryResponse.result.data.subject_id) {
+          let selectedSubject = subjects.find(
+            (s) => s.id == retryResponse.result.data.subject_id,
+          );
+          if (selectedSubject) {
+            subject.value = selectedSubject.subject;
+            levelDropDown.value = selectedSubject.level;
+          }
+        } else {
+          subject.value = "All Subjects";
+        }
+
         qpName.value = retryResponse.result.data.qp_name;
         await showReportSection(questions);
         return;
@@ -576,13 +590,17 @@ function handleExistingScan(data) {
     });
 
     hideOverlay();
-    scanQuestionInputDiv.style.display = "none";
     return;
   }
+
   hideOverlay();
   if (type == "generate") {
     filterDiv.style.display = "block";
+  } else {
+    uploadTypeRow.style.display = "block";
   }
+
+  statusDiv.style.display = "none";
 }
 
 function changePageType() {
@@ -677,6 +695,10 @@ function setSubjects() {
     }
   });
 
+  if (type === "upload") {
+    subjectNames.unshift("All Subjects");
+  }
+
   setAutoComplete(subject, subjectNames);
   subject.disabled = false;
   filterSection.value = "";
@@ -743,17 +765,21 @@ async function previewQuestions() {
     showOverlay();
     let matchedSubject;
     let level = levelDropDown.value;
-    if (type == "generate") {
-      let subjectName = document.getElementById("subject").value;
-      matchedSubject = subjects.find(
-        (s) => s.subject == subjectName && s.level == level,
-      );
+    let subjectName = document.getElementById("subject").value;
+    if (subjectName.trim() == "") {
+      alert("Please select a subject.");
+      hideOverlay();
+      return;
+    }
 
-      if (!matchedSubject) {
-        alert("Please select a valid subject.");
-        hideOverlay();
-        return;
-      }
+    matchedSubject = subjects.find(
+      (s) => s.subject == subjectName && s.level == level,
+    );
+
+    if (!matchedSubject && subjectName != "All Subjects") {
+      alert("Please select a valid subject.");
+      hideOverlay();
+      return;
     }
 
     let qpType = "Mcq";
@@ -791,7 +817,7 @@ async function previewQuestions() {
       return;
     }
 
-    if (type == "generate") {
+    if (subjectName != "All Subjects") {
       out.subject_id = matchedSubject.id;
     } else {
       out.subject_id = null;
@@ -857,19 +883,32 @@ async function previewQuestions() {
         if (retryResponse.result.type == "GeneratedWithTopic") {
           changePageType();
         }
+        let event = new Event("change");
         onlyQuestionsRadio.checked =
           retryResponse.result.data.only_questions == 1;
         questionsAndQPRadio.checked =
           retryResponse.result.data.also_generate_qp == 1;
+        onlyQuestionsRadio.dispatchEvent(event);
         qpPreviousYearRadio.checked =
           retryResponse.result.data.previous_year_qp == 1;
         qpCustomRadio.checked = retryResponse.result.data.custom_qp == 1;
-        let event = new Event("change");
-        onlyQuestionsRadio.dispatchEvent(event);
         qpPreviousYearRadio.dispatchEvent(event);
         qpType = retryResponse.result.type;
         levelDropDown.value = retryResponse.result.data.level;
         qpName.value = retryResponse.result.data.qp_name;
+
+        if (retryResponse.result.data.subject_id) {
+          let selectedSubject = subjects.find(
+            (s) => s.id == retryResponse.result.data.subject_id,
+          );
+          if (selectedSubject) {
+            subject.value = selectedSubject.subject;
+            levelDropDown.value = selectedSubject.level;
+          }
+        } else {
+          subject.value = "All Subjects";
+        }
+
         await showReportSection(questions);
         return;
       }
@@ -886,7 +925,6 @@ async function previewQuestions() {
     }
     if (retryCount === maxRetries) {
       alert("Processing is taking longer than expected. Please wait.");
-      scanQuestionInputDiv.style.display = "none";
       filterDiv.style.display = "none";
       checkExistingScan();
     }
@@ -1115,7 +1153,6 @@ async function showReportSection(data) {
   fileUplaodButton.style.display = "none";
   displayResult(tableData, resultTable);
   resultDiv.style.display = "block";
-  scanQuestionInputDiv.style.display = "flex";
   statusDiv.style.display = "none";
 
   $("#result_table")
@@ -1541,9 +1578,19 @@ async function submitQuestion() {
     });
 
     let subjectId = null;
+    let subjectName = document.getElementById("subject").value;
 
     if (qpType != "Mcq") {
-      let subjectName = document.getElementById("subject").value;
+      let matchedSubject = subjects.find((s) => s.subject == subjectName);
+      if (!matchedSubject) {
+        alert("Please select a valid subject.");
+        hideOverlay();
+        return;
+      }
+      subjectId = matchedSubject.id;
+    }
+
+    if (subjectName != "All Subjects") {
       let matchedSubject = subjects.find((s) => s.subject == subjectName);
       if (!matchedSubject) {
         alert("Please select a valid subject.");
