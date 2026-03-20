@@ -164,17 +164,12 @@
       }
 
       .dropdown-menu {
-        position: absolute;
-        right: 0;
-        top: 100%;
         background: white;
         border: 1px solid var(--border-color);
         border-radius: 8px;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         z-index: 10;
-        width: 160px;
-        display: flex;
-        flex-direction: column;
+        min-width: 160px;
         padding: 0.5rem 0;
       }
 
@@ -369,6 +364,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Class</th>
                             <th>Actions</th>
                             <th class="actions-col" style="text-align: right">
                               Status
@@ -514,7 +510,6 @@
                             </div>
                           </form>
 
-                          <!-- Bulk Add Section -->
                           <div
                             id="bulk-add-section"
                             style="
@@ -543,8 +538,11 @@
                                   style="color: var(--primary)"
                                 ></i>
                                 Excel must contain the columns:
-                                <b>User Name</b>, <b>Email</b>,
-                                <b>Role (Student/Teacher)</b>.
+                                <b>User Name</b>, <b>Email</b>.
+                                <i
+                                  >(All uploaded users will automatically
+                                  default to the Student role).</i
+                                >
                               </p>
                             </div>
                             <div>
@@ -564,6 +562,24 @@
                                 class="form-control"
                               />
                             </div>
+                          </div>
+
+                          <div
+                            id="optional-class-assignment"
+                            style="margin-top: 0.5rem"
+                          >
+                            <label
+                              class="form-label"
+                              style="
+                                font-size: 0.875rem;
+                                color: var(--text-muted);
+                                margin-bottom: 0.25rem;
+                              "
+                              >Assign to Class (Optional)</label
+                            >
+                            <select class="form-select" id="user_class_select">
+                              <option value="">Select Class...</option>
+                            </select>
                           </div>
 
                           <button

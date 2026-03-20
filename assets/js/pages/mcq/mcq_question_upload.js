@@ -420,7 +420,7 @@ async function checkExistingScan() {
     }
   } catch (error) {
     console.error(error);
-    alert("An error occurred while fetching subjects");
+    alert("An error occurred while checking scan details");
     hideOverlay();
   }
 }

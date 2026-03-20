@@ -146,6 +146,7 @@ function postCallPreProcess(functionName) {
     functionName == "biud" ||
     functionName == "dtsd" ||
     functionName == "abe" ||
+    functionName == "gud" ||
     functionName == ""
   ) {
     return QuestionUploadEndPoint;

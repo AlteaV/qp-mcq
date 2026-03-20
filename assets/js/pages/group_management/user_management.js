@@ -1,3 +1,5 @@
+const CURRENT_ORG_ID = loggedInUser.org_id;
+
 var form = document.getElementById("user-form");
 var resultTable = document.getElementById("user-table-body");
 var addNewUserBtn = document.getElementById("add_user");
@@ -19,14 +21,14 @@ var addMethodSelector = document.getElementById("add-method-selector");
 var individualAddSection = document.getElementById("individual-add-section");
 var bulkAddSection = document.getElementById("bulk-add-section");
 var bulkExcelInput = document.getElementById("bulk-excel-input");
+var userClassSelect = document.getElementById("user_class_select");
 
 var users = null;
+var allClasses = [];
 var curr_data = null;
-var isEditing = true;
+var isEditing = false;
 var currentPage = 1;
 var itemsPerPage = 10;
-
-const CURRENT_ORG_ID = loggedInUser.org_id;
 
 searchButton.addEventListener("click", () => {
   applyFilters();
@@ -39,7 +41,11 @@ form.addEventListener("submit", (e) => {
   ).value;
   if (isEditing || addMethod === "individual") {
     if (userName.value.trim() === "" || userEmail.value.trim() === "") {
-      alert("Name and Email fields can't be empty");
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Info",
+        text: "Name and Email fields can't be empty",
+      });
       return;
     }
     if (isEditing) {
@@ -49,7 +55,11 @@ form.addEventListener("submit", (e) => {
     }
   } else {
     if (!bulkExcelInput.files || bulkExcelInput.files.length === 0) {
-      alert("Please select an Excel file.");
+      Swal.fire({
+        icon: "warning",
+        title: "Missing File",
+        text: "Please select an Excel file.",
+      });
       return;
     }
     processBulkAdd(bulkExcelInput.files[0]);
@@ -74,6 +84,14 @@ addNewUserBtn.addEventListener("click", () => {
     ).checked = true;
     individualAddSection.style.display = "flex";
     bulkAddSection.style.display = "none";
+  }
+
+  // Fetch classes for dropdown if haven't already
+  if (userClassSelect && allClasses.length === 0) {
+    fetchClassesForFilter();
+  } else {
+    // Reset class select
+    if (userClassSelect) userClassSelect.value = "";
   }
 });
 
@@ -109,6 +127,41 @@ if (closeBtn) closeBtn.addEventListener("click", closeMyModal);
 function resetForm() {
   form.reset();
   form.classList.remove("was-validated");
+  if (userClassSelect) userClassSelect.value = "";
+}
+
+async function fetchClassesForFilter() {
+  try {
+    let response = await postCall(
+      "",
+      JSON.stringify({ function: "gcl", org_id: CURRENT_ORG_ID }),
+    );
+    if (response.success) {
+      allClasses = response.result.all_classes;
+      renderClassSelect();
+    }
+  } catch (e) {
+    console.error("Error fetching classes:", e);
+  }
+}
+
+function renderClassSelect() {
+  if (!userClassSelect) return;
+  let options = '<option value="">Select Class...</option>';
+  if (allClasses.length > 0) {
+    options += allClasses
+      .map(
+        (c) => `
+            <option value="${c.class_id}">${c.class_name}</option>
+        `,
+      )
+      .join("");
+  }
+  userClassSelect.innerHTML = options;
+}
+
+function getSelectedClass() {
+  return userClassSelect ? userClassSelect.value : "";
 }
 
 async function fetchUsers() {
@@ -119,7 +172,7 @@ async function fetchUsers() {
     let statusVal = filterStatus ? filterStatus.value : "All";
 
     let out = {
-      function: "gubo",
+      function: "gus", // Fixed: gubo -> gus
       org_id: CURRENT_ORG_ID,
       search: searchTxt,
       role: roleVal,
@@ -135,11 +188,19 @@ async function fetchUsers() {
 
       showResult(filtered_total);
     } else {
-      alert("An error occurred while fetching users");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while fetching users",
+      });
     }
   } catch (error) {
     console.error(error);
-    alert("An error occurred while fetching data: " + error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while fetching data: " + error.message,
+    });
   }
 }
 
@@ -202,6 +263,7 @@ function showResult(filtered_total) {
                 <td class="text-start" style="color: var(--text-muted); vertical-align: middle;">${user.user_name}</td>
                 <td class="text-start" style="color: var(--text-muted); vertical-align: middle;">${user.email}</td>
                 <td class="text-start" style="vertical-align: middle;">${role}</td>
+                <td class="text-start" style="vertical-align: middle; color: var(--text-muted); font-size: 0.875rem;">${user.class_name || "<em>None</em>"}</td>
                 <td class="text-start" style="vertical-align: middle;">${ActionBtn}</td>
                 <td class="text-align: right" style="vertical-align: middle;">${StatusBtn}</td>
             </tr>`;
@@ -210,7 +272,11 @@ function showResult(filtered_total) {
 
     renderPagination(totalPages);
   } catch (error) {
-    alert("An error occurred while displaying the report: " + error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Render Error",
+      text: "An error occurred while displaying the report: " + error.message,
+    });
     console.error("Display error:", error);
   }
 }
@@ -270,40 +336,70 @@ function editButtonClicked(id) {
     userEmail.value = curr_data.email;
     userRole.value = curr_data.role;
 
+    // Fetch classes for dropdown if haven't already
+    if (userClassSelect && allClasses.length === 0) {
+      fetchClassesForFilter().then(() => {
+        userClassSelect.value = curr_data.class_id || "";
+      });
+    } else {
+      if (userClassSelect) userClassSelect.value = curr_data.class_id || "";
+    }
+
     document.getElementById("user-modal").classList.remove("hidden");
     document.getElementById("management-div").classList.add("hidden");
   } catch (error) {
     console.error(error);
-    alert("An error occurred while click Edit Button. " + error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while click Edit Button. " + error,
+    });
   }
 }
+
+// prefillClasses and previous mapping logic removed as we use single select now
 
 async function updateUser() {
   showOverlay();
   try {
     let out = {
-      function: "eu",
+      function: "eus", // Fixed: eu -> eus
       user_id: curr_data.user_id,
       org_id: CURRENT_ORG_ID,
       user_name: userName.value,
       email: userEmail.value,
       role: userRole.value,
       staff_id: loggedInUser.user_id,
+      class_id: getSelectedClass(),
     };
     let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
 
     if (data.success) {
       fetchUsers();
       closeMyModal();
-      alert(data.message);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } else {
-      alert("An error occurred while updating user: " + data.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating user: " + data.message,
+      });
     }
     hideOverlay();
   } catch (error) {
     hideOverlay();
     console.error("Error fetching request: ", error);
-    alert("An error occurred while Submit data: " + error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while Submit data: " + error.message,
+    });
   }
 }
 
@@ -311,12 +407,13 @@ async function addNewUser() {
   showOverlay();
   try {
     let out = {
-      function: "au",
+      function: "aus", // Fixed: au -> aus
       org_id: CURRENT_ORG_ID,
       user_name: userName.value,
       email: userEmail.value,
       role: userRole.value,
       staff_id: loggedInUser.user_id,
+      class_id: getSelectedClass(),
     };
 
     let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
@@ -324,15 +421,29 @@ async function addNewUser() {
     if (data.success) {
       fetchUsers();
       closeMyModal();
-      alert(data.message);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } else {
-      alert("An error occurred while adding user: " + data.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while adding user: " + data.message,
+      });
     }
     hideOverlay();
   } catch (error) {
     hideOverlay();
     console.error("Error fetching request: ", error);
-    alert("An error occurred while Submit data: " + error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while Submit data: " + error.message,
+    });
   }
 }
 
@@ -349,48 +460,44 @@ async function processBulkAdd(file) {
       let json = XLSX.utils.sheet_to_json(sheet);
 
       if (json.length === 0) {
-        alert("Excel file is empty.");
-        return;
+        return Swal.fire({
+          icon: "warning",
+          title: "Empty File",
+          text: "Excel file is empty.",
+        });
       }
       let formattedUsers = json
         .map((row) => ({
           user_name:
-            row.name ||
-            row.Name ||
-            row.user_name ||
-            row.User_Name ||
-            row["User Name"],
+            row.name || row.Name || row["User Name"] || row["user_name"],
           email: row.email || row.Email || row["Email"],
-          role: row.role || row.Role || row["Role"],
+          role: "TestTaker",
         }))
         .filter((u) => u.email !== "");
       for (let u of formattedUsers) {
         if (!u.user_name || !u.email) {
-          alert("Name and Email fields can't be empty");
-          return;
-        }
-        if (u.role === "Student") u.role = "TestTaker";
-        else if (u.role === "Teacher") u.role = "TestCoordinator";
-        else {
-          alert(
-            `Invalid role value: ${u.role}. Only Student and Teacher are allowed.`,
-          );
-          return;
+          return Swal.fire({
+            icon: "error",
+            title: "Row Error",
+            text: "Name and Email fields can't be empty in your spreadsheet.",
+          });
         }
       }
 
       if (formattedUsers.length === 0) {
-        alert(
-          "Could not parse any valid users. Check your column headers (name, email, role)!",
-        );
-        return;
+        return Swal.fire({
+          icon: "error",
+          title: "Format Error",
+          text: "Could not parse any valid users. Check your column headers (name and email)!",
+        });
       }
 
       let out = {
-        function: "biud",
+        function: "baus",
         org_id: CURRENT_ORG_ID,
         users: formattedUsers,
         staff_id: loggedInUser.user_id,
+        class_id: getSelectedClass(),
       };
       showOverlay();
       let response = await postCall(
@@ -401,13 +508,20 @@ async function processBulkAdd(file) {
       if (response.success) {
         fetchUsers();
         closeMyModal();
-        alert(
-          response.message ||
+        Swal.fire({
+          icon: "success",
+          title: "Upload Complete",
+          text:
+            response.message ||
             `Successfully added ${formattedUsers.length} users!`,
-        );
+        });
         hideOverlay();
       } else {
-        alert("An error occurred during upload: " + response.message);
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "An error occurred during upload: " + response.message,
+        });
         hideOverlay();
       }
     };
@@ -415,7 +529,11 @@ async function processBulkAdd(file) {
   } catch (error) {
     hideOverlay();
     console.error("Bulk upload error: ", error);
-    alert("An error occurred parsing the file: " + error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Parse Error",
+      text: "An error occurred parsing the file: " + error.message,
+    });
   }
 }
 
@@ -438,7 +556,11 @@ async function toggleUserStatus(userId, isActive) {
       u.active = isActive ? 1 : 0;
       fetchUsers();
     } else {
-      alert("Failed to update status: " + data.message);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Failed to update status: " + data.message,
+      });
       fetchUsers();
     }
     hideOverlay();
@@ -450,25 +572,47 @@ async function toggleUserStatus(userId, isActive) {
 }
 
 async function deleteUser(userId) {
-  if (!confirm(`Are you sure you want to delete this user?`)) return;
+  const result = await Swal.fire({
+    title: "Delete User?",
+    text: "Are you sure you want to delete this user? This will deactivate their account.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (!result.isConfirmed) return;
 
   try {
     let out = {
       function: "dus",
       user_id: userId,
       org_id: CURRENT_ORG_ID,
+      modified_by: loggedInUser.user_id,
     };
 
     let data = await apiPost(out);
 
     if (data.success) {
       fetchUsers();
-      alert(data.message);
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } else {
-      alert("Error deleting user: " + data.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Error deleting user: " + data.message,
+      });
     }
   } catch (error) {
     console.error("Delete error:", error);
+    Swal.fire({ icon: "error", title: "Error", text: "An error occurred." });
   }
 }
 

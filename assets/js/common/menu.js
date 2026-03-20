@@ -31,6 +31,17 @@ const menuItems = [
     ],
   },
   {
+    text: "Dashboard",
+    icon: "fas fa-chart-line",
+    dropdown: true,
+    items: [
+      {
+        href: "/user_dashboard.html",
+        text: "Dashboard",
+      },
+    ],
+  },
+  {
     text: "User Management",
     icon: "fas fa-chalkboard-teacher",
     dropdown: true,
@@ -46,6 +57,10 @@ const menuItems = [
       {
         href: "/group_management.html",
         text: "Group Management",
+      },
+      {
+        href: "/class_management.html",
+        text: "Class Management",
       },
     ],
   },

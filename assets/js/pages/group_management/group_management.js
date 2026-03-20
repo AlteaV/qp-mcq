@@ -22,10 +22,9 @@ let groupMembers = [];
 let backBtn = document.getElementById("back-btn");
 let allGroup = null;
 
-let memberSearchInput = document.getElementById("member_search");
-let selectAllBtn = document.getElementById("select_all_btn");
-let memberSelectionBody = document.getElementById("member_selection_body");
-let allStudents = [];
+let classSelectionBody = document.getElementById("class_selection_body");
+
+let allClasses = [];
 
 backBtn.addEventListener("click", () => {
   navigate(true);
@@ -46,30 +45,10 @@ addMemberBtn.addEventListener("click", () => {
   $("#modal").modal("show");
   modalTitle.innerHTML = "Add Group Members";
   Type = "add_member";
-  memberSearchInput.value = "";
   fetchAllOrganizationStudents();
 });
 
-memberSearchInput.addEventListener("input", () => {
-  const searchTerm = memberSearchInput.value.toLowerCase();
-  const filtered = allStudents.filter(
-    (student) =>
-      student.user_name.toLowerCase().includes(searchTerm) ||
-      String(student.user_id).includes(searchTerm) ||
-      (student.email && student.email.toLowerCase().includes(searchTerm)),
-  );
-  renderStudentSelection(filtered);
-});
-
-selectAllBtn.addEventListener("click", () => {
-  const checkboxes = memberSelectionBody.querySelectorAll(
-    'input[type="checkbox"]',
-  );
-  const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
-
-  checkboxes.forEach((cb) => (cb.checked = !allChecked));
-  selectAllBtn.innerHTML = allChecked ? "Select All" : "Deselect All";
-});
+// removed selectAllClassesBtn logic
 
 submitBtn.addEventListener("click", () => {
   form.classList.add("was-validated");
@@ -315,50 +294,69 @@ async function addGroup() {
   }
 }
 
+addMemberBtn.addEventListener("click", () => {
+  form.reset();
+  resetForm();
+  $("#modal").modal("show");
+  modalTitle.innerHTML = "Add Group Members";
+  Type = "add_member";
+  fetchAllOrganizationStudents();
+});
+
+// selectAllClassesBtn logic removed
+
 async function addMember() {
+  const checked = Array.from(
+    classSelectionBody.querySelectorAll('input[type="checkbox"]:checked'),
+  );
+  if (checked.length === 0) {
+    return Swal.fire({
+      icon: "warning",
+      title: "No Selection",
+      text: "Please select at least one class.",
+    });
+  }
+
   showOverlay();
   try {
-    const selectedCheckboxes = memberSelectionBody.querySelectorAll(
-      'input[type="checkbox"]:checked',
-    );
-    let uids = Array.from(selectedCheckboxes).map((cb) => cb.value);
+    const classIds = checked.map((cb) => cb.value);
+    let allUserIds = new Set();
 
-    if (uids.length === 0) {
-      hideOverlay();
-      Swal.fire({
-        icon: "warning",
-        title: "No Selection",
-        text: "Please select at least one member!",
-      });
-      return;
+    // Fetch all students from the selected classes
+    for (let cid of classIds) {
+      let resp = await postCall(
+        groupMgmtEndPoint,
+        JSON.stringify({ function: "gcm", class_id: cid }),
+      );
+      if (resp.success && resp.result.members) {
+        resp.result.members.forEach((m) => allUserIds.add(m.user_id));
+      }
     }
 
-    // Filter out those who are already members (client-side safety)
-    uids = uids.filter((id) => !isEsists(id, groupMembers, "user_id"));
-
-    if (uids.length === 0) {
+    let uniqueUserIds = Array.from(allUserIds);
+    if (uniqueUserIds.length === 0) {
       hideOverlay();
-      Swal.fire({
+      return Swal.fire({
         icon: "info",
-        title: "Already Members",
-        text: "Selected users are already members of this group.",
+        title: "Empty Classes",
+        text: "No students were found in the selected classes.",
       });
-      return;
     }
 
-    let response = await postCall(
-      groupMgmtEndPoint,
-      JSON.stringify({
-        function: "agm",
-        uids: uids,
-        group_id: currGroupID,
-        staff_id: StaffID,
-      }),
-    );
+    let out = {
+      function: "agm",
+      org_id: OrgID,
+      group_id: currGroupID,
+      uids: uniqueUserIds,
+      staff_id: StaffID,
+    };
+
+    let response = await postCall(groupMgmtEndPoint, JSON.stringify(out));
     if (response.success) {
       resetForm();
       groupMembers = response.result.all_members;
       showMembers(groupMembers);
+      $("#modal").modal("hide");
       Swal.fire({
         icon: "success",
         title: "Members Added",
@@ -370,78 +368,70 @@ async function addMember() {
       form.classList.remove("was-validated");
       Swal.fire({ icon: "error", title: "Error", text: response.message });
     }
-    hideOverlay();
   } catch (error) {
     console.error(error);
-    hideOverlay();
     Swal.fire({
       icon: "error",
       title: "Error",
       text: "An error occurred while adding members.",
     });
+  } finally {
+    hideOverlay();
   }
 }
 
 async function fetchAllOrganizationStudents() {
   showOverlay();
-  memberSelectionBody.innerHTML =
-    '<tr><td colspan="4" class="text-center">Loading students...</td></tr>';
-  selectAllBtn.innerHTML = "Select All";
+  if (classSelectionBody) {
+    classSelectionBody.innerHTML =
+      '<tr><td colspan="3" class="text-center">Loading classes...</td></tr>';
+  }
+
   try {
     let response = await postCall(
       groupMgmtEndPoint,
-      JSON.stringify({
-        function: "gpm",
-        org_id: OrgID,
-        group_id: currGroupID,
-      }),
+      JSON.stringify({ function: "gcl", org_id: OrgID }),
     );
     if (response.success) {
-      hideOverlay();
-      allStudents = response.result.users;
-      renderStudentSelection(allStudents);
+      allClasses = response.result.all_classes;
+      if (allClasses.length === 0) {
+        classSelectionBody.innerHTML =
+          '<tr><td colspan="3" class="text-center text-muted">No classes available.</td></tr>';
+      } else {
+        classSelectionBody.innerHTML = allClasses
+          .map(
+            (c) => `
+                    <tr>
+                        <td class="text-center" style="vertical-align: middle;">
+                            <input type="checkbox" class="form-check-input" value="${c.class_id}">
+                        </td>
+                        <td style="vertical-align: middle;">${c.class_name}</td>
+                        <td style="text-align: right; vertical-align: middle;">
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="checkClassMembers('${c.class_id}', '${c.class_name.replace(/'/g, "\\'")}')">
+                                View Students
+                            </button>
+                        </td>
+                    </tr>
+                `,
+          )
+          .join("");
+      }
     } else {
-      hideOverlay();
-      memberSelectionBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">${response.message}</td></tr>`;
+      classSelectionBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">${response.message}</td></tr>`;
     }
   } catch (error) {
-    console.error(error);
-    memberSelectionBody.innerHTML =
-      '<tr><td colspan="4" class="text-center text-danger">Error fetching students</td></tr>';
+    console.error("Error fetching classes:", error);
+    classSelectionBody.innerHTML =
+      '<tr><td colspan="3" class="text-center text-danger">Error fetching classes.</td></tr>';
   }
-
   hideOverlay();
 }
 
-function renderStudentSelection(students) {
-  memberSelectionBody.innerHTML = "";
-  if (students.length === 0) {
-    memberSelectionBody.innerHTML =
-      '<tr><td colspan="4" class="text-center text-muted">No more students available to add</td></tr>';
-    return;
-  }
-
-  students.forEach((student) => {
-    const row = document.createElement("tr");
-    row.style.cursor = "pointer";
-
-    row.innerHTML = `
-            <td>
-                <input type="checkbox" class="form-check-input" value="${student.user_id}">
-            </td>
-            <td>${student.user_name}</td>
-            <td>${student.email || "N/A"}</td>
-        `;
-
-    row.addEventListener("click", (e) => {
-      if (e.target.type !== "checkbox") {
-        const cb = row.querySelector('input[type="checkbox"]');
-        cb.checked = !cb.checked;
-      }
-    });
-
-    memberSelectionBody.appendChild(row);
-  });
+function checkClassMembers(classId, className) {
+  window.open(
+    `/class_management.html?class_id=${classId}&class_name=${encodeURIComponent(className)}`,
+    "_blank",
+  );
 }
 
 async function updateGroup() {
@@ -586,7 +576,7 @@ document.addEventListener("readystatechange", async () => {
           clearInterval(checkInterval);
           initializePage();
         }
-      }, 100);
+      }, 1000); // 1000 was suggested in some version
       return;
     } else {
       initializePage();
@@ -595,5 +585,6 @@ document.addEventListener("readystatechange", async () => {
 });
 
 function initializePage() {
+  window.checkClassMembers = checkClassMembers;
   init();
 }

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head id="header-placeholder">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #0061f2;
+        --primary-hover: #0052ce;
+        --bg-main: #f8f9fc;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --success: #10b981;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      tbody tr {
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      tbody td {
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        background: white;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .pagination {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .page-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: var(--text-muted);
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+
+      .page-btn.active {
+        background: var(--primary);
+        color: white !important;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-overlay.hidden {
+        display: none;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .btn-add {
+        background: var(--primary);
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+      }
+
+      .member-selection-list {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+
+      .class-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .class-link:hover {
+        text-decoration: underline;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body translate="no">
+    <div class="dashboard" id="side-bar-placeholder">
+      <div class="dashboard-app">
+        <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+        <div class="dashboard-content">
+          <div class="container">
+            <div class="card p-4">
+              <!-- Main Dashboard: List Classes -->
+              <div id="management-div">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-4"
+                >
+                  <h4 id="main-title">Class / Tag Management</h4>
+                  <button class="btn-add" id="add_class_btn">
+                    <i class="fa-solid fa-plus me-2"></i>Add Class
+                  </button>
+                </div>
+
+                <div class="row mb-4" id="filters-row">
+                  <div class="col-md-4">
+                    <input
+                      class="form-control"
+                      type="text"
+                      placeholder="Search classes..."
+                      id="class_search"
+                    />
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table id="class-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px; text-align: center">#</th>
+                        <th>Class Name</th>
+                        <th style="text-align: right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="class-table-body"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Secondary View: List Members of a Class -->
+              <div id="member-management-div" class="hidden">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-4"
+                >
+                  <div class="d-flex align-items-center">
+                    <button
+                      class="btn btn-link link-dark pe-3"
+                      id="back_to_classes"
+                    >
+                      <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h4 id="class_title_display">Class Members</h4>
+                  </div>
+                  <button class="btn-add" id="add_members_to_class_btn">
+                    <i class="fa-solid fa-user-plus me-2"></i>Add Students
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table id="member-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px; text-align: center">#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th style="text-align: right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="member-table-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal for Adding/Editing Class -->
+        <div id="class-modal" class="modal-overlay hidden">
+          <div class="modal-content">
+            <h2 id="modal-title" class="mb-3">Add New Class</h2>
+            <form id="class-form">
+              <input type="hidden" id="edit-class-id" />
+              <div class="mb-3">
+                <label class="form-label required">Class Name</label>
+                <input
+                  type="text"
+                  id="class-name-input"
+                  class="form-control"
+                  required
+                  placeholder="e.g. Batch 2024 - Section A"
+                />
+              </div>
+              <div class="d-flex flex-column gap-2 mt-4">
+                <button type="submit" class="btn-add">Save Class</button>
+                <button
+                  type="button"
+                  class="btn btn-link text-muted"
+                  onclick="closeClassModal()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Modal for Adding Members (Student Picker) -->
+        <div id="member-picker-modal" class="modal-overlay hidden">
+          <div class="modal-content" style="max-width: 800px">
+            <h2 class="mb-3">Select Students</h2>
+            <div class="mb-3 d-flex gap-2">
+              <input
+                type="text"
+                id="student_search_input"
+                class="form-control"
+                placeholder="Search students by name or email..."
+              />
+              <button
+                class="btn btn-outline-primary"
+                id="select_all_students_btn"
+              >
+                Select All
+              </button>
+            </div>
+            <div class="member-selection-list">
+              <table class="table table-hover">
+                <thead class="bg-light">
+                  <tr>
+                    <th style="width: 40px"></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody id="student_selection_body"></tbody>
+              </table>
+            </div>
+            <div class="d-flex flex-column gap-2 mt-4">
+              <button
+                type="button"
+                class="btn-add"
+                id="submit_member_selection"
+              >
+                Add Selected Students
+              </button>
+              <button
+                type="button"
+                class="btn btn-link text-muted"
+                onclick="closeMemberPicker()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <footer class="dashboard-footer" id="footer-placeholder"></footer>
+      </div>
+    </div>
+
+    <script id="rendered-js" src="/assets/js/scripts.js"></script>
+    <script
+      type="module"
+      src="/assets/js/pages/group_management/class_management.js"
+    ></script>
+  </body>
+</html>
