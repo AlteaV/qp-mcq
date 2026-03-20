@@ -1107,7 +1107,9 @@ async function showReportSection(data) {
         if (typeof showdown !== "undefined") {
           const converter = new showdown.Converter();
           choiceText = converter.makeHtml(choices[key]);
-          choiceText = choiceText.replace(/^<p>|<\/p>$/g, "");
+          if(choiceText !== null){
+            choiceText = choiceText.replace(/^<p>|<\/p>$/g, "");
+          }
         }
 
         choiceHTML += `
