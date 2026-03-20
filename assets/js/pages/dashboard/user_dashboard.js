@@ -45,7 +45,7 @@ function renderStatCards(data) {
 
   const mins = data.total_time_mins ?? 0;
   if (mins >= 60) {
-    const h = Math.floor((mins / 60) / 60);
+    const h = Math.floor(mins / 60);
     const m = mins % 60;
     udTimeSpent.textContent = m > 0 ? `${h}h ${m}m` : `${h}h`;
   } else {
