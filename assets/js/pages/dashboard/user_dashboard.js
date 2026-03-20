@@ -42,15 +42,7 @@ function renderStatCards(data) {
   udTotalQuizzes.textContent = data.total_quizzes ?? 0;
   udAvgScore.textContent = (data.avg_score_pct ?? 0) + "%";
   udQuestionsAnswered.textContent = data.questions_answered ?? 0;
-
-  const mins = data.total_time_mins ?? 0;
-  if (mins >= 60) {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    udTimeSpent.textContent = m > 0 ? `${h}h ${m}m` : `${h}h`;
-  } else {
-    udTimeSpent.textContent = `${mins}m`;
-  }
+  udTimeSpent.textContent = data.total_time_mins ?? 0;
 }
 
 function renderSubjectPerformance(subjects) {
