@@ -39,6 +39,10 @@ const menuItems = [
         href: "/user_dashboard.html",
         text: "Dashboard",
       },
+      {
+        href: "/admin_dashboard.html",
+        text: "Admin Dashboard",
+      },
     ],
   },
   {

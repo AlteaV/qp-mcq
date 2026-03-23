@@ -23,6 +23,33 @@
                         <div class="row mb-5" id="template_details">
                           <form id="template_details_form" class="row">
                             <div class="col">
+                              <label for="filter_level" class="required"
+                                >Choose a level:</label
+                              >
+                              <select
+                                class="form-control part-questions"
+                                id="filter_level"
+                                required
+                              ></select>
+                              <div class="invalid-feedback">
+                                Please choose a level.
+                              </div>
+                            </div>
+
+                            <div class="col">
+                              <label for="filter_subject" class="required"
+                                >Choose a subject:</label
+                              >
+                              <select
+                                class="form-control part-questions"
+                                id="filter_subject"
+                                required
+                              ></select>
+                              <div class="invalid-feedback">
+                                Please choose a subject.
+                              </div>
+                            </div>
+                            <div class="col">
                               <label for="total_marks" class="required"
                                 >Total Marks:</label
                               >
@@ -51,7 +78,6 @@
                                 Please enter a template name.
                               </div>
                             </div>
-
                             <div class="col" style="align-self: flex-end">
                               <input
                                 class="btn btn-primary"
@@ -91,20 +117,7 @@
                                       Please enter a part name.
                                     </div>
                                   </div>
-                                  <div class="col">
-                                    <label for="part_level" class="required"
-                                      >Choose a level:</label
-                                    >
-                                    <select
-                                      class="form-control part-questions"
-                                      id="part_level"
-                                      required
-                                    ></select>
-                                    <div class="invalid-feedback">
-                                      Please choose a level.
-                                    </div>
-                                  </div>
-                                  <div class="col">
+                                  <div class="col" id="part_subject_div">
                                     <label for="part_subject" class="required"
                                       >Choose a subject:</label
                                     >

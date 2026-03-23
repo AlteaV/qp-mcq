@@ -4,12 +4,15 @@ let templateDetails = document.getElementById("template_details");
 let questionSection = document.getElementById("question_section");
 let templateDetailsForm = document.getElementById("template_details_form");
 let createTemplateBtn = document.getElementById("create_template_btn");
+let filterLevel = document.getElementById("filter_level");
+let filterSubject = document.getElementById("filter_subject");
 
 // add part fields
+var fetchingDataSection = document.getElementById("fetching_data");
 let addPartsForm = document.getElementById("part_form");
 let partName = document.getElementById("part_name");
-let partLevel = document.getElementById("part_level");
 let partSubject = document.getElementById("part_subject");
+let partSubjectDiv = document.getElementById("part_subject_div");
 let partMarks = document.getElementById("part_marks");
 
 // parts div
@@ -22,8 +25,30 @@ let subjects = [];
 let parts = [];
 
 // event listener
-partLevel.addEventListener("change", () => {
-  setSubjects();
+filterLevel.addEventListener("change", () => {
+  setSubjects(filterSubject, true);
+  questionSection.style.display = "none";
+  createTemplateBtn.style.display = "block";
+  partsDiv.innerHTML = "";
+  newPartDiv.style.display = "block";
+  partCreateBtn.style.display = "none";
+  parts = [];
+});
+filterSubject.addEventListener("change", () => {
+  questionSection.style.display = "none";
+  createTemplateBtn.style.display = "block";
+  partsDiv.innerHTML = "";
+  newPartDiv.style.display = "block";
+  partCreateBtn.style.display = "none";
+  parts = [];
+});
+totalMarks.addEventListener("input", () => {
+  questionSection.style.display = "none";
+  createTemplateBtn.style.display = "block";
+  partsDiv.innerHTML = "";
+  newPartDiv.style.display = "block";
+  partCreateBtn.style.display = "none";
+  parts = [];
 });
 
 function createTemplate() {
@@ -47,7 +72,6 @@ async function getSubjects() {
     let response = await postCall(QuestionUploadEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
-      // setSubjects();
       setLevel();
     } else {
       throw new Error(response.message);
@@ -71,10 +95,19 @@ function setPartName() {
     }
   }
   partName.value = letter;
+  setSubjects(partSubject);
+  if (filterSubject.value == "All") {
+    partSubject.required = true;
+    partSubjectDiv.style.display = "block";
+  } else {
+    partSubject.required = false;
+    partSubjectDiv.style.display = "none";
+    partSubject.value = filterSubject.value;
+  }
 }
 
 function setLevel() {
-  partLevel.innerHTML =
+  filterLevel.innerHTML =
     "<option value='' disabled selected>Select Level</option>";
 
   let levelId = [];
@@ -84,23 +117,30 @@ function setLevel() {
     if (!levelId.includes(subject.level_id)) {
       option.value = subject.level_id;
       option.text = subject.level;
-      partLevel.appendChild(option);
+      filterLevel.appendChild(option);
       levelId.push(subject.level_id);
     }
   });
 }
 
-function setSubjects() {
-  partSubject.innerHTML =
+function setSubjects(dropdown, includeAll = false) {
+  dropdown.innerHTML =
     "<option value='' disabled selected>Select Subject</option>";
-  let levelId = partLevel.value;
+  let levelId = filterLevel.value;
+
+  if (includeAll) {
+    let option = document.createElement("option");
+    option.value = "All";
+    option.text = "All Subjects";
+    dropdown.appendChild(option);
+  }
 
   subjects.forEach((subject) => {
     let option = document.createElement("option");
     if (subject.level_id == levelId) {
       option.value = subject.subject_id;
       option.text = subject.subject_name;
-      partSubject.appendChild(option);
+      dropdown.appendChild(option);
     }
   });
 }
@@ -256,7 +296,6 @@ function assignQuestionsToSubject() {
   setPartName();
   newPartDiv.style.display = "none";
   partCreateBtn.style.display = "block";
-  partLevel.value = "";
   partSubject.value = "";
   partMarks.value = "";
 }
@@ -504,6 +543,8 @@ function deletePart(form) {
   if (parent.children.length == 0) {
     partsDiv.style.display = "none";
   }
+  if (parts.length == 0) {
+  }
   setPartName();
 }
 
@@ -595,6 +636,8 @@ function saveTemplate() {
   out.is_mcq = 1;
   out.template = data;
   out.user_id = loggedInUser.user_id;
+  out.subject_id = filterSubject.value == "All" ? null : filterSubject.value;
+  out.level_id = filterLevel.value;
 
   postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {
@@ -605,6 +648,7 @@ function saveTemplate() {
       templateDetails.classList.add("col");
       createTemplateBtn.style.display = "block";
       templateDetailsForm.reset();
+      filterSubject.innerHTML = "";
       hideOverlay();
     } else if (response.status == 409) {
       hideOverlay();
