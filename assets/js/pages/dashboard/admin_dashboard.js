@@ -76,16 +76,19 @@ function renderSubjectPerformance(subjects) {
   }
 
   adSubjectPerformance.innerHTML = subjects
-    .map(
-      (s) => `
+    .map((s) => {
+      const displayName = s.level_name
+        ? `${s.level_name} - ${s.subject_name}`
+        : s.subject_name;
+      return `
     <div class="ud-subject-row">
-      <span class="ud-subj-name">${s.subject_name}</span>
+      <span class="ud-subj-name">${displayName}</span>
       <div class="ud-subj-bar-wrap">
         <div class="ud-subj-bar" style="width:${s.accuracy}%"></div>
       </div>
       <span class="ud-subj-pct">${s.accuracy}% (${s.attempts} ${s.attempts === 1 ? "attempt" : "attempts"})</span>
-    </div>`,
-    )
+    </div>`;
+    })
     .join("");
 }
 
@@ -99,19 +102,27 @@ function renderAnalysisPanel(container, items, nameField) {
   }
 
   container.innerHTML = items
-    .map(
-      (item) => `
+    .map((item) => {
+      let displayName = item[nameField];
+      if (nameField === "subject_name" && item.level_name) {
+        displayName = `${item.level_name} - ${item.subject_name}`;
+      }
+      let subLine = "";
+      if (nameField === "topic_name" && item.subject_name) {
+        subLine = `<span class="ad-analysis-sub">${item.subject_name}</span>`;
+      }
+      return `
     <div class="ad-analysis-row">
       <div class="ad-analysis-info">
-        <span class="ad-analysis-name">${item[nameField]}</span>
-        ${item.subject_name && nameField === "topic_name" ? `<span class="ad-analysis-sub">${item.subject_name}</span>` : ""}
+        <span class="ad-analysis-name">${displayName}</span>
+        ${subLine}
       </div>
       <div class="ad-analysis-meta">
         <span class="ad-analysis-pct">${item.accuracy}%</span>
         <span class="ad-analysis-badge" style="background:${difficultyColors[item.difficulty] || "#ccc"}">${item.difficulty}</span>
       </div>
-    </div>`,
-    )
+    </div>`;
+    })
     .join("");
 }
 
@@ -151,7 +162,8 @@ function renderRecentAttempts(attempts) {
       return `
       <div class="ud-quiz-item">
         <div>
-          <div class="ud-quiz-name">${subjectLine}</div>
+          ${a.user_name ? `<div class="ud-quiz-name">${a.user_name}</div>` : ""}
+          <div style="font-size:13px; color:#555; margin-top:2px;">${subjectLine}</div>
           <div class="ud-quiz-date">${dateStr}</div>
         </div>
         <div class="ud-quiz-score">

@@ -42,7 +42,15 @@ function renderStatCards(data) {
   udTotalQuizzes.textContent = data.total_quizzes ?? 0;
   udAvgScore.textContent = (data.avg_score_pct ?? 0) + "%";
   udQuestionsAnswered.textContent = data.questions_answered ?? 0;
-  udTimeSpent.textContent = data.total_time_mins ?? 0;
+
+  const mins = data.total_time_mins ?? 0;
+  if (mins >= 60) {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    udTimeSpent.textContent = m > 0 ? `${h}h ${m}m` : `${h}h`;
+  } else {
+    udTimeSpent.textContent = `${mins}m`;
+  }
 }
 
 function renderSubjectPerformance(subjects) {
@@ -90,7 +98,7 @@ function renderRecentQuizzes(quizzes) {
           <div class="ud-quiz-date">${dateStr}</div>
         </div>
         <div class="ud-quiz-score">
-          <div class="ud-quiz-marks">${q.obtainedMark}/${q.totalQuestions}</div>
+          <div class="ud-quiz-marks">${q.obtainedMark}/${q.maxMark}</div>
           <div class="ud-quiz-pct">${q.scorePct}%</div>
         </div>
       </div>`;

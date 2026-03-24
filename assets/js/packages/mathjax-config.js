@@ -1,11 +1,15 @@
 window.MathJax = {
   tex: {
-    inlineMath: {
-      "[+]": [
-        ["$", "$"],
-        ["\\(", "\\)"],
-      ],
-    },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+    processEscapes: true,
+    processEnvironments: true,
   },
   svg: {
     fontCache: "global",

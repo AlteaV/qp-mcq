@@ -469,3 +469,35 @@ function renderTableFromMarkdown(markdown) {
 function getDifficultyBadge(difficulty) {
   return `<span class="badge" style="background:${difficultyColors[difficulty] || "#ccc"}">${difficulty || "Unknown"}</span>`;
 }
+
+function cleanUnicodeSubscripts(text) {
+  if (!text) return "";
+
+  // 1. Fix the Unicode subscripts (e.g., \u2081 -> _{1})
+  // This handles both single and double escaped versions
+  const literalSubscriptRegex = /(\\+u208\d)+/g;
+  let cleaned = text.replace(literalSubscriptRegex, (match) => {
+    const digits = match
+      .split(/\\+u208/)
+      .filter(Boolean)
+      .join("");
+    return `_{${digits}}`;
+  });
+
+  // 2. The "Power Wash" for ldots
+  // This regex looks for:
+  // - ldots (no slash)
+  // - \ldots (single slash)
+  // - \\ldots (double slash)
+  // And forces them all to be exactly \ldots
+  cleaned = cleaned.replace(/\\*ldots/g, "\\ldots");
+
+  // 3. Optional: Fix other common symbols if they break
+  const commonSymbols = ["alpha", "beta", "gamma", "sum", "prod"];
+  commonSymbols.forEach((sym) => {
+    const reg = new RegExp(`\\\\*${sym}`, "g");
+    cleaned = cleaned.replace(reg, `\\${sym}`);
+  });
+
+  return cleaned;
+}

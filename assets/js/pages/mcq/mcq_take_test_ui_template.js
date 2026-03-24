@@ -185,11 +185,11 @@ function initializeUI() {
     questionPaperDetails.shuffle_questions === "Y" ||
     questionPaperDetails.shuffle_questions == 1
   ) {
-    questionsData = shuffleArray(questionsData);
+    questionsData = groupAndShuffle(questionsData);
   }
 
-  if (templateConfig.choose_question_layout === "N") {
-    leftPanel.style.display = "full-width";
+  if (templateConfig.question_layout === "N") {
+    leftPanel.style.display = "block";
     rightPanel.style.display = "none";
     legend.style.display = "none";
   } else {
@@ -271,6 +271,16 @@ function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+function groupAndShuffle(data) {
+  const grouped = data.reduce((acc, item) => {
+    const id = item.subject;
+    if (!acc[id]) acc[id] = [];
+    acc[id].push(item);
+    return acc;
+  }, {});
+  return Object.values(grouped).flatMap((group) => shuffleArray(group));
 }
 
 function showTimer(type) {
@@ -487,9 +497,9 @@ async function renderQuestionsPage() {
         </div>
       </div>
       
-      <div style="margin-bottom: 15px; line-height: 1.8; white-space: pre-wrap; color: #333;">${
-        q.question
-      }</div>
+      <div style="margin-bottom: 15px; line-height: 1.8; white-space: pre-wrap; color: #333;">${cleanUnicodeSubscripts(
+        q.question,
+      )}</div>
 
       ${q.table ? `<p>${renderTableFromMarkdown(q.table)}</p>` : ""}
       ${
@@ -517,7 +527,7 @@ async function renderQuestionsPage() {
       }" style="display: flex; flex-direction: column; gap: 10px;"></div>
       
       ${
-        templateConfig.choose_question_layout !== "N"
+        templateConfig.question_layout !== "N"
           ? `
       <div class="question-actions" style="margin-top:15px;display:flex;align-items:center;gap:15px;">
         ${
