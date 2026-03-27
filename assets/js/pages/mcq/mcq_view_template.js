@@ -157,6 +157,7 @@ async function getTemplate() {
   } else {
     alert("Network error");
   }
+  hideOverlay();
 }
 
 document.addEventListener("readystatechange", async () => {

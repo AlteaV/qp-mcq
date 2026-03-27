@@ -97,6 +97,10 @@
           border-radius: 0.9rem;
         }
       }
+      #stream_validator.is-invalid ~ .invalid-feedback,
+      .was-validated #stream_validator:invalid ~ .invalid-feedback {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -125,12 +129,12 @@
               <div class="card-body p-4">
                 <!-- FORM STARTS HERE -->
                 <form id="sign_up_form" class="needs-validation" novalidate>
-                  <!-- Organization Details -->
-                  <p class="section-title">Organization details</p>
+                  <!-- Organisation Details -->
+                  <p class="section-title">Organisation details</p>
                   <div class="row g-3">
                     <div class="col-12">
                       <label for="org_name" class="form-label required"
-                        >Organization Name</label
+                        >Organisation Name</label
                       >
                       <input
                         type="text"
@@ -142,17 +146,17 @@
                         required
                       />
                       <div class="invalid-feedback">
-                        Please provide the organization name.
+                        Please provide the organisation name.
                       </div>
                     </div>
                   </div>
 
                   <div class="mt-3">
                     <label class="form-label required mb-1"
-                      >Organization Type</label
+                      >Organisation Type</label
                     >
                     <div class="helper-text mb-2">
-                      Choose how this organization will use the platform.
+                      Choose how this organisation will use the platform.
                     </div>
 
                     <div class="row g-3">
@@ -183,7 +187,7 @@
                             </span>
                           </div>
                           <ul class="mb-0 ps-3 small text-muted">
-                            <li>Dedicated instance for this organization</li>
+                            <li>Dedicated instance for this organisation</li>
                             <li>
                               Manage subjects, templates, teachers &amp;
                               students
@@ -228,12 +232,75 @@
 
                   <div class="section-divider"></div>
 
+                  <div class="mt-3">
+                    <label class="form-label required mb-1">Exam Streams</label>
+                    <div class="helper-text mb-2">
+                      Select the competitive exam tracks this organisation will
+                      support.
+                    </div>
+                    <div class="position-relative">
+                      <input
+                        type="checkbox"
+                        id="stream_validator"
+                        style="opacity: 0; position: absolute; z-index: -1"
+                        required
+                      />
+
+                      <div class="d-flex flex-wrap gap-2" id="stream_container">
+                        <input
+                          type="checkbox"
+                          class="btn-check stream-option"
+                          id="stream-jee"
+                          name="exam_streams"
+                          value="JEE"
+                        />
+                        <label
+                          class="btn btn-outline-primary rounded-pill px-4"
+                          for="stream-jee"
+                          >JEE</label
+                        >
+
+                        <input
+                          type="checkbox"
+                          class="btn-check stream-option"
+                          id="stream-neet"
+                          name="exam_streams"
+                          value="NEET"
+                        />
+                        <label
+                          class="btn btn-outline-primary rounded-pill px-4"
+                          for="stream-neet"
+                          >NEET</label
+                        >
+
+                        <input
+                          type="checkbox"
+                          class="btn-check stream-option"
+                          id="stream-others"
+                          name="exam_streams"
+                          value="Others"
+                        />
+                        <label
+                          class="btn btn-outline-primary rounded-pill px-4"
+                          for="stream-others"
+                          >Others</label
+                        >
+
+                        <div class="invalid-feedback" id="stream_error">
+                          Please select at least one exam stream.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="section-divider"></div>
+
                   <!-- Contact Info -->
                   <p class="section-title">Primary contact</p>
                   <div class="row g-3">
                     <div class="col-md-7">
                       <label for="org_email" class="form-label required"
-                        >Organization Email</label
+                        >Organisation Email</label
                       >
                       <input
                         type="email"
@@ -269,7 +336,7 @@
                   TODO implement logo upload in backend and uncomment this section in frontend
                   <div class="mt-3">
                     <label for="logo" class="form-label"
-                      >Organization Logo</label
+                      >Organisation Logo</label
                     >
                     <input
                       class="form-control"
@@ -288,7 +355,7 @@
                   <!-- Subscription Info -->
                   <p class="section-title">Subscription features</p>
                   <div class="helper-text mb-1">
-                    Configure how this organization will use learning and
+                    Configure how this organisation will use learning and
                     assessment features.
                   </div>
                   <div id="subscription_error" class="subscription-error">
@@ -444,11 +511,11 @@
                     class="d-flex align-items-center justify-content-between mt-4"
                   >
                     <p class="helper-text mb-0">
-                      You can modify all settings later from the organization
+                      You can modify all settings later from the organisation
                       settings page.
                     </p>
                     <button type="submit" class="btn btn-primary px-4">
-                      Create Organization
+                      Create Organisation
                     </button>
                   </div>
                 </form>

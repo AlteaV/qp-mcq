@@ -1,5 +1,20 @@
 const menuItems = [
   {
+    text: "Dashboard",
+    icon: "fas fa-chart-line",
+    dropdown: true,
+    items: [
+      {
+        href: "/user_dashboard.html",
+        text: "Dashboard",
+      },
+      {
+        href: "/admin_dashboard.html",
+        text: "Admin Dashboard",
+      },
+    ],
+  },
+  {
     text: "Reports",
     icon: "fas fa-tachometer-alt",
     dropdown: true,
@@ -27,21 +42,6 @@ const menuItems = [
       {
         href: "/report_question_wise_performance.html",
         text: "Question Wise Report",
-      },
-    ],
-  },
-  {
-    text: "Dashboard",
-    icon: "fas fa-chart-line",
-    dropdown: true,
-    items: [
-      {
-        href: "/user_dashboard.html",
-        text: "Dashboard",
-      },
-      {
-        href: "/admin_dashboard.html",
-        text: "Admin Dashboard",
       },
     ],
   },

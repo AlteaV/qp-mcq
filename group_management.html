@@ -115,54 +115,25 @@
                                     <div
                                       class="d-flex justify-content-between align-items-center mb-3"
                                     >
-                                      <label
-                                        class="required"
-                                        style="
-                                          font-weight: 600;
-                                          color: var(--text-dark);
-                                        "
-                                        >Select Classes to Add to Group</label
+                                      <label style="font-weight: 600"
+                                        >Select Members by Class</label
+                                      >
+                                      <span
+                                        class="badge bg-secondary"
+                                        id="picked-count-badge"
+                                        >0 selected</span
                                       >
                                     </div>
                                     <div
                                       style="
-                                        max-height: 450px;
+                                        max-height: 480px;
                                         overflow-y: auto;
-                                        border: 1px solid #e2e8f0;
-                                        border-radius: 12px;
-                                        background-color: #f8fafc;
-                                        padding: 4px;
                                       "
                                     >
-                                      <table
-                                        class="table table-hover mb-0"
-                                        id="class_selection_table"
-                                      >
-                                        <thead
-                                          class="sticky-top bg-white shadow-sm"
-                                        >
-                                          <tr>
-                                            <th
-                                              style="width: 50px"
-                                              class="text-center"
-                                            >
-                                              Select
-                                            </th>
-                                            <th>Class Name</th>
-                                            <th
-                                              style="
-                                                width: 150px;
-                                                text-align: right;
-                                              "
-                                            >
-                                              Action
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody id="class_selection_body">
-                                          <!-- Will be populated by JS -->
-                                        </tbody>
-                                      </table>
+                                      <div
+                                        class="accordion accordion-flush"
+                                        id="classAccordion"
+                                      ></div>
                                     </div>
                                   </div>
                                 </div>

@@ -15,11 +15,47 @@ const contactNumberError = document.getElementById("contact_number_error");
 const subscriptionError = document.getElementById("subscription_error");
 const forms = document.querySelectorAll(".needs-validation");
 
+const streamError = document.getElementById("stream_error");
+const streamValidator = document.getElementById("stream_validator");
+const examStreamCheckboxes = document.querySelectorAll(".stream-option");
+
 const orgTypeRadios = document.querySelectorAll('input[name="org_type"]');
 
 // event listeners
+examStreamCheckboxes.forEach((e) => {
+  e.addEventListener("change", function (event) {
+    changeStreamValidity();
+  });
+});
+
+function changeStreamValidity() {
+  const anyStreamChecked = Array.from(examStreamCheckboxes).some(
+    (cb) => cb.checked,
+  );
+
+  if (anyStreamChecked) {
+    streamValidator.checked = true;
+    streamError.style.display = "none";
+  } else {
+    streamError.style.display = "block";
+    streamValidator.checked = false;
+  }
+}
+
 form.addEventListener("submit", function (event) {
   form.classList.add("was-validated");
+  const anyStreamChecked = Array.from(examStreamCheckboxes).some(
+    (cb) => cb.checked,
+  );
+
+  if (anyStreamChecked) {
+    streamValidator.checked = true;
+    streamValidator.setCustomValidity(""); // Valid state
+  } else {
+    streamError.style.display = "block";
+    streamValidator.checked = false;
+    streamValidator.setCustomValidity("invalid"); // This makes form.checkValidity() return false
+  }
   const contactNumberValue = contactNumber.value.trim();
   if (contactNumberValue.length !== 10) {
     event.preventDefault();
@@ -113,6 +149,11 @@ function hasAtLeastOneFeature() {
 async function handleOrganizationSignup() {
   showOverlay();
   try {
+    let selectedStreams = Array.from(examStreamCheckboxes)
+      .filter((cb) => cb.checked)
+      .map((cb) => cb.value)
+      .filter((val) => val !== "Others");
+
     const payload = {
       org_name: sanitizeInput(orgName.value.trim()),
       org_type:
@@ -128,7 +169,9 @@ async function handleOrganizationSignup() {
         agentic_learning: !!(agentic && agentic.checked),
       }),
       function: "co",
+      levels: selectedStreams,
     };
+
     let response = await postCall(
       QuestionUploadEndPoint,
       JSON.stringify(payload),
