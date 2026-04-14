@@ -7,7 +7,7 @@ async function getMcqQuestions(templateID) {
   out.function = "gmqput";
   out.template_id = templateID;
 
-  postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       let quetionPaper = response.result.question_paper;
       if (quetionPaper && quetionPaper.length > 0) {
@@ -44,7 +44,7 @@ function getTemplate() {
   out.is_mcq = 1;
   out.org_id = loggedInUser.org_id;
 
-  postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       allTemplates = response.result.template;
       displayTemplateTable();
@@ -69,7 +69,7 @@ function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
   out.created_by = loggedInUser.user_id;
   showOverlay();
 
-  postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       const questionId = response.result.id;
       if (questionId) {
@@ -95,7 +95,7 @@ function uploadMcqQuestioPaper(questionPaper, questionPaperName) {
 function getSwapQuestion(out, index) {
   showOverlay();
   out.function = "smq";
-  postCall(QuestionUploadEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.success) {
       let swapquetion = response.result.question;
       if (swapquetion !== null) {
@@ -124,7 +124,7 @@ async function getSubjects() {
       function: "gss",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjectMap = response.result.subject;
@@ -158,7 +158,7 @@ async function getSection(subjectID) {
       subject_id: subjectID,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       sectionData[subjectID] = response.result.section;
@@ -187,7 +187,7 @@ async function getTopics(sectionID) {
       function: "gt",
       section_id: sectionID,
     });
-    const response = await postCall(mainEndPoint, payload);
+    const response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       topicsdata[sectionID] = response.result.topic;

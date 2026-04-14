@@ -21,9 +21,8 @@
                     <div
                       class="row mb-3 align-items-end"
                       id="register_number_row"
-                      style="display: none"
                     >
-                      <div class="col mt-2">
+                      <div class="col mt-2" id="email_input_col">
                         <b
                           ><label for="register_number" class="required"
                             >Enter Email</label
@@ -38,7 +37,13 @@
                           required
                         />
                       </div>
-                      <div class="col mt-4">
+                      <div class="col mt-2" id="test_select_col">
+                        <b><label for="test_select">Select Test</label></b>
+                        <select class="form-select" id="test_select">
+                          <option value="">All Tests (Overall)</option>
+                        </select>
+                      </div>
+                      <div class="col mt-2">
                         <button
                           class="btn btn-primary btn-color"
                           type="button"

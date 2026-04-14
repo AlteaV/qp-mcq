@@ -49,7 +49,7 @@ async function fetchClasses() {
       function: "gcl",
       org_id: CURRENT_ORG_ID,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       classes = response.result.all_classes;
       renderClasses();
@@ -132,7 +132,7 @@ classForm.addEventListener("submit", async (e) => {
       org_id: CURRENT_ORG_ID,
       staff_id: loggedInUser.staff_id,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       closeClassModal();
       fetchClasses();
@@ -185,7 +185,7 @@ async function deleteClassClicked(id) {
       class_id: id,
       org_id: CURRENT_ORG_ID,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       fetchClasses();
       Swal.fire({
@@ -234,7 +234,7 @@ async function fetchClassMembers() {
       function: "gcm",
       class_id: currentClassId,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       members = response.result.members;
       renderMembers();
@@ -295,7 +295,7 @@ async function removeMemberClicked(userId) {
       class_id: currentClassId,
       user_id: userId,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       fetchClassMembers();
       Swal.fire({
@@ -329,7 +329,7 @@ addMembersToClassBtn.addEventListener("click", async () => {
       class_id: currentClassId,
       org_id: CURRENT_ORG_ID,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       potentialMembers = response.result.users;
       renderStudentSelection();
@@ -400,7 +400,7 @@ submitMemberSelection.onclick = async () => {
       uids: checked,
       staff_id: loggedInUser.staff_id || loggedInUser.user_id,
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       closeMemberPicker();
       fetchClassMembers();

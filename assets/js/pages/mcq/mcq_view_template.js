@@ -148,7 +148,7 @@ async function getTemplate() {
   out.function = "gmt";
   out.org_id = loggedInUser.org_id;
   out.is_mcq = 1;
-  let response = await postCall(examCellEndPoint, JSON.stringify(out));
+  let response = await postCall(adminEndPoint, JSON.stringify(out));
   if (response.status == 200) {
     allTemplates = response.result.template;
     displayTemplateTable();

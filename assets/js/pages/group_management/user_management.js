@@ -133,7 +133,7 @@ function resetForm() {
 async function fetchClassesForFilter() {
   try {
     let response = await postCall(
-      "",
+      adminEndPoint,
       JSON.stringify({ function: "gcl", org_id: CURRENT_ORG_ID }),
     );
     if (response.success) {
@@ -180,7 +180,7 @@ async function fetchUsers() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (data.success) {
       users = data.result.users;
@@ -372,7 +372,7 @@ async function updateUser() {
       staff_id: loggedInUser.user_id,
       class_id: getSelectedClass(),
     };
-    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (data.success) {
       fetchUsers();
@@ -416,7 +416,7 @@ async function addNewUser() {
       class_id: getSelectedClass(),
     };
 
-    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (data.success) {
       fetchUsers();
@@ -500,10 +500,7 @@ async function processBulkAdd(file) {
         class_id: getSelectedClass(),
       };
       showOverlay();
-      let response = await postCall(
-        QuestionUploadEndPoint,
-        JSON.stringify(out),
-      );
+      let response = await postCall(adminEndPoint, JSON.stringify(out));
 
       if (response.success) {
         fetchUsers();
@@ -550,7 +547,7 @@ async function toggleUserStatus(userId, isActive) {
       staff_id: loggedInUser.user_id,
     };
 
-    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (data.success) {
       u.active = isActive ? 1 : 0;

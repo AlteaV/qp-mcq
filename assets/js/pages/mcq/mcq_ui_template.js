@@ -316,7 +316,7 @@ async function getUiTemplate() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       let templates = response.result.template;
@@ -422,10 +422,7 @@ async function managUiTemplate() {
       payload.existing_default_template_id = existingDefaultTemplateId;
     }
 
-    let response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(payload),
-    );
+    let response = await postCall(adminEndPoint, JSON.stringify(payload));
 
     if (response.success) {
       hideOverlay();

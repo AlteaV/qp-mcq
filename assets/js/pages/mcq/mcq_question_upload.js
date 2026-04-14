@@ -413,7 +413,7 @@ async function checkExistingScan() {
       org_id: loggedInUser.org_id,
       user_id: loggedInUser.user_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       let status = response.result.status;
       handleExistingScan(status);
@@ -639,7 +639,7 @@ async function getSubjects() {
       function: "gsst",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
       sections = response.result.sections;
@@ -858,79 +858,93 @@ async function previewQuestions() {
 
     const payload = JSON.stringify(out);
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
-    let retryCount = 0;
-    let maxRetries = 10;
-    scanId = response.result.id;
+    if (response && response.success) {
+      let retryCount = 0;
+      let maxRetries = 10;
+      scanId = response.result.id;
 
-    while (retryCount < maxRetries) {
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      while (retryCount < maxRetries) {
+        await new Promise((resolve) => setTimeout(resolve, 10000));
 
-      let retryResponse = await getScannedQuestions(response.result.id);
+        let retryResponse = await getScannedQuestions(response.result.id);
 
-      if (retryResponse.message === "Completed") {
-        questions = retryResponse.result.data.questions;
-        questions = questions.filter(
-          (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
-        );
-
-        if (retryResponse.result.type == "Mcq") {
-          sectionTopics = JSON.parse(retryResponse.result.data.subject);
-        } else {
-          sectionTopics = retryResponse.result.data.section_topic;
-        }
-        if (retryResponse.result.type == "GeneratedWithTopic") {
-          changePageType();
-        }
-        let event = new Event("change");
-        onlyQuestionsRadio.checked =
-          retryResponse.result.data.only_questions == 1;
-        questionsAndQPRadio.checked =
-          retryResponse.result.data.also_generate_qp == 1;
-        onlyQuestionsRadio.dispatchEvent(event);
-        qpPreviousYearRadio.checked =
-          retryResponse.result.data.previous_year_qp == 1;
-        qpCustomRadio.checked = retryResponse.result.data.custom_qp == 1;
-        qpPreviousYearRadio.dispatchEvent(event);
-        qpType = retryResponse.result.type;
-        levelDropDown.value = retryResponse.result.data.level;
-        qpName.value = retryResponse.result.data.qp_name;
-
-        if (retryResponse.result.data.subject_id) {
-          let selectedSubject = subjects.find(
-            (s) => s.id == retryResponse.result.data.subject_id,
+        if (retryResponse.message === "Completed") {
+          questions = retryResponse.result.data.questions;
+          questions = questions.filter(
+            (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
           );
-          if (selectedSubject) {
-            subject.value = selectedSubject.subject;
-            levelDropDown.value = selectedSubject.level;
+
+          if (retryResponse.result.type == "Mcq") {
+            sectionTopics = JSON.parse(retryResponse.result.data.subject);
+          } else {
+            sectionTopics = retryResponse.result.data.section_topic;
           }
-        } else {
-          subject.value = "All Subjects";
+          if (retryResponse.result.type == "GeneratedWithTopic") {
+            changePageType();
+          }
+          let event = new Event("change");
+          onlyQuestionsRadio.checked =
+            retryResponse.result.data.only_questions == 1;
+          questionsAndQPRadio.checked =
+            retryResponse.result.data.also_generate_qp == 1;
+          onlyQuestionsRadio.dispatchEvent(event);
+          qpPreviousYearRadio.checked =
+            retryResponse.result.data.previous_year_qp == 1;
+          qpCustomRadio.checked = retryResponse.result.data.custom_qp == 1;
+          qpPreviousYearRadio.dispatchEvent(event);
+          qpType = retryResponse.result.type;
+          levelDropDown.value = retryResponse.result.data.level;
+          if (retryResponse.result.data.category) {
+            renderCategoryOptions();
+            renderExamMonth();
+            renderExamYear();
+            category.value = retryResponse.result.data.category;
+            examMonth.value = retryResponse.result.data.exam_month;
+            examYear.value = retryResponse.result.data.exam_year;
+          }
+          qpName.value = retryResponse.result.data.qp_name;
+
+          if (retryResponse.result.data.subject_id) {
+            let selectedSubject = subjects.find(
+              (s) => s.id == retryResponse.result.data.subject_id,
+            );
+            if (selectedSubject) {
+              subject.value = selectedSubject.subject;
+              levelDropDown.value = selectedSubject.level;
+            }
+          } else {
+            subject.value = "All Subjects";
+          }
+
+          qpName.value = retryResponse.result.data.qp_name;
+          await showReportSection(questions);
+          return;
         }
 
-        await showReportSection(questions);
-        return;
+        if (
+          retryResponse.message != "Processing" &&
+          retryResponse.message != "Completed"
+        ) {
+          alert(retryResponse.message);
+          hideOverlay();
+          return;
+        }
+        retryCount++;
       }
-
-      if (
-        retryResponse.message != "Processing" &&
-        retryResponse.message != "Completed"
-      ) {
-        alert(retryResponse.message);
-        hideOverlay();
-        return;
+      if (retryCount === maxRetries) {
+        alert("Processing is taking longer than expected. Please wait.");
+        filterDiv.style.display = "none";
+        checkExistingScan();
       }
-      retryCount++;
-    }
-    if (retryCount === maxRetries) {
-      alert("Processing is taking longer than expected. Please wait.");
-      filterDiv.style.display = "none";
-      checkExistingScan();
+    } else {
+      throw new Error("Server error");
     }
   } catch (error) {
     console.error("previewQuestions Error:", error);
     alert("Error processing PDF.");
+    hideOverlay();
   }
 }
 
@@ -940,7 +954,7 @@ async function getScannedQuestions(id) {
     id: id,
   });
 
-  return await postCall(QuestionUploadEndPoint, getScannedDataPayload);
+  return await postCall(adminEndPoint, getScannedDataPayload);
 }
 
 async function showReportSection(data) {
@@ -1107,7 +1121,7 @@ async function showReportSection(data) {
         if (typeof showdown !== "undefined") {
           const converter = new showdown.Converter();
           choiceText = converter.makeHtml(choices[key]);
-          if(choiceText !== null){
+          if (choiceText !== null) {
             choiceText = choiceText.replace(/^<p>|<\/p>$/g, "");
           }
         }
@@ -1214,6 +1228,11 @@ async function showReportSection(data) {
     }
   } else {
     let subjectData = sectionTopics.map((s) => s.subject);
+    if (!sectionTopics[0].subject) {
+      subjectData = subjects.map((s) => s.subject);
+    }
+    subjectData = subjectData.sort((a, b) => a.localeCompare(b));
+
     for (let index = 0; index < questionsFormat.length; index++) {
       let subjectField = document.getElementById(`subject_input_${index}`);
       setAutoComplete(subjectField, subjectData);
@@ -1525,7 +1544,7 @@ async function deleteScannedData() {
       scan_id: scanId,
     };
 
-    let data = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (data.success) {
       resultTable.innerHTML = "";
@@ -1737,10 +1756,7 @@ async function submitQuestion() {
       topic.questions.push(temp);
     }
 
-    const response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(out),
-    );
+    const response = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (response.success) {
       alert("Questions submitted successfully!");

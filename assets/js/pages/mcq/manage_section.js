@@ -172,7 +172,7 @@ async function getSubname() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       mcqSub = response.result.subjects;
@@ -204,7 +204,7 @@ async function updatemcqSecname() {
       function: "ms",
     };
 
-    let response = await postCall(staffEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       mcqSub.forEach((s) => {
         if (s.subject_id == subName.value) {
@@ -246,7 +246,7 @@ async function addnewmcqSubsec() {
       type: "add",
       function: "ms",
     };
-    let response = await postCall(examCellEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (response.success) {
       let id = response.result.id;

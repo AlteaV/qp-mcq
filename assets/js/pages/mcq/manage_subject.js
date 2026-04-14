@@ -134,7 +134,7 @@ async function getSubname() {
       function: "gms",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(staffEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       mcqSub = response.result.subject;
       showResult(mcqSub);
@@ -170,7 +170,7 @@ async function updateSubname() {
       staff_id: loggedInUser.user_id,
       function: "ums",
     };
-    let response = await postCall(staffEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       for (let sub in mcqSub) {
         if (curr_id == mcqSub[sub]["id"]) {
@@ -216,7 +216,7 @@ async function addnewMCQsubject() {
       staff_id: loggedInUser.user_id,
       org_id: loggedInUser.org_id,
     };
-    let response = await postCall(staffEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       mcqSub.push({
         id: response.result.id,

@@ -50,7 +50,7 @@ async function getSubjects() {
       function: "gss",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       subjects = response.result.subject;
 
@@ -124,7 +124,7 @@ async function scanQuestionPaper() {
     };
     const payload = JSON.stringify(out);
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     let retryCount = 0;
     let maxRetries = 10;
@@ -172,7 +172,7 @@ async function getScannedQuestions(id) {
     id: id,
   });
 
-  return await postCall(QuestionUploadEndPoint, getScannedDataPayload);
+  return await postCall(genEndPoint, getScannedDataPayload);
 }
 
 async function showReportSection(data) {
@@ -620,10 +620,7 @@ async function submitQuestion() {
       topic.questions.push(temp);
     }
 
-    const response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(out),
-    );
+    const response = await postCall(genEndPoint, JSON.stringify(out));
 
     if (response.success) {
       alert("Questions submitted successfully!");
@@ -654,7 +651,7 @@ async function checkExistingScan() {
       org_id: loggedInUser.org_id,
       user_id: loggedInUser.user_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(genEndPoint, payload);
     if (response.success) {
       let status = response.result.status;
       handleExistingScan(status);

@@ -17,7 +17,7 @@ async function getOrganizationDetails() {
       function: "go",
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(deleteLaterEndPoint, payload);
 
     if (response.success) {
       organization.innerHTML = "";
@@ -140,7 +140,7 @@ async function logIn() {
   }
 
   let permission = await postCall(
-    authEndPoint,
+    deleteLaterEndPoint,
     JSON.stringify({
       function: "gup",
       type: type,

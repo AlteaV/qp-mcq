@@ -114,7 +114,7 @@ async function getSubjects() {
       function: "gss",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjects = response.result.subject;
@@ -150,7 +150,7 @@ async function getSectionTopic(subjectID) {
       subject_id: subjectID,
     });
 
-    const response = await postCall(QuestionUploadEndPoint, payload);
+    const response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       sectionTopic = response.result.secTopic;
@@ -301,10 +301,7 @@ async function submitQuestion() {
       });
     });
 
-    const response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(out),
-    );
+    const response = await postCall(adminEndPoint, JSON.stringify(out));
 
     if (response.success) {
       alert("Questions submitted successfully!");

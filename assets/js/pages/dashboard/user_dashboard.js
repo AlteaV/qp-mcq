@@ -16,7 +16,7 @@ async function getDashboardData() {
   showOverlay();
   try {
     let response = await postCall(
-      QuestionUploadEndPoint,
+      userEndPoint,
       JSON.stringify({
         function: "gud",
         user_id: UserID,

@@ -120,7 +120,7 @@ async function getlevel() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(examCellEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       mcqLevel = response.result.levels;
       showResult(mcqLevel);
@@ -151,7 +151,7 @@ async function addnewMCQLevel() {
       staff_id: loggedInUser.user_id,
       org_id: loggedInUser.org_id,
     };
-    let response = await postCall(examCellEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       sessionStorage.removeItem("levels");
       mcqLevel.push({
@@ -188,7 +188,7 @@ async function updateLevelname() {
       staff_id: loggedInUser.user_id,
       function: "ul",
     };
-    let response = await postCall(examCellEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       sessionStorage.removeItem("levels");
       for (let ml in mcqLevel) {

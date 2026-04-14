@@ -45,7 +45,7 @@ async function getSubjects() {
       function: "gswt",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
       setLevel();
@@ -66,7 +66,7 @@ async function getBtlLevels() {
       function: "gbl",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       btlLevels = response.result.btl_level;
@@ -307,7 +307,6 @@ function assignQuestionsToSubject() {
 
   newPartDiv.style.display = "none";
   partCreateBtn.style.display = "block";
-  partLevel.value = "";
   partSubject.value = "";
   partMarks.value = "";
 
@@ -731,8 +730,9 @@ function saveTemplate() {
   out.user_id = loggedInUser.user_id;
   out.template = data;
   out.is_mcq = null;
+  out.level_id = partLevel.value;
 
-  postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {
       alert(response.message);
       partsDiv.innerHTML = "";

@@ -201,7 +201,7 @@ function getTemplate() {
   out.org_id = loggedInUser.org_id;
   out.is_mcq = null;
 
-  postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {
       allTemplates = response.result.template;
       displayTemplateTable();

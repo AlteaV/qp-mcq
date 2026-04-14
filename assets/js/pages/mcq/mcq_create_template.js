@@ -69,7 +69,7 @@ async function getSubjects() {
       function: "gswt",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       subjects = response.result.subjects;
       setLevel();
@@ -639,7 +639,7 @@ function saveTemplate() {
   out.subject_id = filterSubject.value == "All" ? null : filterSubject.value;
   out.level_id = filterLevel.value;
 
-  postCall(examCellEndPoint, JSON.stringify(out)).then((response) => {
+  postCall(adminEndPoint, JSON.stringify(out)).then((response) => {
     if (response.status == 200) {
       alert(response.message);
       partsDiv.innerHTML = "";

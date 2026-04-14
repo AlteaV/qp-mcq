@@ -110,7 +110,7 @@ async function getStudentList(qpId) {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       lockedOutUsers = response.result.students;
@@ -185,7 +185,7 @@ async function unlockUser(id) {
       user_id: loggedInUser.user_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       alert(response.message);
@@ -215,7 +215,7 @@ async function getAssignedQp() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       showResult(response.result.qp);

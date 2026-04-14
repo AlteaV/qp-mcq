@@ -25,7 +25,7 @@ async function getIndividualPerformance(attempt_id, selectedStudent) {
       function: "gad",
       attempt_id: attempt_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
 
     if (response.success) {
       showIndividualPerformanceSection(response.result.report);

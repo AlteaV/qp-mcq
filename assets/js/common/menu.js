@@ -55,10 +55,6 @@ const menuItems = [
         text: "User Management",
       },
       {
-        href: "/bulk_upload.html",
-        text: "Bulk Upload Users",
-      },
-      {
         href: "/group_management.html",
         text: "Group Management",
       },

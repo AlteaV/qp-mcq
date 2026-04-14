@@ -190,7 +190,7 @@ async function getSubjectsSectionsTopics() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjects = response.result.subjects;
@@ -215,7 +215,7 @@ async function addNewTopic(section_id, topic) {
       staff_id: loggedInUser.user_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       let id = response.result.id;
@@ -251,7 +251,7 @@ async function updateTopic(id, section_id, topic) {
       staff_id: loggedInUser.user_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       for (let t in topics) {

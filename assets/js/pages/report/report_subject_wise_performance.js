@@ -1,5 +1,6 @@
 var testTypeDropDown = document.getElementById("test_type");
 var levelDropDown = document.getElementById("level");
+var subjectDropDown = document.getElementById("subject");
 var networkButton = document.getElementById("network_button");
 var submitButton = document.getElementById("submit_button");
 var toggleBtnChart = document.getElementById("btn-chart");
@@ -19,16 +20,44 @@ const ctx = document.getElementById("drillChart").getContext("2d");
 let navStack = [{ label: "All Subjects", data: subjects, type: "Overview" }];
 
 // event listener
-levelDropDown.addEventListener("change", () => {
+levelDropDown.addEventListener("change", async () => {
   reset();
+  setDropDown(
+    [
+      {
+        value: "",
+        html: "Please select a Subject",
+        disabled: true,
+        selected: true,
+      },
+    ],
+    subjectDropDown,
+  );
+  if (levelDropDown.value !== "" && testTypeDropDown.value !== "") {
+    await getReport(null, null, true);
+  }
 });
+
 testTypeDropDown.addEventListener("change", async () => {
   reset();
+  if (levelDropDown.value !== "" && testTypeDropDown.value !== "") {
+    await getReport(null, null, true);
+  }
 });
 
 networkButton.addEventListener("click", async () => {
   reset();
-  await getReport();
+  const subjectID = subjectDropDown.value;
+  if (
+    subjectID &&
+    subjectID !== "Please select a Subject" &&
+    subjectID !== ""
+  ) {
+    navStack = [{ label: "All Subjects", data: subjects, type: "Overview" }];
+    await getReport(subjectID);
+  } else {
+    await getReport();
+  }
 });
 
 toggleBtnChart.addEventListener("click", () => toggleView("chart"));
@@ -268,7 +297,11 @@ function toggleView(view) {
     .classList.toggle("active", view === "table");
 }
 
-async function getReport(subjectID = null, sectionID = null) {
+async function getReport(
+  subjectID = null,
+  sectionID = null,
+  populateOnly = false,
+) {
   if (!testTypeDropDown.value || !levelDropDown.value) {
     alert("Please select test type and level");
     return;
@@ -289,7 +322,7 @@ async function getReport(subjectID = null, sectionID = null) {
 
   try {
     showOverlay();
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(reportEndPoint, JSON.stringify(out));
 
     if (response.success) {
       let reportData = response.result.report;
@@ -299,20 +332,32 @@ async function getReport(subjectID = null, sectionID = null) {
         navStack = [
           { label: "All Subjects", data: subjects, type: "Overview" },
         ];
-        renderDashboard(subjects);
+        updateSubjectDropDown(subjects);
+        if (!populateOnly) {
+          renderDashboard(subjects);
+        }
       } else {
         let parent = navStack[navStack.length - 1];
         let nextType = navStack.length === 1 ? "Sections" : "Topics";
 
         // find the name from the previous level to set the correct label
         let selectedItem = parent.data.find(
-          (i) => i.id === (subjectID || sectionID),
+          (i) => String(i.id) === String(subjectID || sectionID),
         );
+
+        let label = selectedItem ? selectedItem.name : "";
+        if (
+          !label &&
+          subjectID &&
+          subjectDropDown.value === String(subjectID)
+        ) {
+          label = subjectDropDown.options[subjectDropDown.selectedIndex].text;
+        }
 
         // update subjects or sections in the previous level to avoid future API calls for the same item
         if (subjectID) {
           for (let subject of subjects) {
-            if (subject.id === subjectID) {
+            if (String(subject.id) === String(subjectID)) {
               subject.section = reportData;
               break;
             }
@@ -321,7 +366,7 @@ async function getReport(subjectID = null, sectionID = null) {
           for (let subject of subjects) {
             if (subject.section) {
               for (let section of subject.section) {
-                if (section.id === sectionID) {
+                if (String(section.id) === String(sectionID)) {
                   section.topic = reportData;
                   break;
                 }
@@ -331,7 +376,7 @@ async function getReport(subjectID = null, sectionID = null) {
         }
         // update navStack with new data for the drilled down level
         navStack.push({
-          label: selectedItem ? selectedItem.name : "",
+          label: label,
           data: reportData,
           type: nextType,
         });
@@ -344,6 +389,19 @@ async function getReport(subjectID = null, sectionID = null) {
   } finally {
     hideOverlay();
   }
+}
+
+async function updateSubjectDropDown(data = []) {
+  let options = [{ value: "", html: "All Subjects", selected: true }];
+
+  data.forEach((sub) => {
+    options.push({
+      value: sub.id,
+      html: sub.name,
+    });
+  });
+
+  setDropDown(options, subjectDropDown);
 }
 
 async function initializePage() {

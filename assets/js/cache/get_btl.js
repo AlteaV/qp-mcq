@@ -3,7 +3,7 @@ var cachedBtl = JSON.parse(sessionStorage.getItem("btl_levels"));
 async function fetchBtl() {
   if (cachedBtl == null) {
     const response = await postCall(
-      "/student",
+      adminEndPoint,
       JSON.stringify({
         function: "gbl",
         org_id: loggedInUser.org_id,

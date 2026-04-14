@@ -66,10 +66,10 @@
                               All Subjects Overview
                             </h2>
                             <div class="toggle-group">
-                              <button class="toggle-btn active" id="btn-chart">
+                              <button class="toggle-btn" id="btn-chart">
                                 Chart
                               </button>
-                              <button class="toggle-btn" id="btn-table">
+                              <button class="toggle-btn active" id="btn-table">
                                 Table
                               </button>
                             </div>
@@ -77,11 +77,15 @@
 
                           <div class="breadcrumb" id="breadcrumb"></div>
 
-                          <div id="chart-wrapper" style="height: 400px">
+                          <div
+                            id="chart-wrapper"
+                            class="hidden"
+                            style="height: 400px"
+                          >
                             <canvas id="drillChart"></canvas>
                           </div>
 
-                          <div id="table-wrapper" class="hidden">
+                          <div id="table-wrapper">
                             <table class="table table-bordered">
                               <thead>
                                 <tr>

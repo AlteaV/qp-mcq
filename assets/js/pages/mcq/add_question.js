@@ -113,6 +113,11 @@ let numericalAnswerDiv = document.getElementById("numerical_answer_div");
 let numericalAnswerInput = document.getElementById("numerical_answer");
 let editor;
 
+// numericalAnswerInput should accept only numbers nothing else
+numericalAnswerInput.addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "");
+});
+
 var resultDiv = document.getElementById("result_div");
 
 let subjects = [];
@@ -359,7 +364,7 @@ async function getSubjectsSectionsTopics() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjects = response.result.subjects;
@@ -495,7 +500,7 @@ async function uploadQuestion() {
   showOverlay();
   try {
     let payload = JSON.stringify(out);
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(genEndPoint, payload);
     if (response.success) {
       alert(response.message);
       questionForm.reset();

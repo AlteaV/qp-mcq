@@ -58,7 +58,7 @@ async function getSubjects() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjects = response.result.subjects;
@@ -174,7 +174,7 @@ async function takeTest() {
 
   try {
     showOverlay();
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(userEndPoint, payload);
     if (response.success) {
       questions = {
         question_paper_id: null,

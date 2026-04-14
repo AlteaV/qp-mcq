@@ -20,6 +20,32 @@ const ctx = document.getElementById("drillChart").getContext("2d");
 
 let navStack = [{ label: "All Sections", data: summary, type: "Overview" }];
 
+function sortPerformanceData(data) {
+  if (!data || !Array.isArray(data)) return data;
+  return data.sort((a, b) => {
+    let rateA = 0;
+    let rateB = 0;
+
+    if (a.attended !== undefined) {
+      rateA = a.attended > 0 ? a.passed / a.attended : 0;
+      rateB = b.attended > 0 ? b.passed / b.attended : 0;
+    } else if (a.total_score !== undefined) {
+      const totalQA = Number(a.total_questions) || 1;
+      const totalQB = Number(b.total_questions) || 1;
+      rateA = (Number(a.total_score) || 0) / totalQA;
+      rateB = (Number(b.total_score) || 0) / totalQB;
+    }
+
+    if (rateA !== rateB) {
+      return rateA - rateB;
+    }
+
+    let timeA = parseFloat(a.avg_time || a.average_time || 0);
+    let timeB = parseFloat(b.avg_time || b.average_time || 0);
+    return timeB - timeA;
+  });
+}
+
 toggleBtnChart.addEventListener("click", () => toggleView("chart"));
 toggleBtnTable.addEventListener("click", () => toggleView("table"));
 
@@ -50,6 +76,7 @@ function handleDrill(index) {
     }
 
     if (topics && topics.length > 0) {
+      topics = sortPerformanceData(topics);
       navStack.push({
         label: selectedSection.section_name,
         data: topics,
@@ -88,6 +115,8 @@ function showReportSection(data) {
     hideOverlay();
     return;
   }
+
+  data = sortPerformanceData(data);
 
   let tableData = {
     tableHeader: [[new TableStructure("S.NO")]],
@@ -304,7 +333,7 @@ async function getStudentTests() {
       function: "gttbs",
       user_id: loggedInUser.user_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       showReportSection(response.result.tests);
     } else {
@@ -325,7 +354,7 @@ async function getQuestionPaper() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
 
     if (response.success) {
       qp = response.result.qp;
@@ -346,10 +375,10 @@ async function getReport() {
       function: "grbqp",
       question_paper_id: questionPaperDropDown.value,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
 
     if (response.success) {
-      summary = response.result.summary;
+      summary = sortPerformanceData(response.result.summary);
       showReportSection(response.result.report);
     }
   } catch (error) {

@@ -3,7 +3,7 @@ var cachedLevel = JSON.parse(sessionStorage.getItem("levels"));
 async function fetchLevel() {
   if (cachedLevel == null) {
     const response = await postCall(
-      "/student",
+      adminEndPoint,
       JSON.stringify({
         function: "gl",
         org_id: loggedInUser.org_id,

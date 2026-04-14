@@ -174,7 +174,7 @@ async function getSubjectsSectionsTopics() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
 
     if (response.success) {
       subjects = response.result.subjects;
@@ -203,7 +203,7 @@ async function getTopPerformers() {
       topic_id: topic_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
 
     if (response.success) {
       showReportSection(response.result.report);

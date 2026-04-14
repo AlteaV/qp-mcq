@@ -42,7 +42,7 @@ async function getQuestionPaperDetails() {
     user_id: loggedInUser.user_id,
   };
   try {
-    let response = await postCall(examCellEndPoint, JSON.stringify(payload));
+    let response = await postCall(userEndPoint, JSON.stringify(payload));
 
     if (response.success) {
       let questionsRes = response.result.questions;
@@ -137,10 +137,7 @@ async function submitTempAnswer() {
   };
 
   try {
-    let response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(payload),
-    );
+    let response = await postCall(userEndPoint, JSON.stringify(payload));
 
     if (response.success) {
       if (response.status == 429) {
@@ -788,10 +785,7 @@ async function submitTest() {
   };
 
   try {
-    let response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(payload),
-    );
+    let response = await postCall(userEndPoint, JSON.stringify(payload));
 
     if (response.success) {
       let final_score = response.result.final_score;

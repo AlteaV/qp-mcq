@@ -529,7 +529,7 @@ async function getAnswer(id) {
       question_id: question.question_id,
       function: "gae",
     };
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(userEndPoint, JSON.stringify(out));
     if (response.success) {
       question.llm_answer = response.result.explanation;
       return response.result.explanation;
@@ -565,7 +565,7 @@ async function getHelp(id, type) {
         : "No explanation available";
     }
 
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(genEndPoint, JSON.stringify(out));
     if (response.success) {
       if (type == "hint") {
         question.llm_hint = response.result.hint;
@@ -672,7 +672,7 @@ async function submitTest() {
   }
 
   try {
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(userEndPoint, JSON.stringify(out));
     if (response.success) {
       submitButton.style.display = "none";
       alert(response.message);

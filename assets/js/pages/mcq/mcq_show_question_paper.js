@@ -41,7 +41,7 @@ async function getQuestionPapers() {
       function: "mcqp",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       questions = response.result.qp;
       renderQuestionPapers();
@@ -132,7 +132,7 @@ async function getGroups(qp_id) {
       function: "gap",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       groups = response.result.groups;
       hideOverlay();
@@ -159,7 +159,7 @@ async function getUiTemplate(qp_id) {
       function: "guitn",
       org_id: loggedInUser.org_id,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       template = response.result.template || [];
       hideOverlay();
@@ -242,7 +242,7 @@ async function assignQpToGroup() {
       staff_id: loggedInUser.user_id,
     });
     showOverlay();
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(adminEndPoint, payload);
     if (response.success) {
       alert(response.message);
       assignQpForm.classList.remove("was-validated");
@@ -268,10 +268,7 @@ async function getQuestionPaperDetails(qp_id) {
       subject_question_paper_id: qp_id,
     };
 
-    let response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(payload),
-    );
+    let response = await postCall(adminEndPoint, JSON.stringify(payload));
     if (response.success) {
       let selectQp = questions.find((qp) => qp.sqp_id === qp_id);
       let question = response.result.questions;

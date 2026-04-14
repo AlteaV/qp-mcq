@@ -26,7 +26,7 @@ async function getOrgDashboardData() {
   showOverlay();
   try {
     let response = await postCall(
-      QuestionUploadEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "gadmd",
         org_id: loggedInUser.org_id,

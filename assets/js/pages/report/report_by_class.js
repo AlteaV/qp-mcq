@@ -406,7 +406,7 @@ async function getReport(subjectID = null, sectionID = null) {
 
   try {
     showOverlay();
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(reportEndPoint, JSON.stringify(out));
 
     if (response.success) {
       let reportData = response.result.report;
@@ -467,7 +467,7 @@ async function getGroupData() {
   showOverlay();
   try {
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "ggd",
         org_id: loggedInUser.org_id,

@@ -69,7 +69,7 @@ async function getGroupData() {
   showOverlay();
   try {
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "ggd",
         org_id: OrgID,
@@ -253,7 +253,7 @@ async function addGroup() {
       return;
     }
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "agd",
         group_name: grpName,
@@ -368,7 +368,7 @@ async function loadClassPage(classId) {
 
   try {
     let resp = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "pgcm",
         class_id: classId,
@@ -547,7 +547,7 @@ async function addMember() {
       staff_id: StaffID,
     };
 
-    let response = await postCall(groupMgmtEndPoint, JSON.stringify(out));
+    let response = await postCall(adminEndPoint, JSON.stringify(out));
     if (response.success) {
       pickedUserIds.clear();
       pickedByClass = {};
@@ -596,7 +596,7 @@ async function fetchAllOrganizationStudents() {
   showOverlay();
   try {
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({ function: "gcl", org_id: OrgID }),
     );
     if (response.success) {
@@ -694,7 +694,7 @@ async function updateGroup() {
       return;
     }
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "ugd",
         group_name: grpName,
@@ -743,7 +743,7 @@ async function deleteMember(user_id, group_id) {
   showOverlay();
   try {
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "dgm",
         group_id: group_id,
@@ -792,7 +792,7 @@ async function getGroupMembers(data) {
   showOverlay();
   try {
     let response = await postCall(
-      groupMgmtEndPoint,
+      adminEndPoint,
       JSON.stringify({
         function: "ggm",
         group_id: data["group_id"],

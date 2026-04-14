@@ -119,7 +119,7 @@ async function getQuestionPapers() {
     user_id: loggedInUser.user_id,
   };
   try {
-    let response = await postCall(QuestionUploadEndPoint, JSON.stringify(out));
+    let response = await postCall(userEndPoint, JSON.stringify(out));
     if (response.success) {
       showQuestionPapers(response.result.question_papers);
     }
@@ -131,27 +131,6 @@ async function getQuestionPapers() {
     return;
   }
 }
-
-// async function getQuestionPaperDetails(id, group_id, template_id) {
-//   let payload = {
-//     function: "gqftt",
-//     question_paper_id: id,
-//     group_id: group_id,
-//     template_id: template_id,
-//   };
-
-//   let response = await postCall(examCellEndPoint, JSON.stringify(payload));
-
-//   if (response.success) {
-//     questions = response.result.questions;
-//     questions.questions = JSON.parse(questions.questions);
-//     resultTable.style.display = "none";
-//     testTitle.innerText = `Test: ${questions.question_paper_name}`;
-//     submitButton.style.display = "inline-block";
-//     testType = questions.test_type;
-//     nextQuestion();
-//   }
-// }
 
 document.addEventListener("readystatechange", async () => {
   if (document.readyState === "complete") {

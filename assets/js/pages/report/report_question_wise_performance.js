@@ -7,8 +7,21 @@ let questionPaperDropDown = document.getElementById("question_paper");
 var downloadButton = document.getElementById("donwload_button");
 
 let qpAttendCount = document.getElementById("qp_attend_count");
+let reportSearch = document.getElementById("report_search");
 let qp = null;
 let report = null;
+
+reportSearch.addEventListener("input", (e) => {
+  if (report) {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredData = report.filter(
+      (row) =>
+        row.topic?.toLowerCase().includes(searchTerm) ||
+        row.subject?.toLowerCase().includes(searchTerm),
+    );
+    showReportSection(filteredData, true); // true indicates it's a filtered view
+  }
+});
 
 downloadButton.addEventListener("click", () => {
   let selectedQp = qp.find((q) => q.question_id == questionPaperDropDown.value);
@@ -18,6 +31,7 @@ downloadButton.addEventListener("click", () => {
     tableHeader: [
       [
         new TableStructure("S.NO"),
+        new TableStructure("Subject"),
         new TableStructure("Topic"),
         new TableStructure("Question"),
         new TableStructure("BTL Level"),
@@ -29,9 +43,21 @@ downloadButton.addEventListener("click", () => {
     ],
     tableBody: [],
   };
-  report.forEach((row, index) => {
+
+  // Use current filtered data if search text is present
+  const searchTerm = reportSearch.value.toLowerCase();
+  const dataToExport = searchTerm
+    ? report.filter(
+        (row) =>
+          row.topic?.toLowerCase().includes(searchTerm) ||
+          row.subject?.toLowerCase().includes(searchTerm),
+      )
+    : report;
+
+  dataToExport.forEach((row, index) => {
     tableData.tableBody.push([
       new TableStructure(index + 1),
+      new TableStructure(row.subject),
       new TableStructure(row.topic),
       new TableStructure(row.question, "", "", "", "text-align: left;"),
       new TableStructure(row.btl_level),
@@ -53,6 +79,7 @@ downloadButton.addEventListener("click", () => {
 
 viewReport.addEventListener("click", async () => {
   if (questionPaperDropDown.value) {
+    reportSearch.value = ""; // Reset search on new report
     await getReport();
   } else {
     alert("Please choose a question paper.");
@@ -63,20 +90,32 @@ questionPaperDropDown.addEventListener("change", () => {
   resetResult(fetchingDataSection, resultDiv);
 });
 
-async function showReportSection(data) {
-  fetchingDataSection.style.display = "none";
+async function showReportSection(data, isFiltered = false) {
+  if (!isFiltered) fetchingDataSection.style.display = "none";
+
   if (!data || data.length === 0) {
-    fetchingDataSection.innerHTML = "<p>There is no data</p>";
-    fetchingDataSection.style.display = "block";
-    resultDiv.style.display = "none";
+    if (!isFiltered) {
+      fetchingDataSection.innerHTML = "<p>There is no data</p>";
+      fetchingDataSection.style.display = "block";
+      resultDiv.style.display = "none";
+    } else {
+      resultTable.innerHTML =
+        "<tr><td colspan='9' class='text-center'>No matching results</td></tr>";
+    }
     hideOverlay();
     return;
+  }
+
+  // Topic Wise Sorting (Only sort if it's the full data load)
+  if (!isFiltered) {
+    data.sort((a, b) => (a.topic || "").localeCompare(b.topic || ""));
   }
 
   let tableData = {
     tableHeader: [
       [
         new TableStructure("S.NO"),
+        new TableStructure("Subject"),
         new TableStructure("Topic"),
         new TableStructure("Question"),
         new TableStructure("BTL Level"),
@@ -91,6 +130,7 @@ async function showReportSection(data) {
   data.forEach((row, index) => {
     tableData.tableBody.push([
       new TableStructure(index + 1),
+      new TableStructure(row.subject),
       new TableStructure(row.topic),
       new TableStructure(row.question, "", "", "", "text-align: left;"),
       new TableStructure(row.btl_level),
@@ -102,9 +142,12 @@ async function showReportSection(data) {
   });
 
   displayResult(tableData, resultTable);
-  qpAttendCount.innerHTML = `Total times attended: ${
-    data[0].total_attended + data[0].total_unattended
-  }`;
+  if (!isFiltered) {
+    qpAttendCount.innerHTML = `Total times attended: ${
+      data[0].total_attended + data[0].total_unattended
+    }`;
+  }
+
   try {
     if (window.MathJax) {
       if (typeof MathJax.typesetPromise === "function") {
@@ -147,7 +190,7 @@ async function getQuestionPaper() {
       org_id: loggedInUser.org_id,
     });
 
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
 
     if (response.success) {
       qp = response.result.qp;
@@ -168,7 +211,7 @@ async function getReport() {
       function: "gqwp",
       question_paper_id: questionPaperDropDown.value,
     });
-    let response = await postCall(QuestionUploadEndPoint, payload);
+    let response = await postCall(reportEndPoint, payload);
     if (response.success) {
       report = response.result.report;
       showReportSection(response.result.report);

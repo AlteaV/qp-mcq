@@ -172,10 +172,7 @@ async function handleOrganizationSignup() {
       levels: selectedStreams,
     };
 
-    let response = await postCall(
-      QuestionUploadEndPoint,
-      JSON.stringify(payload),
-    );
+    let response = await postCall(autEndPoint, JSON.stringify(payload));
     if (response.success) {
       alert("Organization registered successfully!");
       window.location.href = "login.html";
