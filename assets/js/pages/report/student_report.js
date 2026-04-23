@@ -17,9 +17,7 @@ class View {
         // Snapshot the selected test value BEFORE getTestList
         // rebuilds the dropdown and resets its value to ""
         const selectedTestId = this.testSelect.value || null;
-        if (this.controller.tests == null) {
-          await this.controller.getTestList(this.registerNumber.value);
-        }
+        await this.controller.getTestList(this.registerNumber.value);
         // Restore the selection the user had chosen
         if (selectedTestId) {
           this.testSelect.value = selectedTestId;
@@ -57,17 +55,37 @@ class View {
       tableBody: [],
     };
 
+    // Group subjects and their topics
+    const subjectMap = {};
     data.forEach((subjectObj) => {
+      const subjectName = subjectObj.subject;
+      const sectionName = subjectObj.section;
+
+      if (!subjectMap[subjectName]) {
+        subjectMap[subjectName] = [];
+      }
+
       const topics =
         typeof subjectObj.topics === "string"
           ? JSON.parse(subjectObj.topics)
           : subjectObj.topics;
 
+      if (Array.isArray(topics)) {
+        const topicsWithSection = topics.map((t) => ({
+          ...t,
+          section_name: sectionName,
+        }));
+        subjectMap[subjectName].push(...topicsWithSection);
+      }
+    });
+
+    Object.keys(subjectMap).forEach((subjectName) => {
+      const topics = subjectMap[subjectName];
       // 1. Subject Header Row
       let subjectHeaderRow = [];
       subjectHeaderRow.push(
         new TableStructure(
-          subjectObj.subject,
+          subjectName,
           7,
           "",
           "",
@@ -76,7 +94,7 @@ class View {
       );
       tableData.tableBody.push(subjectHeaderRow);
 
-      // 2. Column Headers using .push()
+      // 2. Column Headers
       let headerRow = [];
       headerRow.push(
         new TableStructure(
@@ -143,7 +161,7 @@ class View {
       );
       tableData.tableBody.push(headerRow);
 
-      // 3. Data Rows using .push()
+      // 3. Data Rows
       topics.forEach((topic, index) => {
         let row = [];
         row.push(
@@ -151,7 +169,7 @@ class View {
         );
         row.push(
           new TableStructure(
-            subjectObj.section || "N/A",
+            topic.section_name || "N/A",
             "",
             "",
             "",
@@ -210,7 +228,6 @@ class Controller {
     this.model = model;
     this.view = null;
     this.questions = [];
-    this.tests = null;
   }
 
   setView(view) {
@@ -256,11 +273,11 @@ class Controller {
         response.result.tests &&
         response.result.tests.length > 0
       ) {
-        this.tests = response.result.tests;
+        let tests = response.result.tests;
         let options = [
           { value: "", html: "All Tests (Overall)", selected: true },
         ];
-        this.tests.forEach((test) => {
+        tests.forEach((test) => {
           options.push({
             value: test.qp_id,
             html: test.name,
@@ -300,7 +317,27 @@ class Controller {
       let response = await postCall(reportEndPoint, payload);
 
       if (response.success) {
-        this.reports = response.result.report;
+        // this.reports = response.result.report;
+        this.reports = [
+          {
+            subject: "CHEMISTRY-1",
+            section: "Inorganic Chemistry",
+            topics:
+              '[{"topic_name": "Qualitative Analysis", "no_of_times_passed": 3, "no_of_wrong_answers": 2, "no_of_times_attempted": 5, "no_of_unattended_questions": 3}, {"topic_name": "Acid-Base Chemistry", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 1}, {"topic_name": "Electronic Effects", "no_of_times_passed": 1, "no_of_wrong_answers": 4, "no_of_times_attempted": 5, "no_of_unattended_questions": 3}, {"topic_name": "Isomerism", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}, {"topic_name": "Aldehydes, Ketones, Carboxylic Acids", "no_of_times_passed": 3, "no_of_wrong_answers": 8, "no_of_times_attempted": 11, "no_of_unattended_questions": 10}, {"topic_name": "Alkyl Halides", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 3}, {"topic_name": "Arenes", "no_of_times_passed": 0, "no_of_wrong_answers": 2, "no_of_times_attempted": 2, "no_of_unattended_questions": 0}, {"topic_name": "Alcohols", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 2}]',
+          },
+          {
+            subject: "Mathematics",
+            section: "Statistics",
+            topics:
+              '[{"topic_name": "Mean and Variance Change", "no_of_times_passed": 10, "no_of_wrong_answers": 5, "no_of_times_attempted": 15, "no_of_unattended_questions": 10}, {"topic_name": "Limits", "no_of_times_passed": 6, "no_of_wrong_answers": 1, "no_of_times_attempted": 7, "no_of_unattended_questions": 5}, {"topic_name": "Derivatives of Product Functions", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 5}, {"topic_name": "Local Maxima and Minima", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 1}, {"topic_name": "Graph Analysis", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 3}, {"topic_name": "Trigonometric Identities", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}]',
+          },
+          {
+            subject: "Physics",
+            section: "Magnetism",
+            topics:
+              '[{"topic_name": "Magnetic Field, Force on Charge/Current", "no_of_times_passed": 0, "no_of_wrong_answers": 2, "no_of_times_attempted": 2, "no_of_unattended_questions": 6}, {"topic_name": "Magnetic Force on Current Carrying Wire", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}, {"topic_name": "Ohm\'s Law, Kirchhoff\'s Laws", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 0}, {"topic_name": "Magnetic Field due to Current, Ampere\'s Law", "no_of_times_passed": 4, "no_of_wrong_answers": 6, "no_of_times_attempted": 10, "no_of_unattended_questions": 5}, {"topic_name": "Viscosity, Terminal Velocity", "no_of_times_passed": 1, "no_of_wrong_answers": 1, "no_of_times_attempted": 2, "no_of_unattended_questions": 0}, {"topic_name": "Fluid Dynamics", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 7}, {"topic_name": "surface energy/surface tension.", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 10}]',
+          },
+        ];
         this.view.showReportSection(this.reports);
       }
 

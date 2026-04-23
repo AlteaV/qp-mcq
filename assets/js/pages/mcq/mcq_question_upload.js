@@ -861,83 +861,9 @@ async function previewQuestions() {
     let response = await postCall(adminEndPoint, payload);
 
     if (response && response.success) {
-      let retryCount = 0;
-      let maxRetries = 10;
       scanId = response.result.id;
-
-      while (retryCount < maxRetries) {
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-
-        let retryResponse = await getScannedQuestions(response.result.id);
-
-        if (retryResponse.message === "Completed") {
-          questions = retryResponse.result.data.questions;
-          questions = questions.filter(
-            (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
-          );
-
-          if (retryResponse.result.type == "Mcq") {
-            sectionTopics = JSON.parse(retryResponse.result.data.subject);
-          } else {
-            sectionTopics = retryResponse.result.data.section_topic;
-          }
-          if (retryResponse.result.type == "GeneratedWithTopic") {
-            changePageType();
-          }
-          let event = new Event("change");
-          onlyQuestionsRadio.checked =
-            retryResponse.result.data.only_questions == 1;
-          questionsAndQPRadio.checked =
-            retryResponse.result.data.also_generate_qp == 1;
-          onlyQuestionsRadio.dispatchEvent(event);
-          qpPreviousYearRadio.checked =
-            retryResponse.result.data.previous_year_qp == 1;
-          qpCustomRadio.checked = retryResponse.result.data.custom_qp == 1;
-          qpPreviousYearRadio.dispatchEvent(event);
-          qpType = retryResponse.result.type;
-          levelDropDown.value = retryResponse.result.data.level;
-          if (retryResponse.result.data.category) {
-            renderCategoryOptions();
-            renderExamMonth();
-            renderExamYear();
-            category.value = retryResponse.result.data.category;
-            examMonth.value = retryResponse.result.data.exam_month;
-            examYear.value = retryResponse.result.data.exam_year;
-          }
-          qpName.value = retryResponse.result.data.qp_name;
-
-          if (retryResponse.result.data.subject_id) {
-            let selectedSubject = subjects.find(
-              (s) => s.id == retryResponse.result.data.subject_id,
-            );
-            if (selectedSubject) {
-              subject.value = selectedSubject.subject;
-              levelDropDown.value = selectedSubject.level;
-            }
-          } else {
-            subject.value = "All Subjects";
-          }
-
-          qpName.value = retryResponse.result.data.qp_name;
-          await showReportSection(questions);
-          return;
-        }
-
-        if (
-          retryResponse.message != "Processing" &&
-          retryResponse.message != "Completed"
-        ) {
-          alert(retryResponse.message);
-          hideOverlay();
-          return;
-        }
-        retryCount++;
-      }
-      if (retryCount === maxRetries) {
-        alert("Processing is taking longer than expected. Please wait.");
-        filterDiv.style.display = "none";
-        checkExistingScan();
-      }
+      filterDiv.style.display = "none";
+      checkExistingScan();
     } else {
       throw new Error("Server error");
     }
@@ -985,14 +911,50 @@ async function showReportSection(data) {
 
   questionsFormat = [];
   data.forEach((record, index) => {
-    const choices = record.choices || {};
+    let choices = parseChoices(record.choices) || {};
+
+    // // chek if choices is an object, if not try to parse it
+    // if (
+    //   typeof choices === "string" &&
+    //   choices.trim() !== "" &&
+    //   choices.trim() !== "None"
+    // ) {
+    //   try {
+    //     // 1. Try standard parsing first
+    //     choices = JSON.parse(choices);
+    //   } catch (err) {
+    //     try {
+    //       // 2. If it fails, fix single quotes and escaped quotes
+    //       // This converts {'a': '...'} to {"a": "..."}
+    //       let sanitized = choices
+    //         .replace(/'/g, '"') // Replace single quotes with double quotes
+    //         .replace(/\\"/g, "'"); // Handle cases like \"Particle's\" -> "Particle's"
+
+    //       choices = JSON.parse(sanitized);
+    //     } catch (innerErr) {
+    //       console.error(
+    //         "Failed to parse choices even after sanitization:",
+    //         innerErr,
+    //       );
+    //       // choices = {};
+    //     }
+    //   }
+    // }
 
     // Convert question markdown to HTML for display
-    let questionText = record.question;
-    if (typeof showdown !== "undefined") {
-      const converter = new showdown.Converter();
-      questionText = converter.makeHtml(record.question);
+    if (record.table) {
+      record.question = removeTableFromQuestion(record.question, record.table);
     }
+    let questionText = record.question;
+    questionText = renderQuestionText(record.question);
+
+    // if (typeof showdown !== "undefined") {
+    // const converter = new showdown.Converter();
+    // questionText = converter.makeHtml(record.question);
+    // questionText = renderMarkdownAndMath(questionText);
+    // questionText = cleanUnicodeSubscripts(questionText);
+    // questionText = wrapMathJax(questionText);
+    // }
 
     let questionHTML = `<div class="latex" style="font-size: 125%; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 10px;">${questionText}</div>`;
 
@@ -1010,6 +972,8 @@ async function showReportSection(data) {
     }
 
     if (record.table) {
+      console.log(record);
+
       questionHTML += renderTableFromMarkdown(record.table);
     }
     let editButton = createButton(
@@ -1118,13 +1082,7 @@ async function showReportSection(data) {
 
         // Convert choice markdown to HTML for display
         let choiceText = choices[key];
-        if (typeof showdown !== "undefined") {
-          const converter = new showdown.Converter();
-          choiceText = converter.makeHtml(choices[key]);
-          if (choiceText !== null) {
-            choiceText = choiceText.replace(/^<p>|<\/p>$/g, "");
-          }
-        }
+        choiceText = renderQuestionText(choiceText);
 
         choiceHTML += `
       <label for="${inputId}" style="display: flex; align-items: left; gap: 5px;">
@@ -1267,17 +1225,33 @@ async function showReportSection(data) {
     }
   }
 
+  // try {
+  //   if (window.MathJax) {
+  //     if (typeof MathJax.typesetPromise === "function") {
+  //       await MathJax.typesetPromise();
+  //     } else if (typeof MathJax.typeset === "function") {
+  //       MathJax.typeset();
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error("MathJax typeset error:", error);
+  //   alert("Error rendering mathematical expressions.");
+  // }
+
   try {
     if (window.MathJax) {
+      if (typeof MathJax.typesetClear === "function") {
+        MathJax.typesetClear([resultTable]);
+      }
+
       if (typeof MathJax.typesetPromise === "function") {
-        await MathJax.typesetPromise();
+        await MathJax.typesetPromise([resultTable]);
       } else if (typeof MathJax.typeset === "function") {
-        MathJax.typeset();
+        MathJax.typeset([resultTable]);
       }
     }
   } catch (error) {
     console.error("MathJax typeset error:", error);
-    alert("Error rendering mathematical expressions.");
   }
   hideOverlay();
 }

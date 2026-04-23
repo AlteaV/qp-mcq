@@ -246,11 +246,12 @@ function getBtlLevels() {
 function renderTableFromMarkdown(markdown) {
   if (!markdown) return "";
 
-  const converter = new showdown.Converter({
-    tables: true,
-  });
+  // const converter = new showdown.Converter({
+  //   tables: true,
+  // });
 
-  const htmlContent = converter.makeHtml(markdown);
+  // const htmlContent = converter.makeHtml(markdown);
+  let htmlContent = renderQuestionText(markdown);
 
   return `
     <div class="question-table">
@@ -308,4 +309,135 @@ function cleanUnicodeSubscripts(text) {
   });
 
   return cleaned;
+}
+
+function parseChoices(choices) {
+  if (!choices || typeof choices !== "string") return choices || {};
+
+  const raw = choices.trim();
+  if (raw === "" || raw === "None") return {};
+
+  try {
+    return JSON.parse(raw);
+  } catch (e) {}
+
+  try {
+    let sanitized = raw;
+
+    // Convert single-quoted keys to double-quoted keys    // This regex looks for patterns like 'key': and replaces them with "key":
+    sanitized = sanitized.replace(/'([^']+?)'\s*:/g, '"$1":');
+
+    // Convert single-quoted string values to double-quoted values
+    // while preserving apostrophes inside already double-quoted strings
+    sanitized = sanitized.replace(/:\s*'([^']*)'/g, ': "$1"');
+
+    // Also handle comma-separated single-quoted values
+    sanitized = sanitized.replace(/,\s*'([^']*)'/g, ', "$1"');
+
+    return JSON.parse(sanitized);
+  } catch (err) {
+    console.error("Failed to parse choices:", err, choices);
+    return {};
+  }
+}
+
+function renderQuestionText(question) {
+  const converter =
+    typeof showdown !== "undefined"
+      ? new showdown.Converter({
+          tables: true,
+          simplifiedAutoLink: true,
+          strikethrough: true,
+          tasklists: true,
+        })
+      : null;
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function normalizeAcademicLatex(text) {
+    let t = String(text || "");
+
+    t = t.replace(/\\\\/g, "\\");
+    t = t.replace(/\\mathrm\{H\}_2\\mathrm\{SO\}_4/g, "\\mathrm{H_2SO_4}");
+    t = t.replace(/\\mathrm\{BF\}_3/g, "\\mathrm{BF_3}");
+    t = t.replace(/\\mathrm\{NH\}_3/g, "\\mathrm{NH_3}");
+    t = t.replace(/\\mathrm\{PF\}_3/g, "\\mathrm{PF_3}");
+    t = t.replace(/\\mathrm\{I\}_3\^-/g, "\\mathrm{I_3^-}");
+    t = t.replace(/\\mathrm\{kJ\\ mol\}\^\{-1\}/g, "\\mathrm{kJ\\,mol^{-1}}");
+
+    return t;
+  }
+
+  function protectMath(text) {
+    const mathBlocks = [];
+
+    const protectedText = text.replace(
+      /(\$\$[\s\S]*?\$\$|\$[^$\n]+\$)/g,
+      (match) => {
+        const token = `MATHBLOCKTOKEN${mathBlocks.length}END`;
+        mathBlocks.push(match);
+        return token;
+      },
+    );
+
+    return { protectedText, mathBlocks };
+  }
+
+  function restoreMath(text, mathBlocks) {
+    let restored = text;
+
+    mathBlocks.forEach((math, i) => {
+      const token = `MATHBLOCKTOKEN${i}END`;
+      restored = restored.replaceAll(token, math);
+    });
+
+    return restored;
+  }
+
+  let output = normalizeAcademicLatex(question || "");
+
+  if (converter) {
+    const { protectedText, mathBlocks } = protectMath(output);
+    output = converter.makeHtml(protectedText);
+    output = output.replace(/^<p>|<\/p>$/g, "");
+    output = restoreMath(output, mathBlocks);
+  } else {
+    output = escapeHtml(output);
+  }
+
+  return output;
+}
+
+function removeTableFromQuestion(question, table) {
+  if (!question) return "";
+
+  let q = String(question);
+
+  // normalize escaped newlines into real newlines
+  q = q.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
+
+  // if a specific table string is provided, try removing it after normalization
+  if (table) {
+    let t = String(table).replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+
+    if (t) {
+      const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      q = q.replace(new RegExp(escaped, "g"), "");
+    }
+  }
+
+  // fallback: remove any markdown table block
+  q = q.replace(/\n?\|.+\|\n\|(?:\s*:?-+:?\s*\|)+\n(?:\|.*\|\n?)*/g, "\n");
+
+  // cleanup extra blank lines
+  q = q.replace(/\n{3,}/g, "\n\n").trim();
+
+  return q;
 }

@@ -128,18 +128,13 @@ function showReportSection(data) {
     tableData.tableHeader[0].push(new TableStructure(`Total Questions`));
     tableData.tableHeader[0].push(new TableStructure(`Total Mark Obtained`));
   } else {
-    let totalQues = null;
-    for (let i = 0; i < data.length; i++) {
-      let element = data[i];
-      if (element.total_questions) {
-        totalQues = element.total_questions;
-        break;
-      }
-    }
+    let outOfMarks = data.length > 0 ? data[0].out_of_mark : 0;
     tableData.tableHeader[0].push(new TableStructure("User Name"));
     tableData.tableHeader[0].push(new TableStructure("Email"));
     tableData.tableHeader[0].push(
-      new TableStructure(`Total Score<br><small>(out of ${totalQues})</small>`),
+      new TableStructure(
+        `Total Score<br><small>(out of ${outOfMarks})</small>`,
+      ),
     );
   }
 
@@ -157,8 +152,8 @@ function showReportSection(data) {
     let temp = [];
     temp.push(new TableStructure(index + 1));
     if (loggedInUser.type == "TestTaker") {
-      temp.push(new TableStructure(row.name));
-      temp.push(new TableStructure(row.total_questions));
+      temp.push(new TableStructure(row.user_name));
+      temp.push(new TableStructure(row.out_of_mark));
       temp.push(new TableStructure(row.total_score));
     } else {
       temp.push(new TableStructure(row.user_name));

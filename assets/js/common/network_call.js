@@ -153,6 +153,7 @@ function postCallPreProcess(functionName) {
     functionName == "ss" ||
     functionName == "sqg" ||
     functionName == "ghg" ||
+    // functionName == "sqtm" ||
     functionName == ""
   ) {
     return genEndPoint;
