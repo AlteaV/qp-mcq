@@ -318,12 +318,14 @@ async function displayQP(qp_id) {
   };
 
   data.forEach((record, index) => {
-    let choices = record.choices;
+    let choices = parseChoices(record.choices) || {};
 
     let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
     for (let key in choices) {
       const inputId = `choices_${record.question_id}`;
+      let choiceText = choices[key];
+      choiceText = renderQuestionText(choiceText);
 
       choiceHTML += `
                     <label for="${inputId}" style="display: flex; align-items: left; gap: 5px;">
@@ -334,7 +336,7 @@ async function displayQP(qp_id) {
                             value="${key}" 
                         />
                         <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
-                            ${choices[key]}
+                            ${choiceText}
                         </span>
                     </label>`;
     }

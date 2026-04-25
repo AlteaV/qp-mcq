@@ -567,6 +567,7 @@ async function renderQuestionsPage() {
       `.options-container-${q.id}`,
     );
     if (q.question_type == "Mcq") {
+      q.options = parseChoices(q.options) || {};
       Object.entries(q.options).forEach(([key, value]) => {
         const optionDiv = document.createElement("div");
         optionDiv.className = "option-item";

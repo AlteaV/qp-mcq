@@ -514,6 +514,16 @@ function handleExistingScan(data) {
           (q) => q.question_type == "Mcq" || q.question_type == "Numerical",
         );
 
+        if (questions.length == 0) {
+          await deleteScannedData();
+          alert(
+            "No valid questions found. Please ensure the document contains Multiple Choice (MCQ) or Numerical questions.",
+          );
+          await checkExistingScan();
+          hideOverlay();
+          return;
+        }
+
         if (retryResponse.result.type == "Mcq") {
           if (typeof retryResponse.result.data.subject == "string") {
             sectionTopics = JSON.parse(retryResponse.result.data.subject);
