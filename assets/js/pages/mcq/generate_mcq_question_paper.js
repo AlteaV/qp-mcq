@@ -24,13 +24,14 @@ function generateQuestionPaper(questions, templateId) {
 }
 
 function showSwapQuestions(swapQuestion, index) {
+  let choicesInline = "";
   if (swapQuestion.choices) {
-    try {
-      let parsed = JSON.parse(swapQuestion.choices);
+    let parsed = parseChoices(swapQuestion.choices) || {};
+    if (Object.keys(parsed).length > 0) {
       choicesInline = Object.keys(parsed)
-        .map((key) => `${key}) ${parsed[key]}`)
+        .map((key) => `${key}) ${renderQuestionText(parsed[key])}`)
         .join(" &nbsp;&nbsp; ");
-    } catch {
+    } else {
       choicesInline = swapQuestion.choices;
     }
   }
@@ -69,19 +70,13 @@ async function createQuestions() {
   generatedQuestions.forEach((q) => {
     let choicesInline = "";
     if (q.question_type == "Mcq") {
-      if (q.choices && typeof q.choices === "string") {
-        try {
-          let parsed = JSON.parse(q.choices);
-          choicesInline = Object.keys(parsed)
-            .map((key) => `${key})${parsed[key]}`)
-            .join(" &nbsp;&nbsp; ");
-        } catch {
-          choicesInline = q.choices;
-        }
-      } else if (q.choices && typeof q.choices === "object") {
-        choicesInline = Object.keys(q.choices)
-          .map((key) => `${key}) ${q.choices[key]}`)
+      let parsed = parseChoices(q.choices) || {};
+      if (Object.keys(parsed).length > 0) {
+        choicesInline = Object.keys(parsed)
+          .map((key) => `${key}) ${renderQuestionText(parsed[key])}`)
           .join(" &nbsp;&nbsp; ");
+      } else {
+        choicesInline = q.choices || "";
       }
     }
 
@@ -104,7 +99,7 @@ async function createQuestions() {
       <tr>
         <td>${q.number}</td>
         <td style="text-align: left;">
-          <p class="latex">${q.question}</p>
+          <p class="latex">${renderQuestionText(q.question)}</p>
           <p class="latex">${choicesInline}</p>
           ${tableHtml}
           ${imageHtml}

@@ -69,14 +69,7 @@ async function showIndividualPerformanceSection(data) {
       isCorrect = "No";
     }
 
-    let choices = row.choices;
-    if (typeof choices === "string") {
-      try {
-        choices = JSON.parse(choices);
-      } catch {
-        choices = {};
-      }
-    }
+    let choices = parseChoices(row.choices) || {};
 
     let choiceHTML = `
       <div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">
@@ -158,7 +151,7 @@ async function showIndividualPerformanceSection(data) {
             disabled
           />
           <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
-            ${choices[key]}
+            ${renderQuestionText(choices[key])}
           </span>
         </label>
       `;
@@ -177,7 +170,7 @@ async function showIndividualPerformanceSection(data) {
     let questionHTML = `
                 <div style="margin-bottom: 20px;">
                     <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
-                    ${row.question}
+                    ${renderQuestionText(row.question)}
                     </p>
 
                     ${row.table ? `<p>${renderTableFromMarkdown(row.table)}</p>` : ""}

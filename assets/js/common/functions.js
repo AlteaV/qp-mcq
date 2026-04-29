@@ -318,7 +318,11 @@ function parseChoices(choices) {
   if (raw === "" || raw === "None") return {};
 
   try {
-    return JSON.parse(raw);
+    let parsed = JSON.parse(raw);
+    if (typeof parsed === "string") {
+      return parseChoices(parsed);
+    }
+    return parsed;
   } catch (e) {}
 
   try {
@@ -334,7 +338,11 @@ function parseChoices(choices) {
     // Also handle comma-separated single-quoted values
     sanitized = sanitized.replace(/,\s*'([^']*)'/g, ', "$1"');
 
-    return JSON.parse(sanitized);
+    let parsed = JSON.parse(sanitized);
+    if (typeof parsed === "string") {
+      return parseChoices(parsed);
+    }
+    return parsed;
   } catch (err) {
     console.error("Failed to parse choices:", err, choices);
     return {};
