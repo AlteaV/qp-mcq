@@ -113,21 +113,6 @@
                                       Please enter duration
                                     </div>
                                   </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                  <div class="col">
-                                    <label class="form-label required">
-                                      No. of Questions to Display at Once
-                                    </label>
-                                    <input
-                                      type="number"
-                                      class="form-control"
-                                      id="questions_per_page"
-                                      min="1"
-                                      required
-                                    />
-                                  </div>
                                   <div class="col">
                                     <label class="form-label required"
                                       >Show Timer</label
@@ -147,6 +132,18 @@
                                         Don't Show Timer
                                       </option>
                                     </select>
+                                  </div>
+                                  <div class="col">
+                                    <label class="form-label required">
+                                      No. of Questions to Display at Once
+                                    </label>
+                                    <input
+                                      type="number"
+                                      class="form-control"
+                                      id="questions_per_page"
+                                      min="1"
+                                      required
+                                    />
                                   </div>
                                 </div>
 
@@ -294,6 +291,83 @@
                                         <label
                                           class="form-check-label"
                                           for="final_score_no"
+                                          >No</label
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                  <div class="col">
+                                    <label class="form-label required"
+                                      >Shuffle Answer</label
+                                    >
+                                    <div class="mt-1">
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="shuffle_answer"
+                                          id="shuffle_answer_yes"
+                                          value="Y"
+                                          checked
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="shuffle_answer_yes"
+                                          >Yes</label
+                                        >
+                                      </div>
+
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="shuffle_answer"
+                                          id="shuffle_answer_no"
+                                          value="N"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="shuffle_answer_no"
+                                          >No</label
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col">
+                                    <label class="form-label required">
+                                      Allow user to flag wrong question?</label
+                                    >
+                                    <div class="mt-1">
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="flag_wrong_question"
+                                          id="flag_wrong_question_yes"
+                                          value="Y"
+                                          checked
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="flag_wrong_question_yes"
+                                          >Yes</label
+                                        >
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="flag_wrong_question"
+                                          id="flag_wrong_question_no"
+                                          value="N"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="flag_wrong_question_no"
                                           >No</label
                                         >
                                       </div>

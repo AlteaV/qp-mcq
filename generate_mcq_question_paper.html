@@ -58,12 +58,19 @@
                             style="padding-bottom: 50px; display: none"
                             id="add_question_button_div"
                           >
-                            <div class="col mb-2" style="align-self: flex-end">
+                            <div class="col-auto" style="align-self: center">
+                              <i
+                                class="fa fa-arrow-left"
+                                aria-hidden="true"
+                                onclick="changeTemplate()"
+                              ></i>
+                            </div>
+                            <div class="col" style="align-self: flex-end">
                               <input
                                 class="btn btn-primary"
                                 type="button"
-                                value="New Question"
-                                onclick="newQuestion()"
+                                value="Go Back"
+                                onclick="changeTemplate()"
                               />
                             </div>
                           </div>
@@ -72,85 +79,7 @@
                             class="container"
                             id="questions_div"
                             style="display: none"
-                          >
-                            <div
-                              class="row"
-                              style="padding-bottom: 50px"
-                              id="add_question_button_div"
-                            >
-                              <div class="col-auto" style="align-self: center">
-                                <i
-                                  class="fa fa-arrow-left"
-                                  aria-hidden="true"
-                                  onclick="showTemplateDiv()"
-                                ></i>
-                              </div>
-                              <div class="col" style="align-self: flex-end">
-                                <input
-                                  class="btn btn-primary"
-                                  type="button"
-                                  value="Change Template"
-                                  onclick="showTemplateDiv()"
-                                />
-                              </div>
-                            </div>
-
-                            <div
-                              class="container"
-                              id="fetching_question"
-                              style="display: none"
-                            >
-                              <p>Fetching Questions</p>
-                            </div>
-
-                            <div id="sectionsContainer" class="mb-5"></div>
-
-                            <div
-                              class="row"
-                              style="padding-bottom: 50px"
-                              id="add_question_button_div"
-                            >
-                              <div class="col-3">
-                                <label
-                                  for="question_paper_name"
-                                  class="col-form-label required"
-                                  >Question Paper Name</label
-                                >
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  id="question_paper_name"
-                                  name="question_paper_name"
-                                  placeholder=""
-                                  required
-                                />
-                              </div>
-                              <div class="col-3">
-                                <label
-                                  for="selected_subject"
-                                  class="col-form-label required"
-                                  >Selected Subject</label
-                                >
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  id="selected_subject"
-                                  name="selected_subject"
-                                  placeholder=""
-                                  required
-                                  disabled
-                                />
-                              </div>
-                              <div class="col" style="align-self: flex-end">
-                                <input
-                                  class="btn btn-primary"
-                                  type="button"
-                                  value="Save Question"
-                                  onclick="getQuestionId()"
-                                />
-                              </div>
-                            </div>
-                          </div>
+                          ></div>
                         </div>
                       </div>
                     </div>

@@ -346,7 +346,7 @@ async function displayQP(qp_id) {
     let questionHTML = `
                 <div>
                     <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
-                         ${record.question}
+                         ${renderQuestionText(record.question)}
                     </p>
                     ${choiceHTML}
                 </div>
@@ -363,9 +363,9 @@ async function displayQP(qp_id) {
   try {
     if (window.MathJax) {
       if (typeof MathJax.typesetPromise === "function") {
-        await MathJax.typesetPromise();
+        await MathJax.typesetPromise([qpTable]);
       } else if (typeof MathJax.typeset === "function") {
-        MathJax.typeset();
+        MathJax.typeset([qpTable]);
       }
     }
   } catch (error) {

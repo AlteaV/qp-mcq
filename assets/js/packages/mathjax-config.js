@@ -3,6 +3,7 @@ window.MathJax = {
     inlineMath: [
       ["$", "$"],
       ["\\(", "\\)"],
+      ["(", ")"],
     ],
     displayMath: [
       ["$$", "$$"],

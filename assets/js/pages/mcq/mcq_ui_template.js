@@ -51,6 +51,14 @@ var disableRightClickNo = document.getElementById("disable_right_click_no");
 var isDefaultYes = document.getElementById("is_default_yes");
 var isDefaultNo = document.getElementById("is_default_no");
 
+// Is Default Radio
+var flagWrongQuestionYes = document.getElementById("flag_wrong_question_yes");
+var flagWrongQuestionNo = document.getElementById("flag_wrong_question_no");
+
+// Is Default Radio
+var shuffleAnswerYes = document.getElementById("shuffle_answer_yes");
+var shuffleAnswerNo = document.getElementById("shuffle_answer_no");
+
 positiveMark.disabled = true;
 negativeMark.disabled = true;
 
@@ -144,6 +152,14 @@ function getRadioValue(name) {
     if (finalScoreYes.checked) return "Y";
     if (finalScoreNo.checked) return "N";
     return null;
+  } else if (name === "shuffle_answer") {
+    if (shuffleAnswerYes.checked) return "Y";
+    if (shuffleAnswerNo.checked) return "N";
+    return null;
+  } else if (name === "flag_wrong_question") {
+    if (flagWrongQuestionYes.checked) return "Y";
+    if (flagWrongQuestionNo.checked) return "N";
+    return null;
   }
   return null;
 }
@@ -190,6 +206,12 @@ function setRadioValue(name, value) {
   } else if (name === "final_score") {
     finalScoreYes.checked = value === "Y";
     finalScoreNo.checked = value === "N" || value == null;
+  } else if (name === "shuffle_answer") {
+    shuffleAnswerYes.checked = value === "Y";
+    shuffleAnswerNo.checked = value === "N" || value == null;
+  } else if (name === "flag_wrong_question") {
+    flagWrongQuestionYes.checked = value === "Y";
+    flagWrongQuestionNo.checked = value === "N" || value == null;
   }
 }
 
@@ -247,6 +269,8 @@ function showResult(data) {
       setRadioValue("disable_right_click", data.disable_right_click);
       setRadioValue("is_default", data.is_default);
       setRadioValue("final_score", data.is_show_final_score);
+      setRadioValue("shuffle_answer", data.shuffle_answer);
+      setRadioValue("flag_wrong_question", data.flag_wrong_question);
 
       if (data.custom_mark) {
         let parsedMark =
@@ -410,6 +434,8 @@ async function managUiTemplate() {
       full_screen: getRadioValue("full_screen"),
       disable_right_click: getRadioValue("disable_right_click"),
       display_final_score: getRadioValue("final_score"),
+      flag_wrong_question: getRadioValue("flag_wrong_question"),
+      shuffle_answer: getRadioValue("shuffle_answer"),
       custom_mark: customMark,
       is_default: isDefaultValue,
     };
@@ -448,6 +474,8 @@ async function managUiTemplate() {
             template.can_skip =
               questionLayoutValue === "N" ? null : getRadioValue("can_skip");
             template.is_show_final_score = getRadioValue("final_score");
+            template.flag_wrong_question = getRadioValue("flag_wrong_question");
+            template.shuffle_answer = getRadioValue("shuffle_answer");
             template.custom_mark = customMark;
           }
         });
@@ -470,6 +498,8 @@ async function managUiTemplate() {
           disable_right_click: getRadioValue("disable_right_click"),
           is_default: isDefaultValue,
           is_show_final_score: getRadioValue("final_score"),
+          flag_wrong_question: getRadioValue("flag_wrong_question"),
+          shuffle_answer: getRadioValue("shuffle_answer"),
           custom_mark: customMark ? JSON.stringify(customMark) : null,
         });
       }

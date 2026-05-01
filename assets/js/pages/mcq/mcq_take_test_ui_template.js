@@ -487,6 +487,28 @@ async function renderQuestionsPage() {
       type = "Enter your answer:";
     }
 
+    let markAsWrong = `
+      <button class="mark-as-wrong-btn" data-qid="${q.id}" style="background:#dc3545;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:18px;font-weight:600;margin-left:auto;">
+        Mark as Wrong
+      </button>`;
+
+    if (
+      (!"flag_wrong_question") in templateConfig ||
+      templateConfig.flag_wrong_question != "Y"
+    ) {
+      markAsWrong = ``;
+    }
+
+    if (
+      "wrong_question" in questionStates[q.id] &&
+      questionStates[q.id].wrong_question
+    ) {
+      markAsWrong = `
+      <button disabled style="padding:6px 12px;border-radius:4px;cursor:pointer;font-size:18px;font-weight:600;margin-left:auto;cursor:not-allowed">
+        Marked as Wrong
+      </button>`;
+    }
+
     questionDiv.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <div style="font-weight: 600; font-size: 16px;">
@@ -494,7 +516,7 @@ async function renderQuestionsPage() {
         </div>
       </div>
       
-      <div style="margin-bottom: 15px; line-height: 1.8; white-space: pre-wrap; color: #333;">${cleanUnicodeSubscripts(
+      <div style="margin-bottom: 15px; line-height: 1.8; white-space: pre-wrap; color: #333;">${renderQuestionText(
         q.question,
       )}</div>
 
@@ -551,13 +573,16 @@ async function renderQuestionsPage() {
         }" style="background:#6c757d;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:18px;font-weight:600;">
           Reset
         </button>
+        ${markAsWrong}
       </div>`
           : `
       <div style="margin-top:15px;">
         <button class="reset-question-btn" data-qid="${q.id}" style="background:#6c757d;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:18px;font-weight:600;">
           Reset
         </button>
-      </div>`
+      </div>
+        ${markAsWrong}
+      `
       }
     `;
 
@@ -568,6 +593,7 @@ async function renderQuestionsPage() {
     );
     if (q.question_type == "Mcq") {
       q.options = parseChoices(q.options) || {};
+      let optionsArray = [];
       Object.entries(q.options).forEach(([key, value]) => {
         const optionDiv = document.createElement("div");
         optionDiv.className = "option-item";
@@ -579,12 +605,18 @@ async function renderQuestionsPage() {
       }" value="${key}" style="margin-right: 12px; width: 18px; height: 18px; cursor: pointer;" ${
         state.selectedAnswer === key ? "checked" : ""
       }>
-      <span style="font-weight: 600; margin-right: 8px;">${key}.</span>
-      <span>${value}</span>
+      <span>${renderQuestionText(value)}</span>
       `;
         optionDiv.onclick = () => selectAnswer(q.id, key);
-        optionsContainer.appendChild(optionDiv);
+        // optionsContainer.appendChild(optionDiv);
+        optionsArray.push(optionDiv);
       });
+      if ("shuffle_array" in templateConfig && templateConfig.shuffle_array) {
+        optionsArray = shuffleChoices(optionsArray);
+      }
+      for (let option in optionsArray) {
+        optionsContainer.appendChild(optionsArray[option]);
+      }
     } else if (q.question_type == "Numerical") {
       const optionDiv = document.createElement("div");
       optionDiv.className = "option-item";
@@ -665,6 +697,21 @@ async function renderQuestionsPage() {
         questionStates[q.id].isReviewMarked = false;
         renderQuestionsPage();
         updateCounts();
+      };
+    }
+
+    const markWrongBtn = questionDiv.querySelector(`.mark-as-wrong-btn`);
+    if (markWrongBtn) {
+      markWrongBtn.onclick = () => {
+        markQuestionAsWrong(q.id);
+
+        markWrongBtn.disabled = true;
+        markWrongBtn.innerText = "Marked as Wrong";
+
+        markWrongBtn.style.background = "#e9ecef";
+        markWrongBtn.style.color = "#6c757d";
+        markWrongBtn.style.cursor = "not-allowed";
+        markWrongBtn.style.border = "1px solid #dee2e6";
       };
     }
   });
@@ -785,151 +832,171 @@ async function submitTest() {
     function: "uad",
   };
 
+  console.log(payload);
+  return;
+
+  // try {
+  //   let response = await postCall(userEndPoint, JSON.stringify(payload));
+
+  //   if (response.success) {
+  //     let final_score = response.result.final_score;
+
+  //     if (showfinalScoreUser == "Y") {
+  //       hideOverlay();
+  //       leftPanel.style.display = "none";
+  //       rightPanel.style.display = "none";
+  //       legend.style.display = "none";
+  //       examFooter.style.display = "none";
+  //       timer.style.display = "none";
+
+  //       const scoreContainer = document.createElement("div");
+  //       scoreContainer.id = "finalScoreContainer";
+  //       scoreContainer.style.cssText = `
+  //         position: fixed;
+  //         top: 0;
+  //         left: 0;
+  //         width: 100%;
+  //         height: 100vh;
+  //         display: flex;
+  //         flex-direction: column;
+  //         justify-content: center;
+  //         align-items: center;
+  //         background: #ffffff;
+  //         z-index: 10000;
+  //       `;
+
+  //       scoreContainer.innerHTML = `
+  //         <div style="
+  //           background: white;
+  //           border-radius: 20px;
+  //           padding: 50px;
+  //           box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  //           text-align: center;
+  //           max-width: 500px;
+  //           animation: slideIn 0.5s ease-out;
+  //         ">
+  //           <div style="
+  //             width: 80px;
+  //             height: 80px;
+  //             margin: 0 auto 30px;
+  //             background: #22c55e;
+  //             border-radius: 50%;
+  //             display: flex;
+  //             align-items: center;
+  //             justify-content: center;
+  //           ">
+  //             <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  //               <polyline points="20 6 9 17 4 12"></polyline>
+  //             </svg>
+  //           </div>
+
+  //           <h1 style="
+  //             font-size: 32px;
+  //             font-weight: 700;
+  //             color: #2d3748;
+  //             margin-bottom: 15px;
+  //           ">Test Submitted Successfully!</h1>
+
+  //           <p style="
+  //             font-size: 16px;
+  //             color: #718096;
+  //             margin-bottom: 40px;
+  //           ">Your test has been submitted. Here's your result:</p>
+
+  //           <div style="
+  //             background: #f7fafc;
+  //             border-radius: 15px;
+  //             padding: 30px;
+  //             margin-bottom: 30px;
+  //           ">
+  //             <div style="margin-bottom: 20px;">
+  //               <div style="
+  //                 font-size: 18px;
+  //                 color: #718096;
+  //                 margin-bottom: 10px;
+  //               ">Your Score</div>
+  //               <div style="
+  //                 font-size: 48px;
+  //                 font-weight: 700;
+  //                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  //                 -webkit-background-clip: text;
+  //                 -webkit-text-fill-color: transparent;
+  //                 background-clip: text;
+  //               ">${final_score.obtained_mark} / ${final_score.total_mark}</div>
+  //             </div>
+
+  //           <button onclick="window.location.replace('take_mcq_test.html')"  style="
+  //             background: linear-gradient(135deg, #90a0eaff 0%, #8460a8ff 100%);
+  //             color: white;
+  //             border: none;
+  //             padding: 15px 40px;
+  //             border-radius: 10px;
+  //             font-size: 16px;
+  //             font-weight: 600;
+  //             cursor: pointer;
+  //             transition: transform 0.2s;
+  //           " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  //             Close
+  //           </button>
+  //         </div>
+
+  //         <style>
+  //           @keyframes slideIn {
+  //             from {
+  //               opacity: 0;
+  //               transform: translateY(-50px);
+  //             }
+  //             to {
+  //               opacity: 1;
+  //               transform: translateY(0);
+  //             }
+  //           }
+  //         </style>
+  //       `;
+
+  //       document.body.appendChild(scoreContainer);
+  //     } else {
+  //       await Swal.fire({
+  //         icon: "success",
+  //         title: "Test Submitted",
+  //         text:
+  //           response.message || "Your test has been submitted successfully!",
+  //         confirmButtonText: "OK",
+  //         allowOutsideClick: false,
+  //       });
+
+  //       setTimeout(() => {
+  //         window.close();
+
+  //         if (!window.closed) {
+  //           window.location.href = "take_mcq_test.html";
+  //         }
+  //       }, 1000);
+  //     }
+  //   } else {
+  //     throw new Error(response.message || "Failed to submit test");
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   alert("Error submitting test: " + error.message);
+  //   hideOverlay();
+  // }
+}
+
+async function markQuestionAsWrong(qId) {
+  const payload = {
+    question_id: qId,
+    user_id: loggedInUser.user_id,
+    function: "mqaw",
+  };
   try {
     let response = await postCall(userEndPoint, JSON.stringify(payload));
 
     if (response.success) {
-      let final_score = response.result.final_score;
-
-      if (showfinalScoreUser == "Y") {
-        hideOverlay();
-        leftPanel.style.display = "none";
-        rightPanel.style.display = "none";
-        legend.style.display = "none";
-        examFooter.style.display = "none";
-        timer.style.display = "none";
-
-        const scoreContainer = document.createElement("div");
-        scoreContainer.id = "finalScoreContainer";
-        scoreContainer.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          background: #ffffff;
-          z-index: 10000;
-        `;
-
-        scoreContainer.innerHTML = `
-          <div style="
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 500px;
-            animation: slideIn 0.5s ease-out;
-          ">
-            <div style="
-              width: 80px;
-              height: 80px;
-              margin: 0 auto 30px;
-              background: #22c55e; 
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            ">
-              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            
-            <h1 style="
-              font-size: 32px;
-              font-weight: 700;
-              color: #2d3748;
-              margin-bottom: 15px;
-            ">Test Submitted Successfully!</h1>
-            
-            <p style="
-              font-size: 16px;
-              color: #718096;
-              margin-bottom: 40px;
-            ">Your test has been submitted. Here's your result:</p>
-            
-            <div style="
-              background: #f7fafc;
-              border-radius: 15px;
-              padding: 30px;
-              margin-bottom: 30px;
-            ">
-              <div style="margin-bottom: 20px;">
-                <div style="
-                  font-size: 18px;
-                  color: #718096;
-                  margin-bottom: 10px;
-                ">Your Score</div>
-                <div style="
-                  font-size: 48px;
-                  font-weight: 700;
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                  background-clip: text;
-                ">${final_score.obtained_mark} / ${final_score.total_mark}</div>
-              </div>
-              
-            <button onclick="window.location.replace('take_mcq_test.html')"  style="
-              background: linear-gradient(135deg, #90a0eaff 0%, #8460a8ff 100%);
-              color: white;
-              border: none;
-              padding: 15px 40px;
-              border-radius: 10px;
-              font-size: 16px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: transform 0.2s;
-            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-              Close
-            </button>
-          </div>
-          
-          <style>
-            @keyframes slideIn {
-              from {
-                opacity: 0;
-                transform: translateY(-50px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          </style>
-        `;
-
-        document.body.appendChild(scoreContainer);
-      } else {
-        await Swal.fire({
-          icon: "success",
-          title: "Test Submitted",
-          text:
-            response.message || "Your test has been submitted successfully!",
-          confirmButtonText: "OK",
-          allowOutsideClick: false,
-        });
-
-        setTimeout(() => {
-          window.close();
-
-          if (!window.closed) {
-            window.location.href = "take_mcq_test.html";
-          }
-        }, 1000);
-      }
-    } else {
-      throw new Error(response.message || "Failed to submit test");
+      questionStates[qId].wrong_question = true;
     }
   } catch (error) {
     console.error(error);
-    alert("Error submitting test: " + error.message);
-    hideOverlay();
   }
 }
 

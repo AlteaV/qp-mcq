@@ -167,6 +167,7 @@ function postCallPreProcess(functionName) {
     functionName == "gqftt" ||
     functionName == "itad" ||
     functionName == "uad" ||
+    functionName == "mqaw" ||
     functionName == ""
   ) {
     return userEndPoint;

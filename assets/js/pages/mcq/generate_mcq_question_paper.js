@@ -2,6 +2,8 @@ let generatedQuestions = [];
 let swapSelections = [];
 let currentTemplateId = null;
 
+let addQuestionButtonDiv = document.getElementById("add_question_button_div");
+
 function generateQuestionPaper(questions, templateId) {
   currentTemplateId = templateId;
   generatedQuestions = questions.map((q, i) => {
@@ -52,8 +54,10 @@ function showSwapQuestions(swapQuestion, index) {
 }
 
 async function createQuestions() {
+  // <button id="selectparameter" class="btn btn-primary">
+  //   Change Template
+  // </button>;
   let html = `
-    <button id="selectparameter" class="btn btn-primary">Change Template</button>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -125,11 +129,14 @@ async function createQuestions() {
       <div class="col mt-3 d-flex justify-content-end gap-2">
       <input type="text" id="qp_name" class="form-control" placeholder="Enter Question Paper Name" style="max-width: 300px;" />
           <button id="questionupload" class="btn btn-primary">Save Question Paper</button>
+          <button id="cancel" class="btn btn-primary" onClick="changeTemplate()">Cancel</button>
       </div>
     </div>
   `;
 
   $("#questions_div").html(html);
+
+  $("#add_question_button_div").show();
 
   $(".swap-btn")
     .off("click")
@@ -181,17 +188,21 @@ async function createQuestions() {
     .on("click", function () {
       mcqQuestioPaper();
     });
+  const resultTable = document.getElementById("questions_div");
   try {
     if (window.MathJax) {
+      if (typeof MathJax.typesetClear === "function") {
+        MathJax.typesetClear([resultTable]);
+      }
+
       if (typeof MathJax.typesetPromise === "function") {
-        await MathJax.typesetPromise();
+        await MathJax.typesetPromise([resultTable]);
       } else if (typeof MathJax.typeset === "function") {
-        MathJax.typeset();
+        MathJax.typeset([resultTable]);
       }
     }
   } catch (error) {
     console.error("MathJax typeset error:", error);
-    alert("Error rendering mathematical expressions.");
   }
   hideOverlay();
 }

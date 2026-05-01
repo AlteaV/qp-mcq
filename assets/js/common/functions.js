@@ -357,6 +357,7 @@ function renderQuestionText(question) {
           simplifiedAutoLink: true,
           strikethrough: true,
           tasklists: true,
+          backslashEscapesHTML: false, // Prevents showdown from eating backslashes
         })
       : null;
 
@@ -372,7 +373,21 @@ function renderQuestionText(question) {
   function normalizeAcademicLatex(text) {
     let t = String(text || "");
 
-    t = t.replace(/\\\\/g, "\\");
+    // 1. Handle "Backslash Inflation": Collapse multiple backslashes into single ones
+    // This turns \\\\\\\\( into \(
+    t = t.replace(/\\+/g, "\\");
+
+    // t = t.replace(/\\cosec/g, "\\csc");
+
+    // 2. Fix Mismatched Delimiters: Ensure ( ... \) becomes \( ... \)
+    if (t.includes("\\)") && t.includes("(") && !t.includes("\\(")) {
+      t = t.replace("(", "\\(");
+    }
+
+    t = t.replace(/\\mathrm\{cm\}/g, "\\text{ cm}");
+    t = t.replace(/\\mathrm\{T\}/g, "\\text{ T}");
+
+    // 3. Chemistry specific formatting fixes
     t = t.replace(/\\mathrm\{H\}_2\\mathrm\{SO\}_4/g, "\\mathrm{H_2SO_4}");
     t = t.replace(/\\mathrm\{BF\}_3/g, "\\mathrm{BF_3}");
     t = t.replace(/\\mathrm\{NH\}_3/g, "\\mathrm{NH_3}");
@@ -386,41 +401,49 @@ function renderQuestionText(question) {
   function protectMath(text) {
     const mathBlocks = [];
 
-    const protectedText = text.replace(
-      /(\$\$[\s\S]*?\$\$|\$[^$\n]+\$)/g,
-      (match) => {
-        const token = `MATHBLOCKTOKEN${mathBlocks.length}END`;
-        mathBlocks.push(match);
-        return token;
-      },
-    );
+    // FIXED: Regex must not be a string. Removed quotes and added proper escaping.
+    // This catches $$, $, \( \), and \[ \]
+    const mathRegex =
+      /(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$|\\\( [\s\S]*? \\\)|\\\[ [\s\S]*? \\\]|\\\(.*?\\\)|\\\[.*?\\\])/g;
+
+    const protectedText = text.replace(mathRegex, (match) => {
+      const token = `@@@MATHBLOCK${mathBlocks.length}@@@`;
+      mathBlocks.push(match);
+      return token;
+    });
 
     return { protectedText, mathBlocks };
   }
 
   function restoreMath(text, mathBlocks) {
     let restored = text;
-
     mathBlocks.forEach((math, i) => {
-      const token = `MATHBLOCKTOKEN${i}END`;
-      restored = restored.replaceAll(token, math);
+      const token = `@@@MATHBLOCK${i}@@@`;
+      // Use split/join for better compatibility than replaceAll in older browsers
+      restored = restored.split(token).join(math);
     });
-
     return restored;
   }
 
-  let output = normalizeAcademicLatex(question || "");
+  // EXECUTION LOGIC
+  // 1. Clean up backslash messes first
+  let cleanedInput = normalizeAcademicLatex(question || "");
 
   if (converter) {
-    const { protectedText, mathBlocks } = protectMath(output);
-    output = converter.makeHtml(protectedText);
-    output = output.replace(/^<p>|<\/p>$/g, "");
-    output = restoreMath(output, mathBlocks);
-  } else {
-    output = escapeHtml(output);
-  }
+    // 2. Protect math so Markdown doesn't touch it
+    const { protectedText, mathBlocks } = protectMath(cleanedInput);
 
-  return output;
+    // 3. Convert Markdown to HTML
+    let htmlOutput = converter.makeHtml(protectedText);
+
+    // 4. Remove wrapping paragraph tags added by showdown
+    htmlOutput = htmlOutput.replace(/^<p>|<\/p>$/g, "");
+
+    // 5. Inject the original LaTeX back into the HTML
+    return restoreMath(htmlOutput, mathBlocks);
+  } else {
+    return escapeHtml(cleanedInput);
+  }
 }
 
 function removeTableFromQuestion(question, table) {
@@ -448,4 +471,14 @@ function removeTableFromQuestion(question, table) {
   q = q.replace(/\n{3,}/g, "\n\n").trim();
 
   return q;
+}
+
+function shuffleChoices(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    // Generate a random index between 0 and i
+    const j = Math.floor(Math.random() * (i + 1));
+    // Swap elements array[i] and array[j]
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }

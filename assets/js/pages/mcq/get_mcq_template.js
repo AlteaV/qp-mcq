@@ -59,6 +59,7 @@ async function showInputfield(templateId) {
 function changeTemplate() {
   $("#questions_div").hide();
   $("#template_table").show();
+  $("#add_question_button_div").hide();
 }
 
 async function addSectionRow(prevSelections = null) {
