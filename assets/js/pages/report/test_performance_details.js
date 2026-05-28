@@ -12,7 +12,7 @@ resultDiv = document.getElementById("result_div");
 backToReportBtn.addEventListener("click", () => {
   selectedStudent = null;
   if (loggedInUser.type != "TestTaker") {
-    filterDiv.style.display = "flex";
+    filterDiv.style.display = "block";
   }
   individualPerformanceDiv.style.display = "none";
   resultDiv.style.display = "block";

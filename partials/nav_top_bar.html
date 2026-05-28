@@ -1,22 +1,98 @@
-<a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a>
+<!-- Hamburger -->
+<a href="#!" class="menu-toggle" id="menu-toggle" aria-label="Toggle sidebar">
+  <i class="fas fa-bars"></i>
+</a>
+
+<div class="d-flex align-items-center gap-4">
+  <div class="d-flex align-items-center gap-2" style="cursor: pointer">
+    <div
+      class="rounded flex-shrink-0 d-flex align-items-center justify-content-center"
+      style="
+        width: 32px;
+        height: 32px;
+        background-color: rgba(255, 255, 255, 0.15);
+      "
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-white"
+      >
+        <path
+          d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+        ></path>
+      </svg>
+    </div>
+    <div class="d-flex flex-column lh-1">
+      <span
+        class="fw-extrabold text-white text-uppercase"
+        style="font-size: 10px; letter-spacing: 0.15em"
+        >Test</span
+      >
+      <span
+        class="fw-extrabold text-white text-uppercase"
+        style="font-size: 10px; letter-spacing: 0.15em"
+        >Ninja</span
+      >
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-1" id="top_bar_nav_items"></div>
+</div>
+<!-- Spacer -->
+<div style="flex: 1"></div>
+
+<!-- User profile pill -->
 <div class="dropdown ms-auto">
   <a
-    class="btn dropdown-toggle"
     href="#"
-    role="button"
+    class="d-block link-dark text-decoration-none dropdown-toggle"
     id="dropdownMenuLink"
     data-bs-toggle="dropdown"
     aria-expanded="false"
-    style="text-decoration: none"
   >
-    <i class="fa fa-user" aria-hidden="true"></i>
-    <span id="user_name">User</span>
+    <div
+      style="
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #60a5fa, #2563eb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        flex-shrink: 0;
+      "
+      id="user_initial"
+    ></div>
+    <span
+      id="user_name"
+      style="
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-family: &quot;Inter&quot;, sans-serif;
+      "
+    ></span
+    ><i class="fas fa-chevron-down ms-2" style="font-size: 0.75rem"></i>
   </a>
-
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+  <ul
+    class="dropdown-menu dropdown-menu-end text-small"
+    aria-labelledby="dropdownMenuLink"
+  >
     <li>
       <a class="dropdown-item" href="#" onclick="logout()"
-        ><i class="fas fa-sign-out-alt"></i>Logout</a
+        ><i class="fas fa-sign-out-alt"></i>Sign out</a
       >
     </li>
   </ul>

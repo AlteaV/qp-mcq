@@ -2,91 +2,86 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <h4 class="c-grey-900 mB-20 mt-6 mb-4">
-                        MCQ Question Generator
-                      </h4>
-                      <div
-                        class="container"
-                        id="fetching_data"
-                        style="display: none"
-                      >
-                        <p>Fetching Data</p>
-                      </div>
-                      <div
-                        class="row"
-                        id="details"
-                        style="
-                          padding-bottom: 20px;
-                          padding-left: 10px;
-                          padding-top: 20px;
-                          display: none;
-                        "
-                      >
-                        <table
-                          id="template_table"
-                          class="table table-bordered"
-                          width="100%"
-                        >
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Created On</th>
-                              <th>Template</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody id="details_body"></tbody>
-                        </table>
-                      </div>
-                      <div class="row">
-                        <div class="col mb-2">
-                          <div
-                            class="row"
-                            style="padding-bottom: 50px; display: none"
-                            id="add_question_button_div"
-                          >
-                            <div class="col-auto" style="align-self: center">
-                              <i
-                                class="fa fa-arrow-left"
-                                aria-hidden="true"
-                                onclick="changeTemplate()"
-                              ></i>
-                            </div>
-                            <div class="col" style="align-self: flex-end">
-                              <input
-                                class="btn btn-primary"
-                                type="button"
-                                value="Go Back"
-                                onclick="changeTemplate()"
-                              />
-                            </div>
-                          </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Question Paper Generator</h1>
+              <p>Generate Question Paper based on Template</p>
+            </div>
+          </div>
 
-                          <div
-                            class="container"
-                            id="questions_div"
-                            style="display: none"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div class="container" id="fetching_data" style="display: none">
+            <p>Fetching Data</p>
+          </div>
+          <div class="nd-report-card report-card p-0" id="details">
+            <div id="table-wrapper">
+              <table
+                class="table table-bordered nd-table-override mb-0"
+                id="template_table"
+              >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Created On</th>
+                    <th>Template</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="details_body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="nd-report-card report-card p-0 pt-4 pb-4"
+            id="add_question_button_div"
+            style="display: none"
+          >
+            <div class="row ps-4" style="padding-bottom: 50px">
+              <div class="col-auto" style="align-self: center">
+                <i
+                  class="fa fa-arrow-left"
+                  aria-hidden="true"
+                  onclick="changeTemplate()"
+                ></i>
+              </div>
+              <div class="col" style="align-self: flex-end">
+                <input
+                  class="btn btn-primary"
+                  type="button"
+                  value="Go Back"
+                  onclick="changeTemplate()"
+                />
               </div>
             </div>
+
+            <div
+              class="container p-0"
+              id="questions_div"
+              style="display: none"
+            ></div>
           </div>
         </div>
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

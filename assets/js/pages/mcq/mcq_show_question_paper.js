@@ -86,6 +86,9 @@ function renderQuestionPapers() {
       new TableStructure(qp.name),
       new TableStructure(
         topicMarks.map((item) => `${item.topic} (${item.marks})`).join("<br>"),
+        "",
+        "",
+        "text-start",
       ),
       new TableStructure(totalMarks),
       new TableStructure(

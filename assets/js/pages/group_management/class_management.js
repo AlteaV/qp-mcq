@@ -110,7 +110,8 @@ addClassBtn.addEventListener("click", () => {
   isEditing = false;
   classForm.reset();
   modalTitle.innerHTML = "Add New Class";
-  classModal.classList.remove("hidden");
+  // classModal.classList.remove("hidden");
+  $("#modal").modal("show");
 });
 
 classForm.addEventListener("submit", async (e) => {
@@ -162,7 +163,8 @@ function editClassBtnClicked(id) {
   editClassId.value = cls.class_id;
   classNameInput.value = cls.class_name;
   modalTitle.innerHTML = "Edit Class";
-  classModal.classList.remove("hidden");
+  $("#modal").modal("show");
+  // classModal.classList.remove("hidden");
 }
 
 async function deleteClassClicked(id) {
@@ -215,13 +217,13 @@ async function deleteClassClicked(id) {
 }
 
 function closeClassModal() {
-  classModal.classList.add("hidden");
+  $("#modal").modal("hide");
 }
 
 function viewMembersClicked(id, name) {
   currentClassId = id;
   document.getElementById("class_title_display").innerHTML =
-    `Members: <span class="text-primary">${name}</span>`;
+    `Manage Members <br><p>${name}</p>`;
   managementDiv.classList.add("hidden");
   memberManagementDiv.classList.remove("hidden");
   fetchClassMembers();
@@ -333,7 +335,7 @@ addMembersToClassBtn.addEventListener("click", async () => {
     if (response.success) {
       potentialMembers = response.result.users;
       renderStudentSelection();
-      memberPickerModal.classList.remove("hidden");
+      $("#members_modal").modal("show");
     }
   } catch (error) {
     console.error(error);
@@ -373,7 +375,8 @@ function renderStudentSelection() {
 
 studentSearchInput.oninput = renderStudentSelection;
 
-selectAllStudentsBtn.onclick = () => {
+selectAllStudentsBtn.onclick = (e) => {
+  e.preventDefault();
   const checkboxes = document.querySelectorAll(".student-checkbox");
   const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
   checkboxes.forEach((cb) => (cb.checked = !allChecked));
@@ -422,7 +425,7 @@ submitMemberSelection.onclick = async () => {
 };
 
 function closeMemberPicker() {
-  memberPickerModal.classList.add("hidden");
+  $("#members_modal").modal("hide");
   studentSearchInput.value = "";
   selectAllStudentsBtn.innerText = "Select All";
 }

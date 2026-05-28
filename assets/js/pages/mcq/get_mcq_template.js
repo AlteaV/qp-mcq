@@ -43,6 +43,20 @@ function initTable() {
     searching: false,
     destroy: true,
   });
+
+  let templateTable = document.getElementById("template_table");
+  templateTable.style.width = "100%";
+
+  let dtlayout = document.getElementsByClassName("dt-layout-cell");
+
+  for (let cell of dtlayout) {
+    if (
+      !cell.classList.contains("dt-start") &&
+      !cell.classList.contains("dt-end")
+    ) {
+      cell.style.setProperty("padding", "0", "important");
+    }
+  }
 }
 
 async function showInputfield(templateId) {

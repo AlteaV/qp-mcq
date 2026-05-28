@@ -6,147 +6,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      :root {
-        --primary: #0061f2;
-        --primary-hover: #0052ce;
-        --bg-main: #f8f9fc;
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --border-color: #e2e8f0;
-        --success: #10b981;
-      }
-
-      .card {
-        background: white;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      thead th {
-        text-align: left;
-        padding: 1rem 1.5rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.025em;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      tbody tr {
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-
-      tbody td {
-        padding: 1rem 1.5rem;
-        font-size: 0.875rem;
-      }
-
-      .footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem;
-        background: white;
-        border-top: 1px solid var(--border-color);
-      }
-
-      .pagination {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-      }
-
-      .page-btn {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        color: var(--text-muted);
-        cursor: pointer;
-        border: none;
-        background: none;
-      }
-
-      .page-btn.active {
-        background: var(--primary);
-        color: white !important;
-      }
-
-      .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-
-      .modal-overlay.hidden {
-        display: none;
-      }
-
-      .modal-content {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-      }
-
-      .btn-add {
-        background: var(--primary);
-        color: white;
-        padding: 0.75rem 1.25rem;
-        border-radius: 8px;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-      }
-
-      .member-selection-list {
-        max-height: 300px;
-        overflow-y: auto;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        margin-top: 1rem;
-      }
-
-      .class-link {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .class-link:hover {
-        text-decoration: underline;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-    </style>
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
 
   <body translate="no">
@@ -154,158 +15,251 @@
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card p-4">
-              <!-- Main Dashboard: List Classes -->
-              <div id="management-div">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-4"
+          <!-- Main Dashboard: List Classes -->
+          <div id="management-div">
+            <!-- Gradient Banner -->
+            <div class="nd-banner">
+              <div class="nd-banner-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 >
-                  <h4 id="main-title">Class / Tag Management</h4>
-                  <button class="btn-add" id="add_class_btn">
-                    <i class="fa-solid fa-plus me-2"></i>Add Class
-                  </button>
-                </div>
-
-                <div class="row mb-4" id="filters-row">
-                  <div class="col-md-4">
-                    <input
-                      class="form-control"
-                      type="text"
-                      placeholder="Search classes..."
-                      id="class_search"
-                    />
-                  </div>
-                </div>
-
-                <div class="table-responsive">
-                  <table id="class-table">
-                    <thead>
-                      <tr>
-                        <th style="width: 50px; text-align: center">#</th>
-                        <th>Class Name</th>
-                        <th style="text-align: right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="class-table-body"></tbody>
-                  </table>
-                </div>
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  <polyline points="17 6 23 6 23 12" />
+                </svg>
               </div>
-
-              <!-- Secondary View: List Members of a Class -->
-              <div id="member-management-div" class="hidden">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-4"
-                >
-                  <div class="d-flex align-items-center">
-                    <button
-                      class="btn btn-link link-dark pe-3"
-                      id="back_to_classes"
-                    >
-                      <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h4 id="class_title_display">Class Members</h4>
-                  </div>
-                  <button class="btn-add" id="add_members_to_class_btn">
-                    <i class="fa-solid fa-user-plus me-2"></i>Add Students
-                  </button>
-                </div>
-
-                <div class="table-responsive">
-                  <table id="member-table">
-                    <thead>
-                      <tr>
-                        <th style="width: 50px; text-align: center">#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th style="text-align: right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="member-table-body"></tbody>
-                  </table>
-                </div>
+              <div>
+                <h1 id="main-title">Class / Tag Management</h1>
+                <p>Configure and manage classes</p>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Modal for Adding/Editing Class -->
-        <div id="class-modal" class="modal-overlay hidden">
-          <div class="modal-content">
-            <h2 id="modal-title" class="mb-3">Add New Class</h2>
-            <form id="class-form">
-              <input type="hidden" id="edit-class-id" />
-              <div class="mb-3">
-                <label class="form-label required">Class Name</label>
-                <input
-                  type="text"
-                  id="class-name-input"
-                  class="form-control"
-                  required
-                  placeholder="e.g. Batch 2024 - Section A"
-                />
-              </div>
-              <div class="d-flex flex-column gap-2 mt-4">
-                <button type="submit" class="btn-add">Save Class</button>
-                <button
-                  type="button"
-                  class="btn btn-link text-muted"
-                  onclick="closeClassModal()"
-                >
-                  Cancel
+            <div class="nd-card p-0">
+              <div class="d-flex justify-content-end mt-4 me-4 mb-4">
+                <button class="nd-btn-primary" id="add_class_btn">
+                  <i class="fa-solid fa-plus me-2"></i>Add Class
                 </button>
               </div>
-            </form>
+              <div class="table-responsive">
+                <table
+                  id="class-table"
+                  class="table table-bordered nd-table-override mb-0"
+                >
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center">#</th>
+                      <th>Class Name</th>
+                      <th style="text-align: right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="class-table-body"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Modal for Adding Members (Student Picker) -->
-        <div id="member-picker-modal" class="modal-overlay hidden">
-          <div class="modal-content" style="max-width: 800px">
-            <h2 class="mb-3">Select Students</h2>
-            <div class="mb-3 d-flex gap-2">
-              <input
-                type="text"
-                id="student_search_input"
-                class="form-control"
-                placeholder="Search students by name or email..."
-              />
-              <button
-                class="btn btn-outline-primary"
-                id="select_all_students_btn"
-              >
-                Select All
-              </button>
+          <!-- Secondary View: List Members of a Class -->
+          <div id="member-management-div" class="hidden">
+            <div
+              class="nd-banner nd-banner-blue mb-4 d-flex justify-content-between align-items-center"
+            >
+              <div class="d-flex align-items-center gap-3">
+                <button
+                  type="button"
+                  class="nd-btn-secondary"
+                  id="back_to_classes"
+                  style="padding: 6px 12px"
+                >
+                  <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="nd-banner-title m-0" id="class_title_display">
+                  Class Members
+                </h1>
+              </div>
             </div>
-            <div class="member-selection-list">
-              <table class="table table-hover">
-                <thead class="bg-light">
-                  <tr>
-                    <th style="width: 40px"></th>
-                    <th>Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody id="student_selection_body"></tbody>
-              </table>
-            </div>
-            <div class="d-flex flex-column gap-2 mt-4">
-              <button
-                type="button"
-                class="btn-add"
-                id="submit_member_selection"
-              >
-                Add Selected Students
-              </button>
-              <button
-                type="button"
-                class="btn btn-link text-muted"
-                onclick="closeMemberPicker()"
-              >
-                Cancel
-              </button>
+
+            <div class="nd-card p-0">
+              <div class="d-flex justify-content-end mt-4 me-4 mb-4">
+                <button class="nd-btn-primary" id="add_members_to_class_btn">
+                  <i class="fa-solid fa-user-plus me-2"></i>Add Students
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table
+                  id="member-table"
+                  class="table table-bordered nd-table-override mb-0"
+                >
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center">#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th style="text-align: right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="member-table-body"></tbody>
+                </table>
+              </div>
             </div>
           </div>
+
+          <!-- Modal for Adding/Editing Class --><!-- starts here -->
+          <div
+            class="modal fade"
+            id="modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="modalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered modal-xl"
+              role="document"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-title" id="modalLabel"></h4>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="class-form">
+                    <input type="hidden" id="edit-class-id" />
+                    <div class="mb-3">
+                      <label
+                        class="form-label fw-bold required"
+                        style="color: #374151"
+                        >Class Name</label
+                      >
+                      <input
+                        type="text"
+                        id="class-name-input"
+                        class="nd-input"
+                        required
+                        placeholder="e.g. Batch 2024 - Section A"
+                      />
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                      <button
+                        type="button"
+                        class="nd-btn-secondary"
+                        data-dismiss="modal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        class="nd-btn-primary"
+                        id="form_submit"
+                      >
+                        Save Class
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- starts here -->
+          <div
+            class="modal fade"
+            id="members_modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="modalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered modal-xl"
+              role="document"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modalLabel">Select Students</h4>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal_members"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="form">
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+                      <input
+                        type="text"
+                        id="student_search_input"
+                        class="nd-input"
+                        style="flex: 1; min-width: 200px"
+                        placeholder="Search students by name or email..."
+                      />
+                      <button
+                        class="nd-btn-secondary"
+                        id="select_all_students_btn"
+                      >
+                        Select All
+                      </button>
+                    </div>
+
+                    <div class="member-selection-list table-responsive">
+                      <table
+                        class="table table-bordered nd-table-override mb-0"
+                      >
+                        <thead>
+                          <tr>
+                            <th style="width: 40px"></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                          </tr>
+                        </thead>
+                        <tbody id="student_selection_body"></tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                      <button
+                        type="button"
+                        class="nd-btn-secondary"
+                        data-dismiss="modal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal_members"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        class="nd-btn-primary"
+                        id="submit_member_selection"
+                      >
+                        Add Selected Students
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
         </div>
 
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

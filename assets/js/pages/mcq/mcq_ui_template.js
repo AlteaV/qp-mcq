@@ -526,6 +526,7 @@ async function managUiTemplate() {
 async function init() {
   if (loggedInUser.type != "TestCoordinator") {
     addUiTemplateBtn.style.display = "flex";
+    addUiTemplateBtn.parentElement.style.display = "flex";
     title.innerHTML = "Create and Manage UI Templates";
   } else {
     title.innerHTML = "Manage UI Templates";

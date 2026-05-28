@@ -101,13 +101,26 @@ function showReportSection(data) {
     tableBody: [],
   };
   data.forEach((row, index) => {
+    const rank = index + 1;
+
+    // Rank badge HTML
+    let rankClass = "nd-rank-plain";
+    if (rank === 1) rankClass = "nd-rank-gold";
+    else if (rank === 2) rankClass = "nd-rank-silver";
+    else if (rank === 3) rankClass = "nd-rank-bronze";
+    const rankBadge = `<span class="nd-rank-badge ${rankClass}">${rank}</span>`;
+
+    // Score badge HTML
+    const scoreBadge = `<span class="nd-score-badge">${row.total_correct}</span>`;
+
     tableData.tableBody.push([
-      new TableStructure(index + 1),
+      new TableStructure(rankBadge),
       new TableStructure(row.user_name),
       new TableStructure(row.email),
-      new TableStructure(row.total_correct),
+      new TableStructure(scoreBadge),
     ]);
   });
+
   displayResult(tableData, resultTable);
   resultDiv.style.display = "block";
   hideOverlay();

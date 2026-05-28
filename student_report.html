@@ -2,76 +2,204 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
-
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">
-                      Test Performance Analysis
-                    </h4>
-                    <div
-                      class="row mb-3 align-items-end"
-                      id="register_number_row"
-                    >
-                      <div class="col mt-2" id="email_input_col">
-                        <b
-                          ><label for="register_number" class="required"
-                            >Enter Email</label
-                          ></b
-                        >
-                        <input
-                          class="form-control"
-                          id="register_num"
-                          type="text"
-                          name="register_number"
-                          autocomplete="off"
-                          required
-                        />
-                      </div>
-                      <div class="col mt-2" id="test_select_col">
-                        <b><label for="test_select">Select Test</label></b>
-                        <select class="form-select" id="test_select">
-                          <option value="">All Tests (Overall)</option>
-                        </select>
-                      </div>
-                      <div class="col mt-2">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="view_report"
-                        >
-                          View Report
-                        </button>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+            </div>
+            <div>
+              <h1>Test Performance Analysis</h1>
+              <p>Breakdown of how you perform across all test sections</p>
+            </div>
+          </div>
 
-                    <div
-                      class="result mt-4"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
-                    </div>
-                  </div>
+          <div class="nd-card nd-filter-card" id="register_number_row">
+            <div class="nd-filter-row">
+              <div
+                class="nd-field"
+                id="email_input_col"
+                style="max-width: 260px"
+              >
+                <input
+                  class="nd-input"
+                  id="register_num"
+                  type="text"
+                  name="register_number"
+                  autocomplete="off"
+                  required
+                  placeholder="student@email.com"
+                />
+              </div>
+              <div
+                class="nd-field"
+                id="test_select_col"
+                style="min-width: 200px; max-width: 260px"
+              >
+                <select class="nd-select" id="test_select">
+                  <option value="">All Tests (Overall)</option>
+                </select>
+              </div>
+              <div class="nd-field nd-btn-field">
+                <button
+                  class="nd-btn-primary nd-tp-view-btn"
+                  type="button"
+                  id="view_report"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="
+                      width: 15px;
+                      height: 15px;
+                      margin-right: 6px;
+                      vertical-align: middle;
+                    "
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
+                  View Report
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div class="nd-loading" id="fetching_data" style="display: none">
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <span>Fetching Data…</span>
+          </div>
+
+          <!-- Performance Summary Card (populated by showReportSection via sr-* IDs) -->
+          <div
+            class="nd-card nd-perf-summary"
+            id="sr_summary_div"
+            style="display: none"
+          >
+            <p class="nd-section-title">Performance Summary</p>
+            <div class="nd-perf-stat-row">
+              <div class="nd-perf-stat-card nd-perf-blue">
+                <div class="nd-perf-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <polyline points="9 11 12 14 22 4" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="nd-perf-value" id="sr-total-answered">--</div>
+                  <div class="nd-perf-label">Total Answered</div>
+                </div>
+              </div>
+
+              <div class="nd-perf-stat-card nd-perf-green">
+                <div class="nd-perf-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="nd-perf-value" id="sr-correct">--</div>
+                  <div class="nd-perf-label">Correct</div>
+                </div>
+              </div>
+
+              <div class="nd-perf-stat-card nd-perf-red">
+                <div class="nd-perf-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="nd-perf-value" id="sr-wrong">--</div>
+                  <div class="nd-perf-label">Wrong</div>
+                </div>
+              </div>
+
+              <div class="nd-perf-stat-card nd-perf-orange">
+                <div class="nd-perf-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="nd-perf-value" id="sr-unanswered">--</div>
+                  <div class="nd-perf-label">Unanswered</div>
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Section Performance Card (result_div shown/hidden by JS) -->
+          <div
+            class="nd-card nd-section-perf-card"
+            id="result_div"
+            style="display: none"
+          >
+            <div class="nd-section-perf-header">
+              <p class="nd-section-title">Section Performance</p>
+            </div>
+            <!-- Accordion injected here by showReportSection() -->
+            <div id="sr_accordion"></div>
           </div>
         </div>
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

@@ -2,195 +2,330 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">
-                      Group Wise Report
-                    </h4>
-                    <div class="row mb-3 align-items-end">
-                      <div class="col mt-2">
-                        <label for="group" class="required">Group</label>
-                        <select
-                          class="form-select"
-                          name="group"
-                          id="group"
-                          required
-                        >
-                          <option>Please select a Group</option>
-                        </select>
-                      </div>
-                      <div class="col mt-2">
-                        <label for="test_type" class="required"
-                          >Test Type</label
-                        >
-                        <select
-                          class="form-select"
-                          name="test_type"
-                          id="test_type"
-                          required
-                        >
-                          <option value="" selected disabled>
-                            Select Test Type
-                          </option>
-                          <option value="Practice">Practice</option>
-                          <option value="Actual">Actual</option>
-                        </select>
-                      </div>
-                      <div class="col mt-2">
-                        <label for="level" class="required">Level</label>
-                        <select
-                          class="form-select"
-                          name="level"
-                          id="level"
-                          required
-                        >
-                          <option>Please select a Level</option>
-                        </select>
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="network_button"
-                        >
-                          View Report
-                        </button>
-                      </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Group Wise Report</h1>
+              <p>Analyze performance and progress across different groups</p>
+            </div>
+          </div>
+
+          <div class="nd-card p-6">
+            <div class="row mb-3 align-items-end">
+              <div class="col mt-2">
+                <label
+                  for="group"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Group</label
+                >
+                <select class="nd-select" name="group" id="group" required>
+                  <option>Please select a Group</option>
+                </select>
+              </div>
+              <div class="col mt-2">
+                <label
+                  for="test_type"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Test Type</label
+                >
+                <select
+                  class="nd-select"
+                  name="test_type"
+                  id="test_type"
+                  required
+                >
+                  <option value="" selected disabled>Select Test Type</option>
+                  <option value="Practice">Practice</option>
+                  <option value="Actual">Actual</option>
+                </select>
+              </div>
+              <div class="col mt-2">
+                <label
+                  for="level"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Level</label
+                >
+                <select class="nd-select" name="level" id="level" required>
+                  <option>Please select a Level</option>
+                </select>
+              </div>
+              <div class="col mt-4">
+                <button
+                  class="nd-btn-primary"
+                  type="button"
+                  id="network_button"
+                >
+                  View Report
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5" id="fetching_data" style="display: none">
+            <div class="d-flex align-items-center gap-2 text-muted">
+              <i class="fa-solid fa-spinner fa-spin"></i> Fetching Data...
+            </div>
+          </div>
+
+          <!-- Results Wrapper -->
+          <div class="result mt-5" id="result_div" style="display: none">
+            <!-- Floating Stat Cards -->
+            <div class="nd-stats-row mb-4">
+              <div class="nd-stat-card">
+                <div class="nd-icon-badge nd-icon-blue">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div style="flex: 1">
+                  <p class="nd-stat-label mb-2">Attended</p>
+                  <div class="d-flex align-items-center gap-4 mt-1">
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Overall</span
+                      >
+                      <p class="nd-stat-value m-0" id="s-att-o">0</p>
                     </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Group</span
+                      >
+                      <p
+                        class="nd-stat-value m-0"
+                        id="s-att-g"
+                        style="color: var(--brand-blue)"
+                      >
+                        0
+                      </p>
                     </div>
+                  </div>
+                </div>
+              </div>
 
-                    <div
-                      class="result mt-4 p-3"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <div class="row">
-                        <div class="stats-grid">
-                          <div class="stat-card">
-                            <div class="stat-comparison">
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-att-o">0</div>
-                                <div class="stat-sub-label">Overall</div>
-                              </div>
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-att-g">0</div>
-                                <div class="stat-sub-label">Group</div>
-                              </div>
-                            </div>
-                            <div class="stat-label">Attended</div>
-                          </div>
+              <div class="nd-stat-card">
+                <div class="nd-icon-badge nd-icon-green">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                </div>
+                <div style="flex: 1">
+                  <p class="nd-stat-label mb-2">Passed</p>
+                  <div class="d-flex align-items-center gap-4 mt-1">
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Overall</span
+                      >
+                      <p class="nd-stat-value m-0" id="s-pass-o">0</p>
+                    </div>
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Group</span
+                      >
+                      <p
+                        class="nd-stat-value m-0"
+                        id="s-pass-g"
+                        style="color: var(--brand-blue)"
+                      >
+                        0
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                          <div class="stat-card">
-                            <div class="stat-comparison">
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-pass-o">0</div>
-                                <div class="stat-sub-label">Overall</div>
-                              </div>
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-pass-g">0</div>
-                                <div class="stat-sub-label">Group</div>
-                              </div>
-                            </div>
-                            <div class="stat-label">Passed</div>
-                          </div>
-                          <div class="stat-card">
-                            <div class="stat-comparison">
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-rate-o">0</div>
-                                <div class="stat-sub-label">Overall</div>
-                              </div>
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-rate-g">0</div>
-                                <div class="stat-sub-label">Group</div>
-                              </div>
-                            </div>
-                            <div class="stat-label">Pass Rate</div>
-                          </div>
-                          <div class="stat-card">
-                            <div class="stat-comparison">
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-time-o">0</div>
-                                <div class="stat-sub-label">Overall</div>
-                              </div>
-                              <div class="stat-item">
-                                <div class="stat-sub-val" id="s-time-g">0</div>
-                                <div class="stat-sub-label">Group</div>
-                              </div>
-                            </div>
-                            <div class="stat-label">Avg Time (m)</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="report-card">
-                          <div class="card-header">
-                            <h2
-                              id="view-title"
-                              style="
-                                margin: 0;
-                                font-size: 1.4rem;
-                                color: var(--dark);
-                              "
-                            >
-                              All Subjects Overview
-                            </h2>
-                            <div class="toggle-group">
-                              <button class="toggle-btn" id="btn-chart">
-                                Chart
-                              </button>
-                              <button class="toggle-btn active" id="btn-table">
-                                Table
-                              </button>
-                            </div>
-                          </div>
+              <div class="nd-stat-card">
+                <div class="nd-icon-badge nd-icon-purple">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  </svg>
+                </div>
+                <div style="flex: 1">
+                  <p class="nd-stat-label mb-2">Pass Rate</p>
+                  <div class="d-flex align-items-center gap-4 mt-1">
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Overall</span
+                      >
+                      <p class="nd-stat-value m-0" id="s-rate-o">0</p>
+                    </div>
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Group</span
+                      >
+                      <p
+                        class="nd-stat-value m-0"
+                        id="s-rate-g"
+                        style="color: var(--brand-blue)"
+                      >
+                        0
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                          <div class="breadcrumb" id="breadcrumb"></div>
-
-                          <div
-                            id="chart-wrapper"
-                            class="hidden"
-                            style="height: 400px"
-                          >
-                            <canvas id="drillChart"></canvas>
-                          </div>
-
-                          <div id="table-wrapper">
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Type</th>
-                                  <th>Attended</th>
-                                  <th>Passed</th>
-                                  <th>Success Rate</th>
-                                  <th>Avg Time</th>
-                                  <th>Difficulty</th>
-                                </tr>
-                              </thead>
-                              <tbody id="table-body"></tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
+              <div class="nd-stat-card">
+                <div class="nd-icon-badge nd-icon-orange">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <div style="flex: 1">
+                  <p class="nd-stat-label mb-2">Avg Time (m)</p>
+                  <div class="d-flex align-items-center gap-4 mt-1">
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Overall</span
+                      >
+                      <p class="nd-stat-value m-0" id="s-time-o">0</p>
+                    </div>
+                    <div>
+                      <span
+                        style="
+                          font-size: 0.65rem;
+                          color: #9ca3af;
+                          text-transform: uppercase;
+                          font-weight: 600;
+                        "
+                        >Group</span
+                      >
+                      <p
+                        class="nd-stat-value m-0"
+                        id="s-time-g"
+                        style="color: var(--brand-blue)"
+                      >
+                        0
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- Data Table Card -->
+            <div class="nd-card p-6 mt-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h2
+                  id="view-title"
+                  class="fw-bold m-0"
+                  style="color: #1e293b; font-size: 1.25rem"
+                >
+                  All Subjects Overview
+                </h2>
+                <div class="d-flex gap-2">
+                  <button class="btn nd-btn-secondary" id="btn-chart">
+                    Chart
+                  </button>
+                  <button class="btn nd-btn-secondary active" id="btn-table">
+                    Table
+                  </button>
+                </div>
+              </div>
+
+              <div class="breadcrumb" id="breadcrumb"></div>
+
+              <div
+                id="chart-wrapper"
+                class="hidden"
+                style="height: 400px; width: 100%"
+              >
+                <canvas id="drillChart"></canvas>
+              </div>
+
+              <div id="table-wrapper">
+                <table class="table table-bordered nd-table-override">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Attended</th>
+                      <th>Passed</th>
+                      <th>Success Rate</th>
+                      <th>Avg Time</th>
+                      <th>Difficulty</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-body"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
+
         <footer class="dashboard-footer" id="footer-placeholder"></footer>
       </div>
     </div>

@@ -68,8 +68,9 @@ form.addEventListener("submit", (e) => {
 
 addNewUserBtn.addEventListener("click", () => {
   resetForm();
-  document.getElementById("user-modal").classList.remove("hidden");
-  document.getElementById("management-div").classList.add("hidden");
+  $("#modal").modal("show");
+  // document.getElementById("user-modal").classList.remove("hidden");
+  // document.getElementById("management-div").classList.add("hidden");
   isEditing = false;
   formTitle.innerHTML = "Add New User";
 
@@ -118,8 +119,9 @@ if (addMethodRadios) {
 }
 
 function closeMyModal() {
-  document.getElementById("user-modal").classList.add("hidden");
-  document.getElementById("management-div").classList.remove("hidden");
+  $("#modal").modal("hide");
+  // document.getElementById("user-modal").classList.add("hidden");
+  // document.getElementById("management-div").classList.remove("hidden");
 }
 
 if (closeBtn) closeBtn.addEventListener("click", closeMyModal);
@@ -345,8 +347,10 @@ function editButtonClicked(id) {
       if (userClassSelect) userClassSelect.value = curr_data.class_id || "";
     }
 
-    document.getElementById("user-modal").classList.remove("hidden");
-    document.getElementById("management-div").classList.add("hidden");
+    $("#modal").modal("show");
+
+    // document.getElementById("user-modal").classList.remove("hidden");
+    // document.getElementById("management-div").classList.add("hidden");
   } catch (error) {
     console.error(error);
     Swal.fire({

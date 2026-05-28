@@ -65,13 +65,16 @@ function renderSubjectPerformance(subjects) {
   udSubjectPerformance.innerHTML = subjects
     .map(
       (s) => `
-    <div class="ud-subject-row">
-      <span class="ud-subj-name">${s.subjectName}</span>
-      <div class="ud-subj-bar-wrap">
-        <div class="ud-subj-bar" style="width:${s.accuracyPct}%"></div>
-      </div>
-      <span class="ud-subj-pct">${s.accuracyPct}%</span>
-    </div>`,
+    <div class="ud-subject-row" style="display: block !important;">
+  <div style="display: flex !important; justify-content: space-between !important; align-items: baseline !important; margin-bottom: 8px !important; width: 100% !important;">
+    <span class="ud-subj-name" style="margin-bottom: 0 !important; display: flex !important;">${s.subjectName}</span>
+    <span class="ud-subj-pct" style="margin-top: 0 !important; display: inline-block !important;">${s.accuracyPct}%</span>
+  </div>
+  
+  <div class="ud-subj-bar-wrap" style="margin: 0 !important; width: 100% !important; display: block !important;">
+    <div class="ud-subj-bar" style="width:${s.accuracyPct}% !important;"></div>
+  </div>
+</div>`,
     )
     .join("");
 }
@@ -91,6 +94,8 @@ function renderRecentQuizzes(quizzes) {
         ? new Date(q.attemptDate).toLocaleDateString()
         : "";
       const subjectLine = q.subjectName || q.quizName || "Quiz";
+      const isPositive = parseFloat(q.scorePct) >= 0;
+      const scoreClass = isPositive ? "positive" : "negative";
       return `
       <div class="ud-quiz-item">
         <div>
@@ -98,8 +103,8 @@ function renderRecentQuizzes(quizzes) {
           <div class="ud-quiz-date">${dateStr}</div>
         </div>
         <div class="ud-quiz-score">
-          <div class="ud-quiz-marks">${q.obtainedMark}/${q.maxMark}</div>
-          <div class="ud-quiz-pct">${q.scorePct}%</div>
+          <div class="ud-quiz-marks ${scoreClass}">${q.obtainedMark}/${q.maxMark}</div>
+          <div class="ud-quiz-pct ${scoreClass}">${q.scorePct}%</div>
         </div>
       </div>`;
     })

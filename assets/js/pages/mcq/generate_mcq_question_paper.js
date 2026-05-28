@@ -58,7 +58,7 @@ async function createQuestions() {
   //   Change Template
   // </button>;
   let html = `
-    <table class="table table-bordered">
+    <table class="table table-bordered nd-table-override p-0">
       <thead>
         <tr>
           <th>S.No</th>
@@ -126,7 +126,7 @@ async function createQuestions() {
       </tbody>
     </table>
     <div class="row">
-      <div class="col mt-3 d-flex justify-content-end gap-2">
+      <div class="col mt-3 d-flex justify-content-end gap-2 pe-4">
       <input type="text" id="qp_name" class="form-control" placeholder="Enter Question Paper Name" style="max-width: 300px;" />
           <button id="questionupload" class="btn btn-primary">Save Question Paper</button>
           <button id="cancel" class="btn btn-primary" onClick="changeTemplate()">Cancel</button>

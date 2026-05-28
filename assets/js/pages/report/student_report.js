@@ -2,7 +2,7 @@ class View {
   constructor(controller) {
     this.controller = controller;
     this.fetchingDataSection = document.getElementById("fetching_data");
-    this.resultTable = document.getElementById("result_table");
+    this.resultTable = document.getElementById("result_table"); // kept for compat (unused)
     this.resultDiv = document.getElementById("result_div");
     this.registerNumber = document.getElementById("register_num");
     this.registerNumberRow = document.getElementById("register_number_row");
@@ -12,13 +12,12 @@ class View {
     this.testSelectCol = document.getElementById("test_select_col");
     this.emailInputCol = document.getElementById("email_input_col");
 
+    this.srSummaryDiv = document.getElementById("sr_summary_div");
+
     this.viewReport.addEventListener("click", async () => {
       if (this.registerNumber.value) {
-        // Snapshot the selected test value BEFORE getTestList
-        // rebuilds the dropdown and resets its value to ""
         const selectedTestId = this.testSelect.value || null;
         await this.controller.getTestList(this.registerNumber.value);
-        // Restore the selection the user had chosen
         if (selectedTestId) {
           this.testSelect.value = selectedTestId;
         }
@@ -30,13 +29,14 @@ class View {
         alert("Please enter a email.");
       }
     });
-    // No change listener — API is triggered only via the View Report button
     this.registerNumber.addEventListener("input", () => {
       this.controller.tests = null;
       this.resultDiv.style.display = "none";
+      this.srSummaryDiv.style.display = "none";
     });
     this.testSelect.addEventListener("change", () => {
       this.resultDiv.style.display = "none";
+      this.srSummaryDiv.style.display = "none";
     });
   }
 
@@ -50,174 +50,131 @@ class View {
       return;
     }
 
-    let tableData = {
-      tableHeader: [],
-      tableBody: [],
-    };
-
-    // Group subjects and their topics
+    // ── Group subjects ──────────────────────────────────────────────
     const subjectMap = {};
     data.forEach((subjectObj) => {
       const subjectName = subjectObj.subject;
       const sectionName = subjectObj.section;
-
-      if (!subjectMap[subjectName]) {
-        subjectMap[subjectName] = [];
-      }
-
+      if (!subjectMap[subjectName]) subjectMap[subjectName] = [];
       const topics =
         typeof subjectObj.topics === "string"
           ? JSON.parse(subjectObj.topics)
           : subjectObj.topics;
-
       if (Array.isArray(topics)) {
-        const topicsWithSection = topics.map((t) => ({
-          ...t,
-          section_name: sectionName,
-        }));
-        subjectMap[subjectName].push(...topicsWithSection);
+        subjectMap[subjectName].push(
+          ...topics.map((t) => ({ ...t, section_name: sectionName })),
+        );
       }
     });
 
-    Object.keys(subjectMap).forEach((subjectName) => {
+    // ── Colour palette (cycles per subject index) ───────────────────
+    const dotColors = [
+      "#f59e0b",
+      "#3b82f6",
+      "#16a34a",
+      "#7c3aed",
+      "#ef4444",
+      "#06b6d4",
+    ];
+    const bgColors = [
+      "#fff7ed",
+      "#eff6ff",
+      "#f0fdf4",
+      "#faf5ff",
+      "#fff1f2",
+      "#ecfeff",
+    ];
+    const borderColors = [
+      "#fed7aa",
+      "#bfdbfe",
+      "#bbf7d0",
+      "#ddd6fe",
+      "#fecdd3",
+      "#a5f3fc",
+    ];
+
+    // ── Build accordion HTML ────────────────────────────────────────
+    let accordionHTML = "";
+    Object.keys(subjectMap).forEach((subjectName, idx) => {
       const topics = subjectMap[subjectName];
-      // 1. Subject Header Row
-      let subjectHeaderRow = [];
-      subjectHeaderRow.push(
-        new TableStructure(
-          subjectName,
-          7,
-          "",
-          "",
-          "text-align:center; font-weight:bold; background-color: #f8f9fa;",
-        ),
-      );
-      tableData.tableBody.push(subjectHeaderRow);
+      const dot = dotColors[idx % dotColors.length];
+      const bg = bgColors[idx % bgColors.length];
+      const border = borderColors[idx % borderColors.length];
 
-      // 2. Column Headers
-      let headerRow = [];
-      headerRow.push(
-        new TableStructure(
-          "#",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Section",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Topic Name",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Attended",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Correct",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Wrong",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      headerRow.push(
-        new TableStructure(
-          "Unattended",
-          "",
-          "",
-          "",
-          "text-align:center; font-weight:bold;",
-        ),
-      );
-      tableData.tableBody.push(headerRow);
+      const rowsHTML = topics
+        .map(
+          (topic, i) => `
+          <tr>
+            <td style="text-align:center;">${i + 1}</td>
+            <td>${topic.section_name || "N/A"}</td>
+            <td>${topic.topic_name}</td>
+            <td style="text-align:center;"><span class="sr-badge sr-badge-blue">${topic.no_of_times_attempted ?? 0}</span></td>
+            <td style="text-align:center;"><span class="sr-badge sr-badge-green">${topic.no_of_times_passed ?? 0}</span></td>
+            <td style="text-align:center;"><span class="sr-badge sr-badge-red">${topic.no_of_wrong_answers ?? 0}</span></td>
+            <td style="text-align:center;"><span class="sr-badge sr-badge-orange">${topic.no_of_unattended_questions ?? 0}</span></td>
+          </tr>`,
+        )
+        .join("");
 
-      // 3. Data Rows
-      topics.forEach((topic, index) => {
-        let row = [];
-        row.push(
-          new TableStructure(index + 1, "", "", "", "text-align:center;"),
-        );
-        row.push(
-          new TableStructure(
-            topic.section_name || "N/A",
-            "",
-            "",
-            "",
-            "text-align:center;",
-          ),
-        );
-        row.push(new TableStructure(topic.topic_name));
-        row.push(
-          new TableStructure(
-            topic.no_of_times_attempted,
-            "",
-            "",
-            "",
-            "text-align:center;",
-          ),
-        );
-        row.push(
-          new TableStructure(
-            topic.no_of_times_passed,
-            "",
-            "",
-            "",
-            "text-align:center; color:green; font-weight:bold;",
-          ),
-        );
-        row.push(
-          new TableStructure(
-            topic.no_of_wrong_answers,
-            "",
-            "",
-            "",
-            "text-align:center; color:red; font-weight:bold;",
-          ),
-        );
-        row.push(
-          new TableStructure(
-            topic.no_of_unattended_questions,
-            "",
-            "",
-            "",
-            "text-align:center; color:orange; font-weight:bold;",
-          ),
-        );
-        tableData.tableBody.push(row);
-      });
+      accordionHTML += `
+        <div class="sr-accordion-item" style="border-color:${border};">
+          <div class="sr-accordion-header" style="background:${bg};"
+               onclick="var b=this.nextElementSibling;var open=b.style.display!=='none';b.style.display=open?'none':'block';this.classList.toggle('sr-open',!open);">
+            <span class="sr-subj-dot" style="background:${dot};"></span>
+            <span class="sr-subj-name">${subjectName}</span>
+            <svg class="sr-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="sr-accordion-body" style="display:none;">
+            <table class="table table-bordered nd-table-override" style="margin:0;">
+              <thead>
+                <tr>
+                  <th>#</th><th>Section</th><th>Topic Name</th>
+                  <th>Attempted</th><th>Correct</th><th>Wrong</th><th>Unattended</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHTML}</tbody>
+            </table>
+          </div>
+        </div>`;
     });
 
-    displayResult(tableData, this.resultTable);
+    const accordionEl = document.getElementById("sr_accordion");
+    if (accordionEl) accordionEl.innerHTML = accordionHTML;
+
+    // ── Performance Summary ─────────────────────────────────────────
+    let totalAnswered = 0,
+      totalCorrect = 0,
+      totalWrong = 0,
+      totalUnanswered = 0;
+    data.forEach((subjectObj) => {
+      const topics =
+        typeof subjectObj.topics === "string"
+          ? JSON.parse(subjectObj.topics)
+          : subjectObj.topics;
+      if (Array.isArray(topics)) {
+        topics.forEach((t) => {
+          totalAnswered += t.no_of_times_attempted || 0;
+          totalCorrect += t.no_of_times_passed || 0;
+          totalWrong += t.no_of_wrong_answers || 0;
+          totalUnanswered += t.no_of_unattended_questions || 0;
+        });
+      }
+    });
+    const elTA = document.getElementById("sr-total-answered");
+    const elC = document.getElementById("sr-correct");
+    const elW = document.getElementById("sr-wrong");
+    const elU = document.getElementById("sr-unanswered");
+    if (elTA) elTA.textContent = totalAnswered;
+    if (elC) elC.textContent = totalCorrect;
+    if (elW) elW.textContent = totalWrong;
+    if (elU) elU.textContent = totalUnanswered;
+    const srSummaryDiv = document.getElementById("sr_summary_div");
+    if (srSummaryDiv) srSummaryDiv.style.display = "block";
+
     this.resultDiv.style.display = "block";
     hideOverlay();
   }
@@ -317,27 +274,7 @@ class Controller {
       let response = await postCall(reportEndPoint, payload);
 
       if (response.success) {
-        // this.reports = response.result.report;
-        this.reports = [
-          {
-            subject: "CHEMISTRY-1",
-            section: "Inorganic Chemistry",
-            topics:
-              '[{"topic_name": "Qualitative Analysis", "no_of_times_passed": 3, "no_of_wrong_answers": 2, "no_of_times_attempted": 5, "no_of_unattended_questions": 3}, {"topic_name": "Acid-Base Chemistry", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 1}, {"topic_name": "Electronic Effects", "no_of_times_passed": 1, "no_of_wrong_answers": 4, "no_of_times_attempted": 5, "no_of_unattended_questions": 3}, {"topic_name": "Isomerism", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}, {"topic_name": "Aldehydes, Ketones, Carboxylic Acids", "no_of_times_passed": 3, "no_of_wrong_answers": 8, "no_of_times_attempted": 11, "no_of_unattended_questions": 10}, {"topic_name": "Alkyl Halides", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 3}, {"topic_name": "Arenes", "no_of_times_passed": 0, "no_of_wrong_answers": 2, "no_of_times_attempted": 2, "no_of_unattended_questions": 0}, {"topic_name": "Alcohols", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 2}]',
-          },
-          {
-            subject: "Mathematics",
-            section: "Statistics",
-            topics:
-              '[{"topic_name": "Mean and Variance Change", "no_of_times_passed": 10, "no_of_wrong_answers": 5, "no_of_times_attempted": 15, "no_of_unattended_questions": 10}, {"topic_name": "Limits", "no_of_times_passed": 6, "no_of_wrong_answers": 1, "no_of_times_attempted": 7, "no_of_unattended_questions": 5}, {"topic_name": "Derivatives of Product Functions", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 5}, {"topic_name": "Local Maxima and Minima", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 1}, {"topic_name": "Graph Analysis", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 3}, {"topic_name": "Trigonometric Identities", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}]',
-          },
-          {
-            subject: "Physics",
-            section: "Magnetism",
-            topics:
-              '[{"topic_name": "Magnetic Field, Force on Charge/Current", "no_of_times_passed": 0, "no_of_wrong_answers": 2, "no_of_times_attempted": 2, "no_of_unattended_questions": 6}, {"topic_name": "Magnetic Force on Current Carrying Wire", "no_of_times_passed": 0, "no_of_wrong_answers": 0, "no_of_times_attempted": 0, "no_of_unattended_questions": 1}, {"topic_name": "Ohm\'s Law, Kirchhoff\'s Laws", "no_of_times_passed": 0, "no_of_wrong_answers": 1, "no_of_times_attempted": 1, "no_of_unattended_questions": 0}, {"topic_name": "Magnetic Field due to Current, Ampere\'s Law", "no_of_times_passed": 4, "no_of_wrong_answers": 6, "no_of_times_attempted": 10, "no_of_unattended_questions": 5}, {"topic_name": "Viscosity, Terminal Velocity", "no_of_times_passed": 1, "no_of_wrong_answers": 1, "no_of_times_attempted": 2, "no_of_unattended_questions": 0}, {"topic_name": "Fluid Dynamics", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 7}, {"topic_name": "surface energy/surface tension.", "no_of_times_passed": 1, "no_of_wrong_answers": 2, "no_of_times_attempted": 3, "no_of_unattended_questions": 10}]',
-          },
-        ];
+        this.reports = response.result.report;
         this.view.showReportSection(this.reports);
       }
 

@@ -1,39 +1,826 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Test Ninja - Premium B2C MCQ practice platform. Know where you stand, identify and fix weak areas, and score what you deserve with high-performance analytics."
+    />
+    <title>
+      Test Ninja - Know Where You Stand. Fix What's Weak. Score What You
+      Deserve.
+    </title>
 
-    <title>CARE Group of Institutions</title>
-    <meta content="" name="description" />
-    <meta content="" name="keywords" />
-
-    <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon" />
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
-
-    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Template Main CSS File -->
-    <link href="assets/css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/index.css" />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"
-    />
-    <link rel="stylesheet" href="assets/css/custom_style.css" />
-    <script src="assets/js/scripts.js"></script>
-    <script src="assets/js/common/check_auth.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
   </head>
-  <body></body>
+  <body>
+    <div class="page-wrapper">
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+      <div class="glow-orb orb-3"></div>
+
+      <nav class="navbar">
+        <div class="nav-container">
+          <a href="#" class="nav-logo">
+            <img src="/assets/img/logo.png" alt="TEST NINJA" class="logo-img" />
+          </a>
+          <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#dashboard">Dashboard Preview</a></li>
+          </ul>
+          <div class="nav-actions">
+            <button
+              class="theme-toggle-btn"
+              aria-label="Toggle Theme"
+              id="theme-toggle-desktop"
+            >
+              <i data-lucide="moon"></i>
+            </button>
+            <a
+              class="btn btn-gradient"
+              href="https://auth.testninja.ai/login?client_id=3h89ie5dc0gk2l4560a4s2tfe&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Ftestninja.ai%2Flogin.html"
+              >Sign In</a
+            >
+          </div>
+
+          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i data-lucide="menu"></i>
+          </button>
+        </div>
+
+        <div class="mobile-nav">
+          <ul class="mobile-nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#dashboard">Dashboard Preview</a></li>
+            <li class="mobile-nav-theme-toggle">
+              <span>Dark Mode</span>
+              <button
+                class="theme-toggle-btn"
+                aria-label="Toggle Theme"
+                id="theme-toggle-mobile"
+              >
+                <i data-lucide="moon"></i>
+              </button>
+            </li>
+            <li class="mobile-nav-buttons">
+              <a class="btn btn-gradient">Try Now</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <header class="hero-section">
+        <div class="container hero-container">
+          <div class="hero-content scroll-reveal">
+            <div class="hero-badge">
+              <span>The Practice Infrastructure for Top Performers</span>
+            </div>
+            <h1 class="hero-title">
+              Know Where You Stand.<br />
+              <span class="gradient-text">Fix What's Weak.</span><br />
+              Score What You Deserve.
+            </h1>
+            <p class="hero-subtitle">
+              Stop guessing what's holding you back. Practice topic by topic,
+              see exactly where you're losing marks, and track your improvement
+              over time.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-gradient btn-large">Try Now</a>
+              <a href="#dashboard" class="btn btn-secondary btn-large"
+                >View Interactive Sandbox</a
+              >
+            </div>
+
+            <div class="hero-social-proof">
+              <div class="avatar-group">
+                <div class="avatar-mini">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="16"
+                      fill="var(--color-primary)"
+                    />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="avatar-mini">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="16" cy="16" r="16" fill="var(--color-accent)" />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="avatar-mini">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="16" cy="16" r="16" fill="#7b1fa2" />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="avatar-mini">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="16" cy="16" r="16" fill="#ffa502" />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <span class="social-proof-text"
+                >Built for those who compete at the top</span
+              >
+            </div>
+          </div>
+
+          <div class="hero-stats scroll-reveal">
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <i data-lucide="users"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Active Users</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <i data-lucide="database"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">5,00,000+</div>
+                <div class="stat-label">Questions Answered</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">
+                <i data-lucide="trending-up"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">94.6%</div>
+                <div class="stat-label">See Score Improvement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+          <div class="section-header scroll-reveal">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">
+              Optimize your practice with a simple three-step cycle.
+            </p>
+          </div>
+
+          <div class="timeline scroll-reveal">
+            <div class="timeline-step">
+              <div class="step-number">01</div>
+              <h3 class="step-title">Assess</h3>
+              <p class="step-text">
+                Take topic-wise tests to see where you actually stand
+              </p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-number">02</div>
+              <h3 class="step-title">Analyze</h3>
+              <p class="step-text">See which topics are costing you marks</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-number">03</div>
+              <h3 class="step-title">Improve</h3>
+              <p class="step-text">
+                Focus on weak areas, practice more, watch your score grow
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features-section">
+        <div class="container">
+          <div class="section-header scroll-reveal">
+            <h2 class="section-title">Features</h2>
+            <p class="section-subtitle">
+              Everything you need to practice, analyze, and improve your scores.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="timer"></i>
+              </div>
+              <h3 class="feature-card-title">Timed Tests</h3>
+              <p class="feature-card-text">
+                Practice under real exam conditions. Build speed and stay calm
+                under pressure.
+              </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="book-open"></i>
+              </div>
+              <h3 class="feature-card-title">Self Learning Mode</h3>
+              <p class="feature-card-text">
+                Go at your own pace. Get clear explanations for every question.
+              </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="bar-chart-3"></i>
+              </div>
+              <h3 class="feature-card-title">Test Analysis</h3>
+              <p class="feature-card-text">
+                See more than just your score. Know which topics you got wrong
+                and why.
+              </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="layers"></i>
+              </div>
+              <h3 class="feature-card-title">Subject Reports</h3>
+              <p class="feature-card-text">
+                Track your progress across subjects over time. See what's
+                improving.
+              </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="target"></i>
+              </div>
+              <h3 class="feature-card-title">Weak Topic Finder</h3>
+              <p class="feature-card-text">
+                The platform tells you exactly which topics need more work.
+              </p>
+            </div>
+
+            <div class="feature-card scroll-reveal">
+              <div class="card-glow"></div>
+              <div class="feature-icon">
+                <i data-lucide="award"></i>
+              </div>
+              <h3 class="feature-card-title">Progress & Badges</h3>
+              <p class="feature-card-text">
+                Stay motivated. Track streaks, hit milestones, earn badges.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="dashboard-section">
+        <div class="container">
+          <div class="section-header scroll-reveal">
+            <h2 class="section-title">See the Platform In Action</h2>
+            <p class="section-subtitle">
+              Gain unparalleled clarity on where you stand. Toggle between core
+              streams to inspect high-fidelity telemetry.
+            </p>
+          </div>
+
+          <div class="dashboard-tabs scroll-reveal">
+            <button class="tab-btn active" data-tab="student">
+              <i data-lucide="user"></i> Student Dashboard
+            </button>
+            <button class="tab-btn" data-tab="admin">
+              <i data-lucide="shield"></i> Admin Dashboard
+            </button>
+          </div>
+
+          <div class="browser-mockup scroll-reveal">
+            <div class="browser-header">
+              <div class="browser-buttons">
+                <span class="dot close"></span>
+                <span class="dot minimize"></span>
+                <span class="dot maximize"></span>
+              </div>
+              <div class="browser-address">
+                <i data-lucide="lock" class="lock-icon"></i>
+                <span>app.testninja.io/dashboard</span>
+              </div>
+              <div class="browser-actions-right">
+                <span class="avatar-stub">TN</span>
+              </div>
+            </div>
+
+            <div class="browser-body">
+              <aside class="mock-sidebar">
+                <div class="sidebar-logo">
+                  <span class="logo-accent">⚡</span> TestNinja
+                </div>
+                <ul class="sidebar-menu">
+                  <li class="active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                  </li>
+                  <li>
+                    <i data-lucide="file-signature"></i>
+                    <span>Practice Tests</span>
+                  </li>
+                  <li>
+                    <i data-lucide="line-chart"></i> <span>Analytics Hub</span>
+                  </li>
+                  <li><i data-lucide="history"></i> <span>History</span></li>
+                  <li><i data-lucide="settings"></i> <span>Settings</span></li>
+                </ul>
+              </aside>
+
+              <main class="mock-main">
+                <div class="mock-main-header">
+                  <div>
+                    <h3 class="mock-welcome" id="mock-header-title">
+                      Student Overview
+                    </h3>
+                    <p class="mock-subtext" id="mock-header-sub">
+                      Personal progress and recent test metrics
+                    </p>
+                  </div>
+                  <div class="mock-badge" id="mock-header-badge">
+                    Active Streak:
+                    <strong class="streak-count">12 Days 🔥</strong>
+                  </div>
+                </div>
+
+                <div class="mock-stats-grid">
+                  <div class="mock-stat-card">
+                    <span class="mock-stat-label" id="mock-stat-1-label"
+                      >Quizzes Taken</span
+                    >
+                    <span class="mock-stat-val" id="mock-stat-1-val">45</span>
+                    <span class="mock-stat-sub text-green" id="mock-stat-1-sub"
+                      ><i data-lucide="arrow-up-right"></i> +3 this week</span
+                    >
+                  </div>
+                  <div class="mock-stat-card">
+                    <span class="mock-stat-label" id="mock-stat-2-label"
+                      >Average Score</span
+                    >
+                    <span class="mock-stat-val" id="mock-stat-2-val"
+                      >84.2%</span
+                    >
+                    <span class="mock-stat-sub text-green" id="mock-stat-2-sub"
+                      ><i data-lucide="arrow-up-right"></i> +2.1% net
+                      increase</span
+                    >
+                  </div>
+                  <div class="mock-stat-card">
+                    <span class="mock-stat-label" id="mock-stat-3-label"
+                      >MCQs Answered</span
+                    >
+                    <span class="mock-stat-val" id="mock-stat-3-val"
+                      >3,420</span
+                    >
+                    <span class="mock-stat-sub text-green" id="mock-stat-3-sub"
+                      ><i data-lucide="arrow-up-right"></i> 89% answered
+                      correctly</span
+                    >
+                  </div>
+                  <div class="mock-stat-card">
+                    <span class="mock-stat-label" id="mock-stat-4-label"
+                      >Total Time Spent</span
+                    >
+                    <span class="mock-stat-val" id="mock-stat-4-val"
+                      >48.5h</span
+                    >
+                    <span class="mock-stat-sub text-green" id="mock-stat-4-sub"
+                      ><i data-lucide="arrow-up-right"></i> +4.2h this
+                      week</span
+                    >
+                  </div>
+                </div>
+
+                <div class="mock-split-grid">
+                  <div class="mock-content-card">
+                    <h4 class="card-heading" id="left-card-heading">
+                      Subject Performance
+                    </h4>
+                    <div class="bars-container" id="left-card-content">
+                      <div class="bar-group">
+                        <div class="bar-labels">
+                          <span>Physics</span>
+                          <strong>88%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                          <div
+                            class="progress-bar-fill"
+                            style="width: 88%"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="bar-group">
+                        <div class="bar-labels">
+                          <span>Chemistry</span>
+                          <strong>75%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                          <div
+                            class="progress-bar-fill"
+                            style="width: 75%"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="bar-group">
+                        <div class="bar-labels">
+                          <span>Biology</span>
+                          <strong>92%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                          <div
+                            class="progress-bar-fill"
+                            style="width: 92%"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mock-content-card">
+                    <h4 class="card-heading" id="right-card-heading">
+                      Recent Achievements
+                    </h4>
+                    <ul class="scores-list" id="right-card-content">
+                      <li>
+                        <div class="score-info">
+                          <strong class="score-title">Physics Prodigy</strong>
+                          <span class="score-meta"
+                            >Scored 95%+ in 3 mock tests</span
+                          >
+                        </div>
+                        <span class="score-val badge-yellow">🏆</span>
+                      </li>
+                      <li>
+                        <div class="score-info">
+                          <strong class="score-title"
+                            >Consistent Learner</strong
+                          >
+                          <span class="score-meta">7 day active streak</span>
+                        </div>
+                        <span class="score-val badge-green">🔥</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="mock-content-card table-card">
+                  <h4 class="card-heading" id="table-heading">
+                    Recent Quizzes
+                  </h4>
+                  <div class="table-responsive">
+                    <table class="mock-table">
+                      <thead id="table-head">
+                        <tr>
+                          <th>Quiz Name</th>
+                          <th>Subject</th>
+                          <th>Score</th>
+                          <th>Time Taken</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table-body">
+                        <tr>
+                          <td><strong>NEET Mock Test 5</strong></td>
+                          <td>Full Syllabus</td>
+                          <td>
+                            <span class="accent-font text-green">650/720</span>
+                          </td>
+                          <td><span class="status-pill green">2h 45m</span></td>
+                          <td>
+                            <button class="table-btn-action">
+                              View Analysis
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><strong>Organic Chemistry Drill</strong></td>
+                          <td>Chemistry</td>
+                          <td>
+                            <span class="accent-font text-yellow">82%</span>
+                          </td>
+                          <td><span class="status-pill yellow">45m</span></td>
+                          <td>
+                            <button class="table-btn-action">
+                              Review Mistakes
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </main>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" class="testimonials-section">
+        <div class="container">
+          <div class="section-header scroll-reveal">
+            <span class="section-tagline">Success Telemetry</span>
+            <h2 class="section-title">Trusted by High-Stakes Aspirants</h2>
+            <p class="section-subtitle">
+              See how serious practitioners use Test Ninja's topic analytics to
+              plug leaks and secure top-tier results.
+            </p>
+          </div>
+
+          <div class="testimonials-grid">
+            <div class="testimonial-card scroll-reveal">
+              <div class="testimonial-rating">
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+              </div>
+              <p class="testimonial-text">
+                "I always thought I was weak at Math overall. Turns out it was
+                just one topic. Fixing it jumped my score by 20 marks."
+              </p>
+              <div class="testimonial-author">
+                <div class="author-avatar">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="16"
+                      fill="var(--color-primary)"
+                    />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="author-info">
+                  <strong class="author-name">A.S.</strong>
+                  <span class="author-meta">Verified User</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card scroll-reveal">
+              <div class="testimonial-rating">
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+              </div>
+              <p class="testimonial-text">
+                "My scores had plateaued for weeks. The reports showed I was
+                spending too long on certain question types. Once I fixed that,
+                my percentile jumped."
+              </p>
+              <div class="testimonial-author">
+                <div class="author-avatar">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="16" cy="16" r="16" fill="var(--color-accent)" />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="author-info">
+                  <strong class="author-name">K.M.</strong>
+                  <span class="author-meta">Verified User</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card scroll-reveal">
+              <div class="testimonial-rating">
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+                <i data-lucide="star"></i>
+              </div>
+              <p class="testimonial-text">
+                "Other platforms just give you a score. This one tells you *why*
+                you got it wrong. That's the difference."
+              </p>
+              <div class="testimonial-author">
+                <div class="author-avatar">
+                  <svg
+                    viewBox="0 0 32 32"
+                    class="avatar-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="16" cy="16" r="16" fill="#7b1fa2" />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="6"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                    <path
+                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
+                      fill="#ffffff"
+                      opacity="0.95"
+                    />
+                  </svg>
+                </div>
+                <div class="author-info">
+                  <strong class="author-name">R.V.</strong>
+                  <span class="author-meta">Verified User</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" class="cta-section">
+        <div class="container cta-container scroll-reveal">
+          <div class="cta-inner-glow"></div>
+          <h2 class="cta-title">Ready to Know Where You Stand?</h2>
+          <p class="cta-subtitle">
+            Create your free practice account in less than 2 minutes.
+          </p>
+          <div class="cta-actions">
+            <a class="btn btn-white btn-large">Try Now</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer" style="padding: 40px 0">
+        <div
+          class="container footer-container"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+          "
+        >
+          <div
+            class="footer-left"
+            style="display: flex; align-items: center; gap: 16px"
+          >
+            <a href="#" class="footer-logo">
+              <img
+                src="/assets/img/logo.png"
+                alt="TEST NINJA"
+                class="logo-img"
+              />
+            </a>
+            <span
+              class="footer-copyright"
+              style="color: var(--text-muted); font-size: 0.9rem"
+              >&copy; 2026 Test Ninja</span
+            >
+          </div>
+          <div
+            class="footer-links"
+            style="
+              display: flex;
+              gap: 24px;
+              font-size: 0.95rem;
+              font-weight: 500;
+            "
+          >
+            <a
+              href="#features"
+              style="color: var(--text-muted); transition: color 0.25s ease"
+              onmouseover="this.style.color = 'var(--color-primary)'"
+              onmouseout="this.style.color = 'var(--text-muted)'"
+              >Features</a
+            >
+            <a
+              href="#how-it-works"
+              style="color: var(--text-muted); transition: color 0.25s ease"
+              onmouseover="this.style.color = 'var(--color-primary)'"
+              onmouseout="this.style.color = 'var(--text-muted)'"
+              >How It Works</a
+            >
+            <a
+              href="#"
+              style="color: var(--text-muted); transition: color 0.25s ease"
+              onmouseover="this.style.color = 'var(--color-primary)'"
+              onmouseout="this.style.color = 'var(--text-muted)'"
+              >Terms</a
+            >
+            <a
+              href="#"
+              style="color: var(--text-muted); transition: color 0.25s ease"
+              onmouseover="this.style.color = 'var(--color-primary)'"
+              onmouseout="this.style.color = 'var(--text-muted)'"
+              >Privacy</a
+            >
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="/assets/js/pages/index.js"></script>
+  </body>
 </html>

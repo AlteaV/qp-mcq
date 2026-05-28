@@ -2,183 +2,189 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <div id="section1">
-                        <div>
-                          <h4>Group Management</h4>
-                          <input
-                            class="btn btn-primary mt-3"
-                            type="button"
-                            value="Add Group"
-                            id="add_group"
-                          />
-                        </div>
-                      </div>
-                      <div id="section2" class="d-none">
-                        <div>
-                          <h4>Member Management</h4>
-                          <div class="d-flex justify-content-between">
-                            <button
-                              type="button"
-                              class="btn btn-secondary mt-3"
-                              id="back-btn"
-                            >
-                              <i class="fas fa-arrow-left"></i>
-                            </button>
-                            <input
-                              class="btn btn-primary mt-3"
-                              style="align-self: flex-end"
-                              type="button"
-                              value="Add Member"
-                              id="add_members"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="mt-5"
-                        id="fetching_data"
-                        style="display: none"
-                      >
-                        <p>Fetching Data</p>
-                      </div>
-                      <div
-                        class="result mt-5"
-                        id="result_div"
-                        style="display: none"
-                      >
-                        <table
-                          class="table table-bordered"
-                          width="100%"
-                          id="result_table"
-                        ></table>
-                      </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner" id="section1">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Group Management</h1>
+              <p>Manage your groups and members</p>
+            </div>
+          </div>
 
-                      <!-- starts here -->
-                      <div
-                        class="modal fade"
-                        id="modal"
-                        tabindex="-1"
-                        role="dialog"
-                        aria-labelledby="modalLabel"
-                        aria-hidden="true"
-                      >
-                        <div
-                          class="modal-dialog modal-dialog-centered modal-xl"
-                          role="document"
-                        >
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h4 class="modal-title" id="modalLabel"></h4>
-                              <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal"
-                              >
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form id="form">
-                                <div class="row">
-                                  <div class="col" id="s1-modal">
-                                    <label
-                                      for="grp_name"
-                                      class="required mb-3 col"
-                                      >Group Name</label
-                                    >
-                                    <input
-                                      required
-                                      class="form-control"
-                                      name="grp_name"
-                                      id="grp_name"
-                                    />
-                                    <div class="invalid-feedback">
-                                      Please enter Group Name.
-                                    </div>
-                                  </div>
-                                  <div id="s2-modal" class="col d-none">
-                                    <div
-                                      class="d-flex justify-content-between align-items-center mb-3"
-                                    >
-                                      <label style="font-weight: 600"
-                                        >Select Members by Class</label
-                                      >
-                                      <span
-                                        class="badge bg-secondary"
-                                        id="picked-count-badge"
-                                        >0 selected</span
-                                      >
-                                    </div>
-                                    <div
-                                      style="
-                                        max-height: 480px;
-                                        overflow-y: auto;
-                                      "
-                                    >
-                                      <div
-                                        class="accordion accordion-flush"
-                                        id="classAccordion"
-                                      ></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                            <div
-                              class="modal-footer"
-                              style="justify-content: space-between"
+          <div id="section2" class="d-none">
+            <!-- GRADIENT BANNER for Member Management -->
+            <div
+              class="nd-banner nd-banner-blue mb-4 d-flex justify-content-between align-items-center"
+            >
+              <div class="d-flex align-items-center gap-3">
+                <button
+                  type="button"
+                  class="btn nd-btn-secondary"
+                  id="back-btn"
+                  style="padding: 6px 12px"
+                >
+                  <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="nd-banner-title m-0">Member Management</h1>
+              </div>
+            </div>
+          </div>
+
+          <div class="nd-card p-0">
+            <div class="mt-4" id="fetching_data" style="display: none">
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <i class="fa-solid fa-spinner fa-spin"></i> Fetching Data...
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 me-4 mb-4">
+              <button class="nd-btn-primary" type="button" id="add_group">
+                <i class="fa-solid fa-plus me-2"></i> Add Group
+              </button>
+              <button
+                class="nd-btn-primary"
+                type="button"
+                id="add_members"
+                style="display: none"
+              >
+                <i class="fa-solid fa-user-plus me-2"></i> Add Member
+              </button>
+            </div>
+            <div class="result mt-2 pb-0" id="result_div" style="display: none">
+              <table
+                class="table table-bordered nd-table-override mb-0"
+                width="100%"
+                id="result_table"
+              ></table>
+            </div>
+
+            <!-- starts here -->
+            <div
+              class="modal fade"
+              id="modal"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="modalLabel"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered modal-xl"
+                role="document"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="modalLabel"></h4>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="form">
+                      <div class="row">
+                        <div class="col" id="s1-modal">
+                          <label for="grp_name" class="required mb-3 col"
+                            >Group Name</label
+                          >
+                          <input
+                            required
+                            class="form-control"
+                            name="grp_name"
+                            id="grp_name"
+                          />
+                          <div class="invalid-feedback">
+                            Please enter Group Name.
+                          </div>
+                        </div>
+                        <div id="s2-modal" class="col d-none">
+                          <div
+                            class="d-flex justify-content-between align-items-center mb-3"
+                          >
+                            <label style="font-weight: 600"
+                              >Select Members by Class</label
                             >
-                              <div>
-                                <input
-                                  type="button"
-                                  id="constraint_btn"
-                                  class="link-primary text-decoration-underline bg-white d-none"
-                                  style="border: 0"
-                                />
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn btn-secondary"
-                                  data-dismiss="modal"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#modal"
-                                >
-                                  Close
-                                </button>
-                                <button
-                                  type="button"
-                                  class="btn btn-primary"
-                                  id="form_submit"
-                                >
-                                  Submit
-                                </button>
-                              </div>
-                            </div>
+                            <span
+                              class="badge bg-secondary"
+                              id="picked-count-badge"
+                              >0 selected</span
+                            >
+                          </div>
+                          <div style="max-height: 480px; overflow-y: auto">
+                            <div
+                              class="accordion accordion-flush"
+                              id="classAccordion"
+                            ></div>
                           </div>
                         </div>
                       </div>
-                      <!-- ends here -->
+                    </form>
+                  </div>
+                  <div
+                    class="modal-footer"
+                    style="justify-content: space-between"
+                  >
+                    <div>
+                      <input
+                        type="button"
+                        id="constraint_btn"
+                        class="link-primary text-decoration-underline bg-white d-none"
+                        style="border: 0"
+                      />
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="form_submit"
+                      >
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- ends here -->
           </div>
         </div>
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

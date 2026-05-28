@@ -2,6 +2,12 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
@@ -9,624 +15,600 @@
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
 
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <h4 class="c-grey-900 mB-20" id="title"></h4>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>UI Templates</h1>
+              <p id="title">Configure and manage UI templates</p>
+            </div>
+          </div>
 
-                      <div class="row">
-                        <div class="col mb-2">
+          <div class="nd-card p-0">
+            <div class="mt-4" id="fetching_data" style="display: none">
+              <p class="text-muted fw-medium">
+                <i class="fa-solid fa-spinner fa-spin me-2"></i>Fetching Data...
+              </p>
+            </div>
+
+            <div
+              class="d-flex justify-content-end mt-4 me-4 mb-4"
+              style="display: none !important"
+            >
+              <input
+                style="display: none"
+                class="nd-btn-primary"
+                type="button"
+                value="New Template"
+                data-bs-toggle="modal"
+                data-bs-target="#modal"
+                id="new_ui_template_button"
+              />
+            </div>
+            <div class="result p-0 mb-0" id="result_div" style="display: none">
+              <div class="table-responsive">
+                <table
+                  class="table table-bordered nd-table-override mb-0"
+                  width="100%"
+                  id="result_table"
+                ></table>
+              </div>
+            </div>
+            <div
+              class="modal fade"
+              id="modal"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="modalLabel"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered modal-xl"
+                role="document"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">New Template</h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form class="needs-validation" id="form_id" novalidate>
+                      <div class="d-flex flex-wrap gap-3 mb-4">
+                        <div style="flex: 1; min-width: 200px">
+                          <label
+                            class="form-label fw-bold required"
+                            style="color: #374151"
+                            >Template Name</label
+                          >
                           <input
-                            style="display: none"
-                            class="btn btn-primary"
-                            type="button"
-                            value="New Template"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal"
-                            id="new_ui_template_button"
+                            type="text"
+                            class="nd-input"
+                            id="template_name"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter Template Name
+                          </div>
+                        </div>
+
+                        <div style="flex: 1; min-width: 150px">
+                          <label
+                            class="form-label fw-bold required"
+                            style="color: #374151"
+                            >Total Duration (mins)</label
+                          >
+                          <input
+                            type="number"
+                            class="nd-input"
+                            id="total_duration"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter duration
+                          </div>
+                        </div>
+
+                        <div style="flex: 1; min-width: 200px">
+                          <label
+                            class="form-label fw-bold required"
+                            style="color: #374151"
+                            >Show Timer</label
+                          >
+                          <select class="nd-select" id="show_timer" required>
+                            <option value="count_down">Count-down Timer</option>
+                            <option value="count_up">Count-up Timer</option>
+                            <option value="dont_show">Don't Show Timer</option>
+                          </select>
+                        </div>
+
+                        <div style="flex: 1; min-width: 200px">
+                          <label
+                            class="form-label fw-bold required"
+                            style="color: #374151"
+                            >Questions Per Page</label
+                          >
+                          <input
+                            type="number"
+                            class="nd-input"
+                            id="questions_per_page"
+                            min="1"
+                            required
                           />
                         </div>
                       </div>
 
-                      <div
-                        class="mt-5"
-                        id="fetching_data"
-                        style="display: none"
-                      >
-                        <p>Fetching Data</p>
-                      </div>
-                      <div
-                        class="result mt-5"
-                        id="result_div"
-                        style="display: none"
-                      >
-                        <table
-                          class="table table-bordered"
-                          width="100%"
-                          id="result_table"
-                        ></table>
-                      </div>
-                      <div
-                        class="modal fade"
-                        id="modal"
-                        tabindex="-1"
-                        role="dialog"
-                        aria-labelledby="modalLabel"
-                        aria-hidden="true"
-                      >
-                        <div
-                          class="modal-dialog modal-dialog-centered modal-xl"
-                          role="document"
-                        >
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="modalLabel">
-                                New Template
-                              </h5>
-                              <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal"
+                      <div class="row mt-2">
+                        <div class="col">
+                          <label class="form-label required">Full Screen</label>
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="full_screen"
+                                id="full_screen_yes"
+                                value="Y"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="full_screen_yes"
+                                >Yes</label
                               >
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>
-                            <div class="modal-body">
-                              <form
-                                class="needs-validation"
-                                id="form_id"
-                                novalidate
+
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="full_screen"
+                                id="full_screen_no"
+                                value="N"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="full_screen_no"
+                                >No</label
                               >
-                                <div class="row mt-2">
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Template Name</label
-                                    >
-                                    <input
-                                      type="text"
-                                      class="form-control"
-                                      id="template_name"
-                                      required
-                                    />
-                                    <div class="invalid-feedback">
-                                      Please enter Template Name
-                                    </div>
-                                  </div>
-
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Total Duration (in mins)</label
-                                    >
-                                    <input
-                                      type="number"
-                                      class="form-control"
-                                      id="total_duration"
-                                      required
-                                    />
-                                    <div class="invalid-feedback">
-                                      Please enter duration
-                                    </div>
-                                  </div>
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Show Timer</label
-                                    >
-                                    <select
-                                      class="form-select"
-                                      id="show_timer"
-                                      required
-                                    >
-                                      <option value="count_down">
-                                        Count-down Timer
-                                      </option>
-                                      <option value="count_up">
-                                        Count-up Timer
-                                      </option>
-                                      <option value="dont_show">
-                                        Don't Show Timer
-                                      </option>
-                                    </select>
-                                  </div>
-                                  <div class="col">
-                                    <label class="form-label required">
-                                      No. of Questions to Display at Once
-                                    </label>
-                                    <input
-                                      type="number"
-                                      class="form-control"
-                                      id="questions_per_page"
-                                      min="1"
-                                      required
-                                    />
-                                  </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Full Screen</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="full_screen"
-                                          id="full_screen_yes"
-                                          value="Y"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="full_screen_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="full_screen"
-                                          id="full_screen_no"
-                                          value="N"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="full_screen_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div class="col">
-                                    <label class="form-label required">
-                                      Do you want to set this template as the
-                                      default?</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="is_default"
-                                          id="is_default_yes"
-                                          value="Y"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="is_default_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="is_default"
-                                          id="is_default_no"
-                                          value="N"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="is_default_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Disable Right Click</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="disable_right_click"
-                                          id="disable_right_click_yes"
-                                          value="Y"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="disable_right_click_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="disable_right_click"
-                                          id="disable_right_click_no"
-                                          value="N"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="disable_right_click_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Do you want to display the final score to
-                                      the user</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="final_score"
-                                          id="final_score_yes"
-                                          value="1"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="final_score_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="final_score"
-                                          id="final_score_no"
-                                          value="0"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="final_score_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                  <div class="col">
-                                    <label class="form-label required"
-                                      >Shuffle Answer</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="shuffle_answer"
-                                          id="shuffle_answer_yes"
-                                          value="Y"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="shuffle_answer_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="shuffle_answer"
-                                          id="shuffle_answer_no"
-                                          value="N"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="shuffle_answer_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div class="col">
-                                    <label class="form-label required">
-                                      Allow user to flag wrong question?</label
-                                    >
-                                    <div class="mt-1">
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="flag_wrong_question"
-                                          id="flag_wrong_question_yes"
-                                          value="Y"
-                                          checked
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="flag_wrong_question_yes"
-                                          >Yes</label
-                                        >
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name="flag_wrong_question"
-                                          id="flag_wrong_question_no"
-                                          value="N"
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="flag_wrong_question_no"
-                                          >No</label
-                                        >
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- PARENT BORDER START -->
-                                <div class="row mt-3">
-                                  <div class="col-12">
-                                    <div class="border rounded p-3 bg-light">
-                                      <!-- Custom Mark -->
-                                      <div class="row">
-                                        <div class="col">
-                                          <label class="form-label required">
-                                            Do you want to set Custom Mark
-                                          </label>
-                                          <div class="mt-1">
-                                            <div
-                                              class="form-check form-check-inline"
-                                            >
-                                              <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="custom_mark"
-                                                id="custom_mark_yes"
-                                                value="Y"
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="custom_mark_yes"
-                                                >Yes</label
-                                              >
-                                            </div>
-                                            <div
-                                              class="form-check form-check-inline"
-                                            >
-                                              <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="custom_mark"
-                                                id="custom_mark_no"
-                                                value="N"
-                                                checked
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="custom_mark_no"
-                                                >No</label
-                                              >
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <!-- Positive / Negative Mark -->
-                                      <div
-                                        class="row mt-3"
-                                        id="marks_values_box"
-                                      >
-                                        <div class="col-12">
-                                          <div class="row align-items-center">
-                                            <div class="col">
-                                              <label class="form-label mb-1"
-                                                >Positive Mark</label
-                                              >
-                                              <input
-                                                type="number"
-                                                class="form-control"
-                                                id="positive_mark"
-                                                min="0"
-                                              />
-                                            </div>
-
-                                            <div class="col">
-                                              <label class="form-label mb-1"
-                                                >Negative Mark</label
-                                              >
-                                              <input
-                                                type="number"
-                                                class="form-control"
-                                                id="negative_mark"
-                                                min="0"
-                                              />
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- PARENT BORDER END -->
-
-                                <div class="row mt-2"></div>
-                                <!-- PARENT BORDER START -->
-                                <div class="row mt-3">
-                                  <div class="col-12">
-                                    <div class="border rounded p-3 bg-light">
-                                      <!-- Question Layout -->
-                                      <div class="row">
-                                        <div class="col">
-                                          <label class="form-label required">
-                                            Do you want to show the Question
-                                            Layout
-                                          </label>
-                                          <div class="mt-1">
-                                            <div
-                                              class="form-check form-check-inline"
-                                            >
-                                              <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="question_layout"
-                                                id="question_layout_yes"
-                                                value="Y"
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="question_layout_yes"
-                                                >Yes</label
-                                              >
-                                            </div>
-                                            <div
-                                              class="form-check form-check-inline"
-                                            >
-                                              <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="question_layout"
-                                                id="question_layout_no"
-                                                value="N"
-                                                checked
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="question_layout_no"
-                                                >No</label
-                                              >
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <!-- Review / Skip -->
-                                      <div
-                                        class="row mt-3"
-                                        id="review_skip_box"
-                                      >
-                                        <div class="col-12">
-                                          <div class="row align-items-center">
-                                            <div class="col">
-                                              <label class="form-label mb-1"
-                                                >Can Review</label
-                                              >
-                                              <div>
-                                                <div
-                                                  class="form-check form-check-inline"
-                                                >
-                                                  <input
-                                                    class="form-check-input"
-                                                    type="radio"
-                                                    name="can_review"
-                                                    id="can_review_yes"
-                                                    value="Y"
-                                                  />
-                                                  <label
-                                                    class="form-check-label"
-                                                    for="can_review_yes"
-                                                    >Yes</label
-                                                  >
-                                                </div>
-                                                <div
-                                                  class="form-check form-check-inline"
-                                                >
-                                                  <input
-                                                    class="form-check-input"
-                                                    type="radio"
-                                                    name="can_review"
-                                                    id="can_review_no"
-                                                    value="N"
-                                                  />
-                                                  <label
-                                                    class="form-check-label"
-                                                    for="can_review_no"
-                                                    >No</label
-                                                  >
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div class="col">
-                                              <label class="form-label mb-1"
-                                                >Can Skip</label
-                                              >
-                                              <div>
-                                                <div
-                                                  class="form-check form-check-inline"
-                                                >
-                                                  <input
-                                                    class="form-check-input"
-                                                    type="radio"
-                                                    name="can_skip"
-                                                    id="can_skip_yes"
-                                                    value="Y"
-                                                  />
-                                                  <label
-                                                    class="form-check-label"
-                                                    for="can_skip_yes"
-                                                    >Yes</label
-                                                  >
-                                                </div>
-                                                <div
-                                                  class="form-check form-check-inline"
-                                                >
-                                                  <input
-                                                    class="form-check-input"
-                                                    type="radio"
-                                                    name="can_skip"
-                                                    id="can_skip_no"
-                                                    value="N"
-                                                  />
-                                                  <label
-                                                    class="form-check-label"
-                                                    for="can_skip_no"
-                                                    >No</label
-                                                  >
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- PARENT BORDER END -->
-                              </form>
                             </div>
-                            <div class="modal-footer mt-3">
-                              <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-dismiss="modal"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal"
+                          </div>
+                        </div>
+
+                        <div class="col">
+                          <label class="form-label required">
+                            Do you want to set this template as the
+                            default?</label
+                          >
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="is_default"
+                                id="is_default_yes"
+                                value="Y"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="is_default_yes"
+                                >Yes</label
                               >
-                                Close
-                              </button>
-                              <button
-                                type="button"
-                                class="btn btn-primary"
-                                id="submit_btn"
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="is_default"
+                                id="is_default_no"
+                                value="N"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="is_default_no"
+                                >No</label
                               >
-                                Submit
-                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label class="form-label required"
+                            >Disable Right Click</label
+                          >
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="disable_right_click"
+                                id="disable_right_click_yes"
+                                value="Y"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="disable_right_click_yes"
+                                >Yes</label
+                              >
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="disable_right_click"
+                                id="disable_right_click_no"
+                                value="N"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="disable_right_click_no"
+                                >No</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label class="form-label required"
+                            >Do you want to display the final score to the
+                            user</label
+                          >
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="final_score"
+                                id="final_score_yes"
+                                value="1"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="final_score_yes"
+                                >Yes</label
+                              >
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="final_score"
+                                id="final_score_no"
+                                value="0"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="final_score_no"
+                                >No</label
+                              >
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+
+                      <div class="row mt-2">
+                        <div class="col">
+                          <label class="form-label required"
+                            >Shuffle Answer</label
+                          >
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="shuffle_answer"
+                                id="shuffle_answer_yes"
+                                value="Y"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="shuffle_answer_yes"
+                                >Yes</label
+                              >
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="shuffle_answer"
+                                id="shuffle_answer_no"
+                                value="N"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="shuffle_answer_no"
+                                >No</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col">
+                          <label class="form-label required">
+                            Allow user to flag wrong question?</label
+                          >
+                          <div class="mt-1">
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="flag_wrong_question"
+                                id="flag_wrong_question_yes"
+                                value="Y"
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flag_wrong_question_yes"
+                                >Yes</label
+                              >
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="flag_wrong_question"
+                                id="flag_wrong_question_no"
+                                value="N"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flag_wrong_question_no"
+                                >No</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- PARENT BORDER START -->
+                      <div class="row mt-3">
+                        <div class="col-12">
+                          <div class="border rounded p-3 bg-light">
+                            <!-- Custom Mark -->
+                            <div class="row">
+                              <div class="col">
+                                <label class="form-label required">
+                                  Do you want to set Custom Mark
+                                </label>
+                                <div class="mt-1">
+                                  <div class="form-check form-check-inline">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="custom_mark"
+                                      id="custom_mark_yes"
+                                      value="Y"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="custom_mark_yes"
+                                      >Yes</label
+                                    >
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="custom_mark"
+                                      id="custom_mark_no"
+                                      value="N"
+                                      checked
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="custom_mark_no"
+                                      >No</label
+                                    >
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Positive / Negative Mark -->
+                            <div class="row mt-3" id="marks_values_box">
+                              <div class="col-12">
+                                <div class="row align-items-center">
+                                  <div class="col">
+                                    <label class="form-label mb-1"
+                                      >Positive Mark</label
+                                    >
+                                    <input
+                                      type="number"
+                                      class="form-control"
+                                      id="positive_mark"
+                                      min="0"
+                                    />
+                                  </div>
+
+                                  <div class="col">
+                                    <label class="form-label mb-1"
+                                      >Negative Mark</label
+                                    >
+                                    <input
+                                      type="number"
+                                      class="form-control"
+                                      id="negative_mark"
+                                      min="0"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- PARENT BORDER END -->
+
+                      <div class="row mt-2"></div>
+                      <!-- PARENT BORDER START -->
+                      <div class="row mt-3">
+                        <div class="col-12">
+                          <div class="border rounded p-3 bg-light">
+                            <!-- Question Layout -->
+                            <div class="row">
+                              <div class="col">
+                                <label class="form-label required">
+                                  Do you want to show the Question Layout
+                                </label>
+                                <div class="mt-1">
+                                  <div class="form-check form-check-inline">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="question_layout"
+                                      id="question_layout_yes"
+                                      value="Y"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="question_layout_yes"
+                                      >Yes</label
+                                    >
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="question_layout"
+                                      id="question_layout_no"
+                                      value="N"
+                                      checked
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="question_layout_no"
+                                      >No</label
+                                    >
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Review / Skip -->
+                            <div class="row mt-3" id="review_skip_box">
+                              <div class="col-12">
+                                <div class="row align-items-center">
+                                  <div class="col">
+                                    <label class="form-label mb-1"
+                                      >Can Review</label
+                                    >
+                                    <div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="can_review"
+                                          id="can_review_yes"
+                                          value="Y"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="can_review_yes"
+                                          >Yes</label
+                                        >
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="can_review"
+                                          id="can_review_no"
+                                          value="N"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="can_review_no"
+                                          >No</label
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col">
+                                    <label class="form-label mb-1"
+                                      >Can Skip</label
+                                    >
+                                    <div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="can_skip"
+                                          id="can_skip_yes"
+                                          value="Y"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="can_skip_yes"
+                                          >Yes</label
+                                        >
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name="can_skip"
+                                          id="can_skip_no"
+                                          value="N"
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="can_skip_no"
+                                          >No</label
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- PARENT BORDER END -->
+                    </form>
+                  </div>
+                  <div class="modal-footer mt-3">
+                    <button
+                      type="button"
+                      class="nd-btn-secondary"
+                      data-dismiss="modal"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      class="nd-btn-primary"
+                      id="submit_btn"
+                    >
+                      Submit
+                    </button>
                   </div>
                 </div>
               </div>

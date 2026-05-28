@@ -2,242 +2,320 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">Add Question</h4>
-                    <form id="filter_form">
-                      <div class="row mb-3 align-items-end">
-                        <div class="col mt-2">
-                          <label for="level" class="required">Level</label>
-                          <select
-                            class="form-select"
-                            name="level"
-                            id="level"
-                            required
-                          ></select>
-                        </div>
-                        <div class="col mt-2">
-                          <div class="d-none" id="subject_div">
-                            <label for="subject" class="required"
-                              >Subject</label
-                            >
-                            <select
-                              class="form-select"
-                              name="subject"
-                              id="subject"
-                              required
-                            ></select>
-                          </div>
-                        </div>
-                        <div class="col mt-2">
-                          <div class="d-none" id="section_div">
-                            <label for="section" class="required"
-                              >Section</label
-                            >
-                            <select
-                              class="form-select"
-                              name="section"
-                              id="section"
-                              required
-                            ></select>
-                          </div>
-                        </div>
-                        <div class="col mt-2">
-                          <div class="d-none" id="topic_div">
-                            <label for="topic" class="required">Topic</label>
-                            <select
-                              class="form-select"
-                              name="topic"
-                              id="topic"
-                              required
-                            ></select>
-                          </div>
-                        </div>
-                        <div class="col mt-2">
-                          <div class="d-none" id="question_type_div">
-                            <label for="question_type" class="required mb-0">
-                              Question Type
-                            </label>
-                            <select
-                              class="form-select"
-                              id="question_type"
-                              required
-                            >
-                              <option value="" disabled selected>Select</option>
-                              <option value="Mcq">MCQ</option>
-                              <option value="Numerical">Numerical</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Add Question</h1>
+              <p>Create and add new question to the question bank</p>
+            </div>
+          </div>
 
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
-
-                    <div
-                      class="result mt-4 row"
-                      id="result_div"
-                      style="display: none"
+          <!-- Filter Card -->
+          <div class="nd-card p-6 mb-4">
+            <form id="filter_form">
+              <div class="d-flex flex-wrap align-items-end gap-3">
+                <div style="flex: 1; min-width: 150px">
+                  <label
+                    for="level"
+                    class="form-label fw-bold required"
+                    style="color: #374151"
+                    >Level</label
+                  >
+                  <select
+                    class="nd-select"
+                    name="level"
+                    id="level"
+                    required
+                  ></select>
+                </div>
+                <div style="flex: 1; min-width: 150px">
+                  <div class="d-none" id="subject_div">
+                    <label
+                      for="subject"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Subject</label
                     >
-                      <form id="question_form">
-                        <div class="row">
-                          <div class="col">
-                            <label for="question" class="required"
-                              >Question</label
-                            >
-                            <div
-                              id="question_editor"
-                              style="height: 300px"
-                            ></div>
-                            <input type="hidden" id="question" required />
-                            <div class="invalid-feedback">
-                              Please enter a question
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="row mt-2 d-none" id="numerical_answer_div">
-                          <div class="col-md-4">
-                            <label for="numerical_answer" class="required">
-                              Correct Answer
-                            </label>
-                            <input
-                              type="number"
-                              id="numerical_answer"
-                              class="form-control"
-                              placeholder="Enter correct numerical answer"
-                            />
-                          </div>
-                        </div>
-
-                        <div class="row mt-2">
-                          <div class="col mb-2">
-                            <label for="option_a" class="required"
-                              >Option A</label
-                            >
-                            <input
-                              type="text"
-                              id="option_a"
-                              class="form-control"
-                              placeholder="Option A"
-                              required
-                            />
-                          </div>
-                          <div class="col mb-2">
-                            <label for="option_b" class="required"
-                              >Option B</label
-                            >
-                            <input
-                              type="text"
-                              id="option_b"
-                              class="form-control"
-                              placeholder="Option B"
-                              required
-                            />
-                          </div>
-                          <div class="col mb-2">
-                            <label for="option_c" class="required"
-                              >Option C</label
-                            >
-                            <input
-                              type="text"
-                              id="option_c"
-                              class="form-control"
-                              placeholder="Option C"
-                              required
-                            />
-                          </div>
-                          <div class="col mb-2">
-                            <label for="option_d" class="required"
-                              >Option D</label
-                            >
-                            <input
-                              type="text"
-                              id="option_d"
-                              class="form-control"
-                              placeholder="Option D"
-                              required
-                            />
-                          </div>
-                          <div class="col mb-2">
-                            <label for="option_e" class="">Option E</label>
-                            <input
-                              type="text"
-                              id="option_e"
-                              class="form-control"
-                              placeholder="Option E"
-                            />
-                          </div>
-                        </div>
-                        <div class="row mt-3">
-                          <div class="col">
-                            <label for="correct_option" class="required"
-                              >Correct Option</label
-                            >
-                            <select
-                              class="form-select"
-                              name="correct_option"
-                              id="correct_option"
-                              required
-                            >
-                              <option value="" disabled selected>
-                                Please select the correct option
-                              </option>
-                              <option value="A">Option A</option>
-                              <option value="B">Option B</option>
-                              <option value="C">Option C</option>
-                              <option value="D">Option D</option>
-                              <option value="E">Option E</option>
-                            </select>
-                          </div>
-                          <div class="col">
-                            <label for="mark" class="required">Mark</label>
-                            <input
-                              type="number"
-                              id="mark"
-                              class="form-control"
-                              placeholder="Mark"
-                              min="1"
-                              required
-                            />
-                          </div>
-                          <div class="col">
-                            <label for="btl_level" class="required"
-                              >BTL Level</label
-                            >
-                            <select
-                              class="form-select"
-                              name="btl_level"
-                              id="btl_level"
-                              required
-                            ></select>
-                          </div>
-                          <div class="col-auto" style="align-self: flex-end">
-                            <input
-                              type="button"
-                              class="btn btn-primary"
-                              value="Submit"
-                              id="add_question_btn"
-                            />
-                          </div>
-                        </div>
-                      </form>
-                    </div>
+                    <select
+                      class="nd-select"
+                      name="subject"
+                      id="subject"
+                      required
+                    ></select>
+                  </div>
+                </div>
+                <div style="flex: 1; min-width: 150px">
+                  <div class="d-none" id="section_div">
+                    <label
+                      for="section"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Section</label
+                    >
+                    <select
+                      class="nd-select"
+                      name="section"
+                      id="section"
+                      required
+                    ></select>
+                  </div>
+                </div>
+                <div style="flex: 1; min-width: 150px">
+                  <div class="d-none" id="topic_div">
+                    <label
+                      for="topic"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Topic</label
+                    >
+                    <select
+                      class="nd-select"
+                      name="topic"
+                      id="topic"
+                      required
+                    ></select>
+                  </div>
+                </div>
+                <div style="flex: 1; min-width: 150px">
+                  <div class="d-none" id="question_type_div">
+                    <label
+                      for="question_type"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Question Type</label
+                    >
+                    <select class="nd-select" id="question_type" required>
+                      <option value="" disabled selected>Select</option>
+                      <option value="Mcq">MCQ</option>
+                      <option value="Numerical">Numerical</option>
+                    </select>
                   </div>
                 </div>
               </div>
+            </form>
+          </div>
+
+          <div class="mt-4" id="fetching_data" style="display: none">
+            <p class="text-muted fw-medium">
+              <i class="fa-solid fa-spinner fa-spin me-2"></i>Fetching Data...
+            </p>
+          </div>
+
+          <!-- Question Editor Card -->
+          <div id="result_div" style="display: none">
+            <div class="nd-card p-6">
+              <form id="question_form">
+                <div class="mb-4">
+                  <label
+                    for="question"
+                    class="form-label fw-bold required"
+                    style="color: #374151"
+                    >Question Content</label
+                  >
+                  <div
+                    id="question_editor"
+                    style="
+                      height: 300px;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 6px;
+                    "
+                  ></div>
+                  <input type="hidden" id="question" required />
+                  <div class="invalid-feedback">Please enter a question</div>
+                </div>
+
+                <!-- Numerical Option -->
+                <div class="mb-4 d-none" id="numerical_answer_div">
+                  <label
+                    for="numerical_answer"
+                    class="form-label fw-bold required"
+                    style="color: #374151"
+                    >Correct Answer</label
+                  >
+                  <input
+                    type="number"
+                    id="numerical_answer"
+                    class="nd-input"
+                    placeholder="Enter correct numerical answer"
+                    style="max-width: 300px"
+                  />
+                </div>
+
+                <!-- MCQ Options -->
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                  <div style="flex: 1; min-width: 180px">
+                    <label
+                      for="option_a"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Option A</label
+                    >
+                    <input
+                      type="text"
+                      id="option_a"
+                      class="nd-input"
+                      placeholder="Option A"
+                      required
+                    />
+                  </div>
+                  <div style="flex: 1; min-width: 180px">
+                    <label
+                      for="option_b"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Option B</label
+                    >
+                    <input
+                      type="text"
+                      id="option_b"
+                      class="nd-input"
+                      placeholder="Option B"
+                      required
+                    />
+                  </div>
+                  <div style="flex: 1; min-width: 180px">
+                    <label
+                      for="option_c"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Option C</label
+                    >
+                    <input
+                      type="text"
+                      id="option_c"
+                      class="nd-input"
+                      placeholder="Option C"
+                      required
+                    />
+                  </div>
+                  <div style="flex: 1; min-width: 180px">
+                    <label
+                      for="option_d"
+                      class="form-label fw-bold required"
+                      style="color: #374151"
+                      >Option D</label
+                    >
+                    <input
+                      type="text"
+                      id="option_d"
+                      class="nd-input"
+                      placeholder="Option D"
+                      required
+                    />
+                  </div>
+                  <div style="flex: 1; min-width: 180px">
+                    <label
+                      for="option_e"
+                      class="form-label fw-bold"
+                      style="color: #374151"
+                      >Option E (Optional)</label
+                    >
+                    <input
+                      type="text"
+                      id="option_e"
+                      class="nd-input"
+                      placeholder="Option E"
+                    />
+                  </div>
+                </div>
+
+                <hr style="border-color: #e5e7eb; margin: 2rem 0" />
+
+                <!-- Bottom Controls -->
+                <div class="d-flex flex-wrap align-items-center gap-4 mt-4">
+                  <div class="flex-grow-1">
+                    <label
+                      for="correct_option"
+                      class="form-label fw-bold required mb-1"
+                      style="color: #374151"
+                    >
+                      Correct Option
+                    </label>
+                    <select
+                      class="nd-select w-100"
+                      name="correct_option"
+                      id="correct_option"
+                      required
+                    >
+                      <option value="" disabled selected>Select Answer</option>
+                      <option value="A">Option A</option>
+                      <option value="B">Option B</option>
+                      <option value="C">Option C</option>
+                      <option value="D">Option D</option>
+                      <option value="E">Option E</option>
+                    </select>
+                  </div>
+
+                  <div class="flex-grow-1">
+                    <label
+                      for="mark"
+                      class="form-label fw-bold required mb-1"
+                      style="color: #374151"
+                    >
+                      Mark
+                    </label>
+                    <input
+                      type="number"
+                      id="mark"
+                      class="nd-input w-100"
+                      placeholder="e.g. 1"
+                      min="1"
+                      required
+                    />
+                  </div>
+
+                  <div class="flex-grow-1">
+                    <label
+                      for="btl_level"
+                      class="form-label fw-bold required mb-1"
+                      style="color: #374151"
+                    >
+                      BTL Level
+                    </label>
+                    <select
+                      class="nd-select w-100"
+                      name="btl_level"
+                      id="btl_level"
+                      required
+                    ></select>
+                  </div>
+
+                  <div class="align-self-end pb-1">
+                    <input
+                      type="button"
+                      class="btn nd-btn-primary px-4 py-2"
+                      value="Submit Question"
+                      id="add_question_btn"
+                    />
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

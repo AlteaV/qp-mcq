@@ -316,7 +316,7 @@ async function init() {
   if (loggedInUser.type == "TestTaker") {
     await getStudentTests();
   } else {
-    filterDiv.style.display = "flex";
+    filterDiv.style.display = "block";
     await getQuestionPaper();
   }
 }

@@ -2857,7 +2857,8 @@ fieldset:disabled .btn {
   transition: width 0.35s;
 }
 .dropdown-toggle::after {
-  display: inline-block;
+  /* display: inline-block; */
+  display: none;
   margin-left: 0.255em;
   border-top: 0.3em solid;
   border-bottom: 0;

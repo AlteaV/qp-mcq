@@ -2,81 +2,122 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">
-                      Question wise Report
-                    </h4>
-                    <div class="row mb-3 align-items-end">
-                      <div class="col mt-2">
-                        <label for="question_paper" class="required"
-                          >Question Paper</label
-                        >
-                        <select
-                          class="form-select"
-                          name="question_paper"
-                          id="question_paper"
-                          required
-                        ></select>
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="view_report"
-                        >
-                          View Report
-                        </button>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Question Wise Report</h1>
+              <p>Review performance and accuracy for each question</p>
+            </div>
+          </div>
 
-                    <div
-                      class="result mt-4"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <div class="row mb-3">
-                        <div class="col-md-4">
-                          <input
-                            type="text"
-                            id="report_search"
-                            class="form-control w-25"
-                            placeholder="Search by Topic"
-                          />
-                        </div>
-                      </div>
-                      <b id="qp_attend_count" class="mb-3 d-block mt-2"></b>
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
+          <div class="nd-card p-6 mb-4">
+            <div class="row mb-3 align-items-end">
+              <div class="col mt-2">
+                <label
+                  for="question_paper"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Question Paper</label
+                >
+                <select
+                  class="nd-select"
+                  name="question_paper"
+                  id="question_paper"
+                  required
+                ></select>
+              </div>
+              <div class="col mt-4">
+                <button class="nd-btn-primary" type="button" id="view_report">
+                  View Report
+                </button>
+              </div>
+            </div>
+          </div>
 
-                      <div class="col-2 mb-2" style="align-self: flex-end">
-                        <input
-                          class="btn btn-success btn-color"
-                          type="button"
-                          value="Download Report"
-                          id="donwload_button"
-                        />
-                      </div>
-                    </div>
-                  </div>
+          <div class="mt-4" id="fetching_data" style="display: none">
+            <div class="d-flex align-items-center gap-2 text-muted">
+              <i class="fa-solid fa-spinner fa-spin"></i> Fetching Data...
+            </div>
+          </div>
+
+          <div
+            class="nd-card p-6 result mt-5"
+            id="result_div"
+            style="display: none"
+          >
+            <div class="d-flex justify-content-between align-items-end mb-4">
+              <div style="flex: 1; max-width: 300px">
+                <label
+                  for="report_search"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Search by Topic</label
+                >
+                <input
+                  type="text"
+                  id="report_search"
+                  class="nd-input mb-2"
+                  placeholder="Search by Topic"
+                />
+                <div
+                  style="
+                    display: inline-block;
+                    background-color: #eff6ff;
+                    border: 1px solid #dbeafe;
+                    border-radius: 6px;
+                    padding: 4px 12px;
+                    font-size: 0.8rem;
+                    color: #1e40af;
+                    font-weight: 500;
+                  "
+                >
+                  <i class="fa-solid fa-users me-1"></i> Total Attended:
+                  <span id="qp_attend_count">0</span>
                 </div>
               </div>
+              <div>
+                <button
+                  class="btn nd-btn-secondary"
+                  type="button"
+                  id="donwload_button"
+                >
+                  <i class="fa-solid fa-download me-2"></i> Download Report
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table
+                class="table table-bordered nd-table-override"
+                width="100%"
+                id="result_table"
+              ></table>
             </div>
           </div>
         </div>

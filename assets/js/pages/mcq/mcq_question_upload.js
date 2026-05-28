@@ -104,6 +104,8 @@ let examYear = document.getElementById("exam_year");
 let nameInputDiv = document.getElementById("name_input_div");
 let qpName = document.getElementById("qp_name");
 
+let filtersDiv = document.getElementById("filters_div");
+
 let correctOptionDropDown = document.getElementById("correct_option");
 let saveButton = document.getElementById("form_submit");
 let title = document.getElementById("title");
@@ -428,6 +430,7 @@ async function checkExistingScan() {
 function handleExistingScan(data) {
   if (data) {
     uploadTypeRow.style.display = "none";
+    filtersDiv.style.display = "none";
     let button = "";
     if (data.type == "Mcq" && type == "upload") {
       if (data.status == "Completed") {
@@ -982,8 +985,6 @@ async function showReportSection(data) {
     }
 
     if (record.table) {
-      console.log(record);
-
       questionHTML += renderTableFromMarkdown(record.table);
     }
     let editButton = createButton(
@@ -1135,6 +1136,7 @@ async function showReportSection(data) {
   });
 
   fileUplaodButton.style.display = "none";
+  filtersDiv.style.display = "block";
   displayResult(tableData, resultTable);
   resultDiv.style.display = "block";
   statusDiv.style.display = "none";
@@ -1784,11 +1786,28 @@ async function init() {
   if (type === "generate") {
     title.innerHTML = `MCQ Question Generate`;
     const infoDiv = document.createElement("div");
-    infoDiv.className = "info-container mt-2 mb-3";
+    infoDiv.className = "nd-alert mt-2 mb-4";
     infoDiv.innerHTML = `
-      AI will generate questions similar to the uploaded question paper. You can edit the generated questions before submitting.<br>
-      Questions in Uploaded question paper will not be uploaded.<br>`;
-    title.parentNode.insertBefore(infoDiv, title.nextSibling);
+      <div class="d-flex align-items-start gap-3">
+        <div class="nd-alert-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+            <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="mb-1" style="font-size: 0.95rem; font-weight: 600; color: #1e40af;">Note: AI Question Generation</h4>
+          <p class="mb-0" style="color: #1e3a8a; font-size: 0.85rem; line-height: 1.5;">
+            AI will generate questions similar to the uploaded question paper. You can edit the generated questions before submitting.<br>
+            <strong>Important:</strong> Questions from the uploaded question paper itself will not be included.
+          </p>
+        </div>
+      </div>`;
+    const banner = title.closest(".nd-banner");
+    if (banner) {
+      banner.parentNode.insertBefore(infoDiv, banner.nextSibling);
+    } else {
+      title.parentNode.insertBefore(infoDiv, title.nextSibling);
+    }
     pageTypeDiv.style.display = "block";
     topicDiv.style.display = "none";
     sectionDiv.style.display = "none";

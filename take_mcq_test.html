@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
@@ -9,94 +10,56 @@
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
 
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3" id="title">
-                      Take Test
-                    </h4>
-                    <div class="row mb-3 align-items-end" style="display: none">
-                      <div class="col mt-2">
-                        <b
-                          ><label for="register_number" class="required"
-                            >Enter Register Number</label
-                          ></b
-                        >
-                        <input
-                          class="form-control"
-                          id="register_num"
-                          type="text"
-                          name="register_number"
-                          autocomplete="off"
-                          required
-                        />
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="take_test"
-                        >
-                          Take Test
-                        </button>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-clipboard-list w-7 h-7 text-white"
+              >
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                <path
+                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                ></path>
+                <path d="M12 11h4"></path>
+                <path d="M12 16h4"></path>
+                <path d="M8 11h.01"></path>
+                <path d="M8 16h.01"></path>
+              </svg>
+            </div>
+            <div>
+              <h1>Take Test</h1>
+              <p>View and attempt your scheduled tests</p>
+            </div>
+          </div>
+          <!-- Loading -->
+          <div class="nd-loading" id="fetching_data" style="display: none">
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <span>Fetching Data…</span>
+          </div>
 
-                    <table
-                      class="table table-bordered"
-                      width="100%"
-                      id="result_table"
-                      style="display: none"
-                    ></table>
-
-                    <div
-                      class="result mt-4"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <div>
-                        <h5 class="mt-4 mb-3" id="question_no"></h5>
-                        <div id="question_div"></div>
-                        <div class="col mt-4">
-                          <div class="d-flex justify-content-between">
-                            <button
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              id="previous_question"
-                              style="visibility: hidden"
-                            >
-                              Previous Question
-                            </button>
-
-                            <button
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              id="next_question"
-                            >
-                              Next Question
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="submit_test"
-                        >
-                          Submit Test
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <!-- Result Section -->
+          <div class="result" id="result_div" style="display: none">
+            <div
+              class="nd-card"
+              style="padding: 0; overflow: hidden; margin-bottom: 16px"
+            >
+              <table
+                class="table table-bordered nd-table-override"
+                style="margin: 0"
+                width="100%"
+                id="result_table"
+              ></table>
             </div>
           </div>
         </div>

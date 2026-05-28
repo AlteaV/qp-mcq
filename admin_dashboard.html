@@ -1,304 +1,270 @@
 <!doctype html>
 <html lang="en">
   <head id="header-placeholder">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organization Dashboard</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
 
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
+
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <!-- Welcome Section -->
-                      <div class="ud-welcome-section" id="ad-welcome">
-                        <div>
-                          <h2 id="ad-welcome-text">Organization Dashboard</h2>
-                          <p>Overview of quiz platform performance</p>
-                        </div>
-                      </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Organization Dashboard</h1>
+              <p>Overview of quiz platform performance</p>
+            </div>
+          </div>
 
-                      <!-- Stat Cards Row 1: Total Subjects, Total Topics, Total Questions -->
-                      <div class="ud-stats-row" id="ad-stat-cards-row1">
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Total Subjects</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                <path
-                                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                                />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-total-subjects">
-                            0
-                          </div>
-                        </div>
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Total Topics</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <line x1="8" y1="6" x2="21" y2="6" />
-                                <line x1="8" y1="12" x2="21" y2="12" />
-                                <line x1="8" y1="18" x2="21" y2="18" />
-                                <line x1="3" y1="6" x2="3.01" y2="6" />
-                                <line x1="3" y1="12" x2="3.01" y2="12" />
-                                <line x1="3" y1="18" x2="3.01" y2="18" />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-total-topics">
-                            0
-                          </div>
-                        </div>
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Total Questions</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <path
-                                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                                />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                                <polyline points="10 9 9 9 8 9" />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-total-questions">
-                            0
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Stat Cards Row 2: Active Users, Avg Score, Avg Time -->
-                      <div class="ud-stats-row" id="ad-stat-cards-row2">
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Active Users</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <path
-                                  d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                                />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-active-users">
-                            0
-                          </div>
-                        </div>
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Average Score</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <polyline
-                                  points="23 6 13.5 15.5 8.5 10.5 1 18"
-                                />
-                                <polyline points="17 6 23 6 23 12" />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-avg-score">0%</div>
-                        </div>
-                        <div class="ud-stat-card">
-                          <div class="ud-stat-header">
-                            <span class="ud-stat-label">Avg. Time/Quiz</span>
-                            <span class="ud-stat-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="ud-stat-value" id="ad-avg-time">0m</div>
-                        </div>
-                      </div>
-
-                      <!-- Analysis Grid: 2x2 panels -->
-                      <div class="ad-analysis-grid" style="margin-bottom: 16px">
-                        <div class="ud-section-card">
-                          <h5>Hardest Subjects</h5>
-                          <div class="ud-section-subtitle">
-                            Subjects with lowest accuracy
-                          </div>
-                          <div id="ad-hard-subjects">
-                            <div class="ud-empty-state">
-                              <div>No data yet</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="ud-section-card">
-                          <h5>Hardest Topics</h5>
-                          <div class="ud-section-subtitle">
-                            Top 5 topics with lowest accuracy
-                          </div>
-                          <div id="ad-hard-topics">
-                            <div class="ud-empty-state">
-                              <div>No data yet</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="ud-section-card">
-                          <h5>Easiest Subjects</h5>
-                          <div class="ud-section-subtitle">
-                            Subjects with highest accuracy
-                          </div>
-                          <div id="ad-easy-subjects">
-                            <div class="ud-empty-state">
-                              <div>No data yet</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="ud-section-card">
-                          <h5>Easiest Topics</h5>
-                          <div class="ud-section-subtitle">
-                            Top 5 topics with highest accuracy
-                          </div>
-                          <div id="ad-easy-topics">
-                            <div class="ud-empty-state">
-                              <div>No data yet</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Subject Performance & Recent Quiz Attempts – side by side -->
-                      <div class="ad-bottom-row">
-                        <div>
-                          <div class="ud-section-card">
-                            <h5>Subject Performance</h5>
-                            <div class="ud-section-subtitle">
-                              Average accuracy by subject
-                            </div>
-                            <div id="ad-subject-performance">
-                              <div class="ud-empty-state">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                >
-                                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                                </svg>
-                                <div>No data yet</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="ud-section-card">
-                            <h5>Recent Quiz Attempts</h5>
-                            <div class="ud-section-subtitle">
-                              Latest quiz submissions from users
-                            </div>
-                            <div id="ad-recent-attempts">
-                              <div class="ud-empty-state">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                >
-                                  <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="2"
-                                    ry="2"
-                                  />
-                                  <line x1="3" y1="9" x2="21" y2="9" />
-                                  <line x1="9" y1="21" x2="9" y2="9" />
-                                </svg>
-                                <div>No attempts yet</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+          <!-- ── Platform Overview ─────────────────────────────── -->
+          <div class="nd-section-card" style="border-color: transparent">
+            <div class="nd-section-banner">
+              <h3 class="nd-section-title">Platform Overview</h3>
+            </div>
+            <div class="nd-all-stats-wrap">
+              <!-- Row 1: Subjects, Topics, Questions -->
+              <div class="ud-stats-row" id="ad-stat-cards-row1">
+                <div class="nd-stat-card nd-hover-blue">
+                  <div class="nd-stat-icon-wrap nd-icon-blue">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path
+                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                      />
+                    </svg>
                   </div>
+                  <div class="nd-stat-label">Total Subjects</div>
+                  <div class="nd-stat-value" id="ad-total-subjects">0</div>
+                </div>
+
+                <div class="nd-stat-card nd-hover-green">
+                  <div class="nd-stat-icon-wrap nd-icon-green">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="8" y1="6" x2="21" y2="6" />
+                      <line x1="8" y1="12" x2="21" y2="12" />
+                      <line x1="8" y1="18" x2="21" y2="18" />
+                      <line x1="3" y1="6" x2="3.01" y2="6" />
+                      <line x1="3" y1="12" x2="3.01" y2="12" />
+                      <line x1="3" y1="18" x2="3.01" y2="18" />
+                    </svg>
+                  </div>
+                  <div class="nd-stat-label">Total Topics</div>
+                  <div class="nd-stat-value" id="ad-total-topics">0</div>
+                </div>
+
+                <div class="nd-stat-card nd-hover-purple">
+                  <div class="nd-stat-icon-wrap nd-icon-purple">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                      <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                  </div>
+                  <div class="nd-stat-label">Total Questions</div>
+                  <div class="nd-stat-value" id="ad-total-questions">0</div>
+                </div>
+              </div>
+
+              <!-- Row 2: Active Users, Avg Score, Avg Time -->
+              <div class="ud-stats-row" id="ad-stat-cards-row2">
+                <div class="nd-stat-card nd-hover-orange">
+                  <div class="nd-stat-icon-wrap nd-icon-orange">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </div>
+                  <div class="nd-stat-label">Active Users</div>
+                  <div class="nd-stat-value" id="ad-active-users">0</div>
+                </div>
+
+                <div class="nd-stat-card nd-hover-teal">
+                  <div class="nd-stat-icon-wrap nd-icon-teal">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                      <polyline points="17 6 23 6 23 12" />
+                    </svg>
+                  </div>
+                  <div class="nd-stat-label">Average Score</div>
+                  <div class="nd-stat-value" id="ad-avg-score">0%</div>
+                </div>
+
+                <div class="nd-stat-card nd-hover-pink">
+                  <div class="nd-stat-icon-wrap nd-icon-pink">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                  </div>
+                  <div class="nd-stat-label">Avg. Time/Quiz</div>
+                  <div class="nd-stat-value" id="ad-avg-time">0m</div>
+                </div>
+              </div>
+            </div>
+            <!-- /nd-all-stats-wrap -->
+          </div>
+          <!-- /Platform Overview -->
+
+          <!-- ── Subject & Topic Performance ─────────────────── -->
+          <div class="nd-section-card">
+            <div class="nd-section-banner">
+              <h3 class="nd-section-title">Subject &amp; Topic Performance</h3>
+            </div>
+            <div class="nd-two-col-panel">
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Hardest Subjects</h5>
+                <p class="nd-panel-sub">Subjects with lowest accuracy</p>
+                <div id="ad-hard-subjects">
+                  <div class="nd-empty-state">No data yet</div>
+                </div>
+              </div>
+              <div class="nd-panel-divider"></div>
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Hardest Topics</h5>
+                <p class="nd-panel-sub">Top 5 topics with lowest accuracy</p>
+                <div id="ad-hard-topics">
+                  <div class="nd-empty-state">No data yet</div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- ── Top Performing Areas ────────────────────────── -->
+          <div class="nd-section-card">
+            <div class="nd-section-banner">
+              <h3 class="nd-section-title">Top Performing Areas</h3>
+            </div>
+            <div class="nd-two-col-panel">
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Easiest Subjects</h5>
+                <p class="nd-panel-sub">Subjects with highest accuracy</p>
+                <div id="ad-easy-subjects">
+                  <div class="nd-empty-state">No data yet</div>
+                </div>
+              </div>
+              <div class="nd-panel-divider"></div>
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Easiest Topics</h5>
+                <p class="nd-panel-sub">Top 5 topics with highest accuracy</p>
+                <div id="ad-easy-topics">
+                  <div class="nd-empty-state">No data yet</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Recent Activity & Performance ─────────────────── -->
+          <div class="nd-section-card" style="margin-bottom: 32px">
+            <div class="nd-section-banner">
+              <h3 class="nd-section-title">
+                Recent Activity &amp; Performance
+              </h3>
+            </div>
+            <div class="nd-two-col-panel">
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Subject Performance</h5>
+                <p class="nd-panel-sub">Average accuracy by subject</p>
+                <div id="ad-subject-performance">
+                  <div class="nd-empty-state">No data yet</div>
+                </div>
+              </div>
+              <div class="nd-panel-divider"></div>
+              <div class="nd-panel-half">
+                <h5 class="nd-panel-heading">Recent Quiz Attempts</h5>
+                <p class="nd-panel-sub">Latest quiz submissions from users</p>
+                <div id="ad-recent-attempts">
+                  <div class="nd-empty-state">No attempts yet</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /nd-page-container -->
         </div>
+        <!-- /dashboard-content -->
+
         <footer class="dashboard-footer" id="footer-placeholder"></footer>
       </div>
     </div>
+
+    <script id="rendered-js" src="/assets/js/scripts.js"></script>
+    <script
+      src="/assets/js/pages/dashboard/admin_dashboard.js"
+      type="module"
+    ></script>
   </body>
-  <script id="rendered-js" src="/assets/js/scripts.js"></script>
-  <script
-    src="/assets/js/pages/dashboard/admin_dashboard.js"
-    type="module"
-  ></script>
 </html>

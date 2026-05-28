@@ -38,499 +38,426 @@
         background-color: #f9fafb;
       }
     </style>
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <h4 class="c-grey-900 mB-20 mt-6 mb-4" id="title"></h4>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1 id="title">MCQ Question Upload</h1>
+              <p>Scan and add new questions to the question bank</p>
+            </div>
+          </div>
 
-                      <div class="row" id="upload_type_row">
-                        <div class="mb-4">
-                          <div class="qp-section-title mb-2">
-                            <span>What do you want to upload?</span>
-                          </div>
-                          <p class="qp-helper mb-3">
-                            Choose whether you are uploading only questions or
-                            the full question paper along with questions.
-                          </p>
+          <div class="nd-card nd-filter-card" id="filters_div">
+            <div class="row" id="upload_type_row">
+              <div class="mb-4">
+                <div class="qp-section-title mb-2">
+                  <span>What do you want to upload?</span>
+                </div>
+                <p class="qp-helper mb-3">
+                  Choose whether you are uploading only questions or the full
+                  question paper along with questions.
+                </p>
 
-                          <div class="d-flex flex-wrap gap-2 qp-pill-group">
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="uploadType"
-                                id="only_questions"
-                                value="only_questions"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="only_questions"
-                              >
-                                Only questions
-                              </label>
-                            </div>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="uploadType"
-                                id="questions_and_qp"
-                                value="questions_and_qp"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="questions_and_qp"
-                              >
-                                Questions + Question Paper
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="qp-section mb-3 p-3"
-                        id="filter_div"
-                        style="display: none"
-                      >
-                        <div
-                          class="mb-3"
-                          id="upload_type_div"
-                          style="display: none"
-                        >
-                          <label class="form-label mb-2 required"
-                            >Question paper type</label
-                          >
-                          <div class="d-flex flex-wrap gap-2 qp-pill-group">
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="qpType"
-                                id="qp_previous_year"
-                                value="qp_previous_year"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="qp_previous_year"
-                              >
-                                Previous year QP
-                              </label>
-                            </div>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="radio"
-                                name="qpType"
-                                id="qp_custom"
-                                value="qp_custom"
-                              />
-                              <label class="form-check-label" for="qp_custom">
-                                Custom QP
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          class="row mb-3"
-                          id="page_type_row"
-                          style="display: none"
-                        >
-                          <div class="col" id="page_type_div">
-                            <label for="page_type" class="required">Type</label>
-                            <select
-                              class="form-select"
-                              name="page_type"
-                              id="page_type"
-                              required
-                            >
-                              <option>Using Sample Question Paper</option>
-                              <option>By Topic</option>
-                            </select>
-                          </div>
-                          <div class="col" id="level_div">
-                            <label for="level" class="required">Level</label>
-                            <select
-                              class="form-select"
-                              name="level"
-                              id="level"
-                              required
-                            ></select>
-                          </div>
-                          <div class="col" id="subject_div">
-                            <label for="subject" class="required"
-                              >Subject</label
-                            >
-                            <input
-                              class="form-control"
-                              id="subject"
-                              type="text"
-                              name="subject"
-                              autocomplete="off"
-                              required
-                            />
-                          </div>
-                          <div
-                            class="col"
-                            id="category_div"
-                            style="display: none"
-                          >
-                            <label for="category" class="required"
-                              >Category</label
-                            >
-                            <select
-                              class="form-select"
-                              name="category"
-                              id="category"
-                              required
-                            ></select>
-                          </div>
-                          <div
-                            class="col"
-                            id="exam_month_div"
-                            style="display: none"
-                          >
-                            <label for="exam_month" class="required"
-                              >Exam Month</label
-                            >
-                            <select
-                              class="form-select"
-                              name="exam_month"
-                              id="exam_month"
-                              required
-                            ></select>
-                          </div>
-                          <div
-                            class="col"
-                            id="exam_year_div"
-                            style="display: none"
-                          >
-                            <label for="exam_year" class="required"
-                              >Exam Year</label
-                            >
-                            <select
-                              class="form-select"
-                              name="exam_year"
-                              id="exam_year"
-                              required
-                            ></select>
-                          </div>
-                          <div
-                            class="col"
-                            id="section_div"
-                            style="display: none"
-                          >
-                            <label for="filter_section" class="required"
-                              >Section</label
-                            >
-                            <input
-                              class="form-control"
-                              id="filter_section"
-                              type="text"
-                              name="filter_section"
-                              autocomplete="off"
-                              required
-                            />
-                          </div>
-                          <div class="col" id="topic_div" style="display: none">
-                            <label for="filter_topic" class="required"
-                              >Topic</label
-                            >
-                            <input
-                              class="form-control"
-                              id="filter_topic"
-                              type="text"
-                              name="filter_topic"
-                              autocomplete="off"
-                              required
-                            />
-                          </div>
-                          <div class="col" id="btl_div" style="display: none">
-                            <label for="filter_btl" class="required"
-                              >BTL Level</label
-                            >
-                            <select
-                              class="form-select"
-                              name="filter_btl"
-                              id="filter_btl"
-                              required
-                            ></select>
-                          </div>
-                          <div
-                            class="col"
-                            id="name_input_div"
-                            style="display: none"
-                          >
-                            <label for="qp_name" class="required"
-                              >Question Paper Name</label
-                            >
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="qp_name"
-                            />
-                          </div>
-                          <div class="col" id="file_input_div">
-                            <label for="file_input" class="required"
-                              >Upload Questions</label
-                            >
-                            <input
-                              class="form-control"
-                              type="file"
-                              id="file_input"
-                              accept="application/pdf"
-                            />
-                          </div>
-
-                          <div class="col-auto d-flex align-items-end">
-                            <input
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              value="Scan Questions"
-                              id="network_button"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="mt-5"
-                        id="fetching_data"
-                        style="display: none"
-                      >
-                        <p>Fetching Data</p>
-                      </div>
-                      <div
-                        class="result mt-5"
-                        id="status_div"
-                        style="display: none"
-                      >
-                        <table
-                          class="table table-bordered"
-                          width="100%"
-                          id="status_table"
-                        ></table>
-                      </div>
-                      <div
-                        class="result mt-5"
-                        id="result_div"
-                        style="display: none"
-                      >
-                        <table
-                          class="table table-bordered"
-                          width="100%"
-                          id="result_table"
-                        ></table>
-                        <div class="row">
-                          <div class="col mt-4 d-flex justify-content-end">
-                            <button
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              id="save_question"
-                            >
-                              Save Questions
-                            </button>
-                            <button
-                              class="btn btn-primary btn-color ms-2"
-                              type="button"
-                              id="cancel_button"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-
-                        <!-- Edit question modal start -->
-                        <div
-                          class="modal fade"
-                          id="modal"
-                          tabindex="-1"
-                          role="dialog"
-                          aria-labelledby="modalLabel"
-                          aria-hidden="true"
-                        >
-                          <div
-                            class="modal-dialog modal-dialog-centered modal-xl"
-                            role="document"
-                          >
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">
-                                  Edit Question
-                                </h5>
-                                <button
-                                  type="button"
-                                  class="close"
-                                  data-dismiss="modal"
-                                  aria-label="Close"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#modal"
-                                >
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <form id="question_form">
-                                  <div class="row">
-                                    <div class="col">
-                                      <label for="question" class="required"
-                                        >Question</label
-                                      >
-                                      <textarea
-                                        class="form-control"
-                                        id="question"
-                                        rows="9"
-                                        required
-                                        placeholder="Type your question here..."
-                                      ></textarea>
-                                    </div>
-                                  </div>
-                                  <div class="row mt-2" id="option_row">
-                                    <div class="col mb-2">
-                                      <label for="option_a" class="required"
-                                        >Option A</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="option_a"
-                                        class="form-control"
-                                        placeholder="Option A"
-                                        required
-                                      />
-                                    </div>
-                                    <div class="col mb-2">
-                                      <label for="option_b" class="required"
-                                        >Option B</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="option_b"
-                                        class="form-control"
-                                        placeholder="Option B"
-                                        required
-                                      />
-                                    </div>
-                                    <div class="col mb-2">
-                                      <label for="option_c" class="required"
-                                        >Option C</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="option_c"
-                                        class="form-control"
-                                        placeholder="Option C"
-                                        required
-                                      />
-                                    </div>
-                                    <div class="col mb-2">
-                                      <label for="option_d" class="required"
-                                        >Option D</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="option_d"
-                                        class="form-control"
-                                        placeholder="Option D"
-                                        required
-                                      />
-                                    </div>
-                                    <div class="col mb-2">
-                                      <label for="option_e" class=""
-                                        >Option E</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="option_e"
-                                        class="form-control"
-                                        placeholder="Option E"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div class="row mt-3">
-                                    <div class="col" id="correct_option_group">
-                                      <label
-                                        for="correct_option"
-                                        class="required"
-                                        >Correct Option</label
-                                      >
-                                      <select
-                                        class="form-select"
-                                        name="correct_option"
-                                        id="correct_option"
-                                        required
-                                      >
-                                        <option value="" disabled selected>
-                                          Please select the correct option
-                                        </option>
-                                        <option value="A">Option A</option>
-                                        <option value="B">Option B</option>
-                                        <option value="C">Option C</option>
-                                        <option value="D">Option D</option>
-                                        <option value="E">Option E</option>
-                                      </select>
-                                    </div>
-                                    <div class="col mb-2" id="answer_group">
-                                      <label for="answer" class="required"
-                                        >Answer</label
-                                      >
-                                      <input
-                                        type="text"
-                                        id="answer"
-                                        class="form-control"
-                                        placeholder="Enter answer"
-                                      />
-                                    </div>
-                                    <div class="col">
-                                      <label for="btl_level" class="required"
-                                        >BTL Level</label
-                                      >
-                                      <select
-                                        class="form-select"
-                                        name="btl_level"
-                                        id="btl_level"
-                                        required
-                                      ></select>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                              <div class="modal-footer">
-                                <button
-                                  type="button"
-                                  class="btn btn-secondary"
-                                  data-dismiss="modal"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#modal"
-                                >
-                                  Close
-                                </button>
-                                <button
-                                  type="button"
-                                  class="btn btn-primary"
-                                  id="form_submit"
-                                >
-                                  Save changes
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Edit question modal end -->
-                      </div>
-                    </div>
+                <div class="d-flex flex-wrap gap-2 qp-pill-group">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="uploadType"
+                      id="only_questions"
+                      value="only_questions"
+                    />
+                    <label class="form-check-label" for="only_questions">
+                      Only questions
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="uploadType"
+                      id="questions_and_qp"
+                      value="questions_and_qp"
+                    />
+                    <label class="form-check-label" for="questions_and_qp">
+                      Questions + Question Paper
+                    </label>
                   </div>
                 </div>
               </div>
             </div>
+            <div
+              class="qp-section mb-3 p-3"
+              id="filter_div"
+              style="display: none"
+            >
+              <div class="mb-3" id="upload_type_div" style="display: none">
+                <label class="form-label mb-2 required"
+                  >Question paper type</label
+                >
+                <div class="d-flex flex-wrap gap-2 qp-pill-group">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="qpType"
+                      id="qp_previous_year"
+                      value="qp_previous_year"
+                    />
+                    <label class="form-check-label" for="qp_previous_year">
+                      Previous year QP
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="qpType"
+                      id="qp_custom"
+                      value="qp_custom"
+                    />
+                    <label class="form-check-label" for="qp_custom">
+                      Custom QP
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3" id="page_type_row" style="display: none">
+                <div class="col" id="page_type_div">
+                  <label for="page_type" class="required">Type</label>
+                  <select
+                    class="form-select"
+                    name="page_type"
+                    id="page_type"
+                    required
+                  >
+                    <option>Using Sample Question Paper</option>
+                    <option>By Topic</option>
+                  </select>
+                </div>
+                <div class="col" id="level_div">
+                  <label for="level" class="required">Level</label>
+                  <select
+                    class="form-select"
+                    name="level"
+                    id="level"
+                    required
+                  ></select>
+                </div>
+                <div class="col" id="subject_div">
+                  <label for="subject" class="required">Subject</label>
+                  <input
+                    class="form-control"
+                    id="subject"
+                    type="text"
+                    name="subject"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col" id="category_div" style="display: none">
+                  <label for="category" class="required">Category</label>
+                  <select
+                    class="form-select"
+                    name="category"
+                    id="category"
+                    required
+                  ></select>
+                </div>
+                <div class="col" id="exam_month_div" style="display: none">
+                  <label for="exam_month" class="required">Exam Month</label>
+                  <select
+                    class="form-select"
+                    name="exam_month"
+                    id="exam_month"
+                    required
+                  ></select>
+                </div>
+                <div class="col" id="exam_year_div" style="display: none">
+                  <label for="exam_year" class="required">Exam Year</label>
+                  <select
+                    class="form-select"
+                    name="exam_year"
+                    id="exam_year"
+                    required
+                  ></select>
+                </div>
+                <div class="col" id="section_div" style="display: none">
+                  <label for="filter_section" class="required">Section</label>
+                  <input
+                    class="form-control"
+                    id="filter_section"
+                    type="text"
+                    name="filter_section"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col" id="topic_div" style="display: none">
+                  <label for="filter_topic" class="required">Topic</label>
+                  <input
+                    class="form-control"
+                    id="filter_topic"
+                    type="text"
+                    name="filter_topic"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col" id="btl_div" style="display: none">
+                  <label for="filter_btl" class="required">BTL Level</label>
+                  <select
+                    class="form-select"
+                    name="filter_btl"
+                    id="filter_btl"
+                    required
+                  ></select>
+                </div>
+                <div class="col" id="name_input_div" style="display: none">
+                  <label for="qp_name" class="required"
+                    >Question Paper Name</label
+                  >
+                  <input class="form-control" type="text" id="qp_name" />
+                </div>
+                <div class="col" id="file_input_div">
+                  <label for="file_input" class="required"
+                    >Upload Questions</label
+                  >
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="file_input"
+                    accept="application/pdf"
+                  />
+                </div>
+
+                <div class="col-auto d-flex align-items-end">
+                  <input
+                    class="nd-btn-primary"
+                    type="button"
+                    value="Scan Questions"
+                    id="network_button"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div class="mt-5" id="fetching_data" style="display: none">
+            <p>Fetching Data</p>
+          </div>
+
+          <div class="result mt-5" id="status_div" style="display: none">
+            <table
+              class="table table-bordered nd-table-override mb-0"
+              width="100%"
+              id="status_table"
+            ></table>
+          </div>
+
+          <div class="nd-card p-0">
+            <div class="result" id="result_div" style="display: none">
+              <table
+                class="table table-bordered nd-table-override mb-0"
+                width="100%"
+                id="result_table"
+              ></table>
+              <div class="row">
+                <div class="col mt-4 d-flex justify-content-end">
+                  <button
+                    class="nd-btn-secondary"
+                    type="button"
+                    id="cancel_button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="nd-btn-primary ms-2"
+                    type="button"
+                    id="save_question"
+                  >
+                    Save Questions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit question modal start -->
+          <div
+            class="modal fade"
+            id="modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="modalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered modal-xl"
+              role="document"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalLabel">Edit Question</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="question_form">
+                    <div class="row">
+                      <div class="col">
+                        <label for="question" class="required">Question</label>
+                        <textarea
+                          class="form-control"
+                          id="question"
+                          rows="9"
+                          required
+                          placeholder="Type your question here..."
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="row mt-2" id="option_row">
+                      <div class="col mb-2">
+                        <label for="option_a" class="required">Option A</label>
+                        <input
+                          type="text"
+                          id="option_a"
+                          class="form-control"
+                          placeholder="Option A"
+                          required
+                        />
+                      </div>
+                      <div class="col mb-2">
+                        <label for="option_b" class="required">Option B</label>
+                        <input
+                          type="text"
+                          id="option_b"
+                          class="form-control"
+                          placeholder="Option B"
+                          required
+                        />
+                      </div>
+                      <div class="col mb-2">
+                        <label for="option_c" class="required">Option C</label>
+                        <input
+                          type="text"
+                          id="option_c"
+                          class="form-control"
+                          placeholder="Option C"
+                          required
+                        />
+                      </div>
+                      <div class="col mb-2">
+                        <label for="option_d" class="required">Option D</label>
+                        <input
+                          type="text"
+                          id="option_d"
+                          class="form-control"
+                          placeholder="Option D"
+                          required
+                        />
+                      </div>
+                      <div class="col mb-2">
+                        <label for="option_e" class="">Option E</label>
+                        <input
+                          type="text"
+                          id="option_e"
+                          class="form-control"
+                          placeholder="Option E"
+                        />
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col" id="correct_option_group">
+                        <label for="correct_option" class="required"
+                          >Correct Option</label
+                        >
+                        <select
+                          class="form-select"
+                          name="correct_option"
+                          id="correct_option"
+                          required
+                        >
+                          <option value="" disabled selected>
+                            Please select the correct option
+                          </option>
+                          <option value="A">Option A</option>
+                          <option value="B">Option B</option>
+                          <option value="C">Option C</option>
+                          <option value="D">Option D</option>
+                          <option value="E">Option E</option>
+                        </select>
+                      </div>
+                      <div class="col mb-2" id="answer_group">
+                        <label for="answer" class="required">Answer</label>
+                        <input
+                          type="text"
+                          id="answer"
+                          class="form-control"
+                          placeholder="Enter answer"
+                        />
+                      </div>
+                      <div class="col">
+                        <label for="btl_level" class="required"
+                          >BTL Level</label
+                        >
+                        <select
+                          class="form-select"
+                          name="btl_level"
+                          id="btl_level"
+                          required
+                        ></select>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="nd-btn-secondary"
+                    data-dismiss="modal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" class="nd-btn-primary" id="form_submit">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit question modal end -->
         </div>
 
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

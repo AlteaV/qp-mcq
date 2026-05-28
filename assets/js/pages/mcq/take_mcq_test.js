@@ -1,5 +1,6 @@
 let fetchingDataSection = document.getElementById("fetching_data");
 let resultTable = document.getElementById("result_table");
+var resultDiv = document.getElementById("result_div");
 
 async function init() {
   await getQuestionPapers();
@@ -10,6 +11,7 @@ function showQuestionPapers(data) {
     fetchingDataSection.innerHTML = "<p>There is no data</p>";
     fetchingDataSection.style.display = "block";
     resultTable.style.display = "none";
+    resultDiv.style.display = "none";
     hideOverlay();
     return;
   }
@@ -41,8 +43,9 @@ function showQuestionPapers(data) {
       allowTest = false;
     }
     let actionBtn = `
+    
       <button 
-        class="btn btn-sm btn-primary take-test-btn" 
+        class="nd-btn-primary take-test-btn" 
         data-qp_assignment_id="${record.qp_assignment_id}"
         data-start="${record.start_date_time}"
         data-end="${record.end_date_time}"
@@ -54,17 +57,24 @@ function showQuestionPapers(data) {
 
     if (!allowTest) {
       actionBtn = `<button 
-        class="btn btn-sm btn-secondary" 
+        class="nd-btn-primary disabled" 
         disabled
       >
         ${buttonName}
       </button>`;
     }
 
+    let badge = "";
+    if (record.test_type === "Actual") {
+      badge = `<span class="badge badge-actual">Actual</span>`;
+    } else if (record.test_type === "Practice") {
+      badge = `<span class="badge badge-practice">Practice</span>`;
+    }
+
     tableData.tableBody.push([
       new TableStructure(index + 1),
       new TableStructure(record.question_paper_name),
-      new TableStructure(record.test_type),
+      new TableStructure(badge),
       new TableStructure(record.start_date_time),
       new TableStructure(record.end_date_time),
       new TableStructure(actionBtn),
@@ -74,7 +84,7 @@ function showQuestionPapers(data) {
   displayResult(tableData, resultTable);
   fetchingDataSection.style.display = "none";
   resultTable.style.display = "table";
-
+  resultDiv.style.display = "block";
   $(".take-test-btn")
     .off("click")
     .on("click", function () {

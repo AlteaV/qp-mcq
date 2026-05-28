@@ -7,35 +7,34 @@
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/assets/css/template.css" rel="stylesheet" />
   </head>
-  <body class="">
-    <div class="dashboard-content">
+  <body>
+    <div class="dashboard-content" style="padding: 0px">
+      <!-- Header -->
       <div class="exam-header">
         <div class="exam-title" id="examTitle"></div>
-        <div class="timer" id="timer" style="display: none"></div>
+        <div class="timer" id="timer" style="display: none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span id="timer-text">0 min : 0 sec</span>
+        </div>
       </div>
 
+      <!-- Main -->
       <div class="exam-container">
         <!-- Left Panel -->
-        <div class="left-panel" id="left_panel" style="display: none">
-          <div class="question-header">
-            <div class="question-number">
-              <span
-                ><strong>Question No.</strong>
-                <span id="currentQNum">1</span></span
-              >
-              <button class="icon-btn">⟳</button>
-              <button class="font-btn increase" id="increase_font_size">
-                A+
-              </button>
-              <button class="font-btn decrease" id="decrease_font_size">
-                A-
-              </button>
-            </div>
-          </div>
-          <div class="question-text" id="questionText"></div>
-          <div class="question-prompt">Select the correct combination</div>
-          <div class="options" id="optionsContainer"></div>
-        </div>
+        <div class="left-panel" id="left_panel" style="display: none"></div>
 
         <!-- Right Panel -->
         <div class="right-panel" id="rightPanel" style="display: none">
@@ -47,7 +46,7 @@
             </div>
             <div class="legend-item">
               <div class="legend-box unattempted"></div>
-              <span>Unattempted (<span id="unattemptedCount">20</span>)</span>
+              <span>Unattempted (<span id="unattemptedCount">0</span>)</span>
             </div>
             <div class="legend-item" id="reviewLegend1" style="display: none">
               <div class="legend-box review"></div>
@@ -58,34 +57,41 @@
               <span>Skip (<span id="skipCount1">0</span>)</span>
             </div>
           </div>
+          <!-- Submit Test lives here so it's always visible in the sidebar -->
         </div>
       </div>
     </div>
-    <!-- Footer -->
-    <div class="exam-footer" id="exam_footer" style="display: none">
-      <div class="footer-left">
+
+    <!-- Footer: prev / next navigation only -->
+    <div class="exam-footer" id="exam_footer">
+      <div class="footer-left" style="display: none">
         <button class="arrow-btn">❮</button>
         <button class="saveNextBtn" id="next_btn">Next</button>
-        <button class="saveResponseBtn" id="submit_test">Submit Test</button>
       </div>
+
+      <button
+        class="tui-nav-submit"
+        id="tui_submit_btn"
+        style="margin-left: auto !important"
+      >
+        Submit Test
+      </button>
+      <button
+        class="tui-submit-btn saveResponseBtn"
+        id="submit_test"
+        style="display: none"
+      >
+        Submit Test
+      </button>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script id="rendered-js" src="/assets/js/scripts.js"></script>
-    <script defer src="/assets/js/packages/mathjax-config.js"></script>
-    <script
-      defer
-      src="  https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
-    ></script>
-    <script
-      type="module"
-      src="/assets/js/pages/mcq/mcq_take_test_ui_template.js"
-    ></script>
+
+    <!-- Fullscreen overlay -->
     <div
       id="fullscreenOverlay"
       style="
         position: fixed;
-        top: 0px;
-        left: 0px;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.95);
@@ -113,23 +119,31 @@
         <button
           id="enterFullscreenBtn"
           style="
-            background: #4caf50;
+            background: #1e3a8a;
             color: white;
             border: none;
             padding: 15px 40px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s;
           "
-          onmouseover="this.style.background = '#45a049'"
-          onmouseout="this.style.background = '#4CAF50'"
         >
           Enter Fullscreen
         </button>
       </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script id="rendered-js" src="/assets/js/scripts.js"></script>
+    <script defer src="/assets/js/packages/mathjax-config.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"
+    ></script>
+    <script
+      type="module"
+      src="/assets/js/pages/mcq/mcq_take_test_ui_template.js"
+    ></script>
   </body>
 </html>

@@ -210,12 +210,16 @@ function navigate(back = false) {
     s2Modal.classList.add("d-none");
     groupName.setAttribute("required", "required");
     groupMembers = [];
+    addGroupBtn.style.display = "block";
+    addMemberBtn.style.display = "none";
   } else {
     section1.classList.add("d-none");
     section2.classList.remove("d-none");
     s1Modal.classList.add("d-none");
     s2Modal.classList.remove("d-none");
     groupName.removeAttribute("required");
+    addGroupBtn.style.display = "none";
+    addMemberBtn.style.display = "block";
   }
 }
 

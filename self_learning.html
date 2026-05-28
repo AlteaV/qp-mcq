@@ -1,111 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
+
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">Self Learning</h4>
-                    <div class="row mb-3 align-items-end">
-                      <div class="col mt-2">
-                        <label for="subject" class="required">Subject</label>
-                        <select
-                          class="form-select"
-                          name="subject"
-                          id="subject"
-                          required
-                        ></select>
-                      </div>
-                      <div class="col mt-2 d-none" id="section_div">
-                        <label for="section" class="required">Section</label>
-                        <select
-                          class="form-select"
-                          name="section"
-                          id="section"
-                          required
-                        ></select>
-                      </div>
-                      <div class="col mt-2 d-none" id="topic_div">
-                        <label for="topic" class="required">Topic</label>
-                        <select
-                          class="form-select"
-                          name="topic"
-                          id="topic"
-                          required
-                        ></select>
-                      </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+            <div>
+              <h1>Self Learning</h1>
+              <p>Practice topic-wise questions at your own pace</p>
+            </div>
+          </div>
 
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="network_button"
-                        >
-                          Take Test
-                        </button>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
-                    <table
-                      class="table table-bordered"
-                      width="100%"
-                      id="result_table"
-                      style="display: none"
-                    ></table>
-
-                    <div
-                      class="result mt-4"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <div>
-                        <h5 class="mt-4 mb-3" id="question_no"></h5>
-                        <div id="question_div"></div>
-                        <div class="col mt-4">
-                          <div class="d-flex justify-content-between">
-                            <button
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              id="previous_question"
-                              style="visibility: hidden"
-                            >
-                              Previous Question
-                            </button>
-
-                            <button
-                              class="btn btn-primary btn-color"
-                              type="button"
-                              id="next_question"
-                            >
-                              Next Question
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="submit_test"
-                        >
-                          Submit Test
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <!-- Filter Card -->
+          <div class="nd-card nd-filter-card">
+            <div class="nd-filter-row">
+              <div class="nd-field">
+                <label for="subject" class="nd-label required">Subject</label>
+                <select
+                  class="nd-select"
+                  name="subject"
+                  id="subject"
+                  required
+                ></select>
               </div>
+              <div class="nd-field d-none" id="section_div">
+                <label for="section" class="nd-label required">Section</label>
+                <select
+                  class="nd-select"
+                  name="section"
+                  id="section"
+                  required
+                ></select>
+              </div>
+              <div class="nd-field d-none" id="topic_div">
+                <label for="topic" class="nd-label required">Topic</label>
+                <select
+                  class="nd-select"
+                  name="topic"
+                  id="topic"
+                  required
+                ></select>
+              </div>
+              <div class="nd-field nd-btn-field">
+                <button
+                  class="nd-btn-primary"
+                  type="button"
+                  id="network_button"
+                >
+                  Take Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div class="nd-loading" id="fetching_data" style="display: none">
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <span>Fetching Data…</span>
+          </div>
+
+          <!-- Result Table (shown after submit) -->
+          <div
+            class="nd-card"
+            style="padding: 0; overflow: hidden; display: none"
+            id="result_table_wrap"
+          >
+            <table
+              class="table table-bordered nd-table-override"
+              style="margin: 0"
+              width="100%"
+              id="result_table"
+            ></table>
+          </div>
+
+          <!-- Question View -->
+          <div class="result" id="result_div" style="display: none">
+            <div class="nd-card">
+              <h5 class="nd-card-title" id="question_no"></h5>
+              <div id="question_div"></div>
+              <div class="nd-question-nav">
+                <button
+                  class="nd-btn-secondary"
+                  type="button"
+                  id="previous_question"
+                  style="visibility: hidden"
+                >
+                  ← Previous
+                </button>
+                <button class="nd-btn-primary" type="button" id="next_question">
+                  Next →
+                </button>
+              </div>
+            </div>
+            <div style="margin-top: 12px">
+              <button class="nd-btn-primary" type="button" id="submit_test">
+                Submit Test
+              </button>
             </div>
           </div>
         </div>

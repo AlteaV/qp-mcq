@@ -1,6 +1,12 @@
 const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
 window.isCheckAuthLoaded = false;
 
+if (loggedInUser && loggedInUser.type === "TestTaker") {
+  let sideBar = document.getElementById("side-bar-placeholder");
+  if (sideBar) {
+    sideBar.classList.add("dashboard-compact");
+  }
+}
 function loadScriptsSequentially(scriptUrls, callback) {
   function loadNextScript(index) {
     if (index < scriptUrls.length) {
@@ -86,7 +92,37 @@ function scriptsLoadedCallback() {
         $(".dashboard").toggleClass("dashboard-compact");
       }
     });
+
+    if (loggedInUser && loggedInUser.type === "TestTaker") {
+      let topBar = document.getElementById("top-bar-placeholder");
+      let menuToggle = topBar.querySelector(".menu-toggle");
+
+      if (menuToggle) {
+        menuToggle.style.display = "none";
+      }
+
+      let submenuHTML = `
+        <div id="dashboardSubmenu" class="submenu-row" style="display:none">
+          <div class="d-flex gap-1 px-4" id="topBarSubmenuItems"></div>
+        </div>`;
+      topBar.insertAdjacentHTML("afterend", submenuHTML);
+    }
+
+    // Initialize Bootstrap dropdowns
+    // var dropdownElementList = [].slice.call(
+    //   document.querySelectorAll(".dropdown-toggle"),
+    // );
+    // dropdownElementList.map(function (dropdownToggleEl) {
+    //   return new bootstrap.Dropdown(dropdownToggleEl);
+    // });
+
+    // document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((el) => {
+    //   new bootstrap.Dropdown(el);
+    // });
+
+    // addCheckAuth();
   });
+
   includeHTML(
     "/partials/nav_side_bar.html",
     "side-bar-placeholder",

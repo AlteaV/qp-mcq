@@ -35,6 +35,16 @@ var table = $("#template_table").DataTable({
   searching: false,
   destroy: true,
 });
+let dtlayout = document.getElementsByClassName("dt-layout-cell");
+
+for (let cell of dtlayout) {
+  if (
+    !cell.classList.contains("dt-start") &&
+    !cell.classList.contains("dt-end")
+  ) {
+    cell.style.setProperty("padding", "0", "important");
+  }
+}
 
 function showFecthingDataSection(data) {
   $("#details").hide();

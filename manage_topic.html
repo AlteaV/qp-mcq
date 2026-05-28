@@ -2,156 +2,185 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">Topic Management</h4>
-                    <div class="row mb-3 align-items-end">
-                      <div class="col" id="level_div">
-                        <label for="level_name" class="required">Level</label>
-                        <select
-                          class="form-select"
-                          id="level"
-                          name="level"
-                          required
-                        >
-                          <option value="" selected disabled>
-                            Choose level
-                          </option>
-                        </select>
-                      </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Topic Management</h1>
+              <p>Configure and manage topics</p>
+            </div>
+          </div>
 
-                      <div class="col mt-2">
-                        <div class="d-none" id="subject_div">
-                          <label for="subject" class="required">Subject</label>
-                          <select
-                            class="form-select"
-                            name="subject"
-                            id="subject"
-                            required
-                          ></select>
-                        </div>
-                      </div>
-                      <div class="col mt-2">
-                        <div class="d-none" id="section_div">
-                          <label for="section" class="required">Section</label>
-                          <select
-                            class="form-select"
-                            name="section"
-                            id="section"
-                            required
-                          ></select>
-                        </div>
-                      </div>
+          <div class="nd-card p-0">
+            <div
+              class="d-flex flex-wrap align-items-end gap-3 mb-4"
+              style="padding-top: 20px; padding-left: 20px; padding-right: 20px"
+            >
+              <div style="flex: 1; max-width: 200px" id="level_div">
+                <label
+                  for="level"
+                  class="form-label fw-bold"
+                  style="color: #374151"
+                  >Level</label
+                >
+                <select class="nd-select" id="level" name="level" required>
+                  <option value="" selected disabled>Choose level</option>
+                </select>
+              </div>
 
-                      <div class="col mt-4">
-                        <div class="d-none" id="add_btn_div">
-                          <button
-                            class="btn btn-primary btn-color"
-                            type="button"
-                            id="add_btn"
-                          >
-                            Add Topic
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
+              <div style="flex: 1; max-width: 200px">
+                <div class="d-none" id="subject_div">
+                  <label
+                    for="subject"
+                    class="form-label fw-bold"
+                    style="color: #374151"
+                    >Subject</label
+                  >
+                  <select
+                    class="nd-select"
+                    name="subject"
+                    id="subject"
+                    required
+                  ></select>
+                </div>
+              </div>
 
-                    <div
-                      class="result mt-4"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <table
-                        class="table table-bordered"
-                        width="100%"
-                        id="result_table"
-                      ></table>
-                    </div>
-                    <div
-                      class="modal fade"
-                      id="modal"
-                      tabindex="-1"
-                      role="dialog"
-                      aria-labelledby="modalLabel"
-                      aria-hidden="true"
-                    >
-                      <div
-                        class="modal-dialog modal-dialog-centered modal-l"
-                        role="document"
+              <div style="flex: 1; max-width: 200px">
+                <div class="d-none" id="section_div">
+                  <label
+                    for="section"
+                    class="form-label fw-bold"
+                    style="color: #374151"
+                    >Section</label
+                  >
+                  <select
+                    class="nd-select"
+                    name="section"
+                    id="section"
+                    required
+                  ></select>
+                </div>
+              </div>
+
+              <div class="ms-auto">
+                <div class="d-none" id="add_btn_div">
+                  <button class="nd-btn-primary" type="button" id="add_btn">
+                    Add Topic
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4" id="fetching_data" style="display: none">
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <i class="fa-solid fa-spinner fa-spin"></i> Fetching Data...
+              </div>
+            </div>
+
+            <div
+              class="result mt-4 p-0 mb-0"
+              id="result_div"
+              style="display: none"
+            >
+              <div class="table-responsive">
+                <table
+                  class="table table-bordered nd-table-override mb-0"
+                  width="100%"
+                  id="result_table"
+                ></table>
+              </div>
+              <div
+                class="modal fade"
+                id="modal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="modalLabel"
+                aria-hidden="true"
+              >
+                <div
+                  class="modal-dialog modal-dialog-centered modal-l"
+                  role="document"
+                >
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="modal_title">
+                        <b id="form_title"></b>
+                      </h5>
+                      <button
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
                       >
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="modal_title">
-                              <b id="form_title"></b>
-                            </h5>
-                            <button
-                              type="button"
-                              data-bs-dismiss="modal"
-                              aria-label="Close"
-                            >
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <form class="needs-validation" id="form" novalidate>
-                              <input type="hidden" id="editIndex" value="-1" />
-                              <div class="row mb-3">
-                                <div class="col-auto">
-                                  <label for="topic_name" class="required"
-                                    >Topic</label
-                                  >
-
-                                  <div class="invalid-feedback">
-                                    Please enter Topic Name.
-                                  </div>
-                                </div>
-                                <div class="col">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    id="topic_name"
-                                    name="topic_name"
-                                    autocomplete="off"
-                                    required
-                                  />
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                          <div class="modal-footer">
-                            <button
-                              type="button"
-                              class="btn btn-secondary"
-                              data-dismiss="modal"
-                              data-bs-toggle="modal"
-                              data-bs-target="#modal"
-                              id="close_id"
-                            >
-                              Close
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-primary"
-                              id="form_submit"
-                            >
-                              Submit
-                            </button>
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form class="needs-validation" id="form" novalidate>
+                        <input type="hidden" id="editIndex" value="-1" />
+                        <div class="mb-3">
+                          <label
+                            for="topic_name"
+                            class="form-label fw-bold required"
+                            style="color: #374151"
+                            >Topic Name</label
+                          >
+                          <input
+                            type="text"
+                            class="nd-input"
+                            id="topic_name"
+                            name="topic_name"
+                            autocomplete="off"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter Topic Name.
                           </div>
                         </div>
-                      </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn nd-btn-secondary"
+                        data-dismiss="modal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal"
+                        id="close_id"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        class="btn nd-btn-primary"
+                        id="form_submit"
+                      >
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>

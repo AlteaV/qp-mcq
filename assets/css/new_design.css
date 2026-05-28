@@ -1,0 +1,2427 @@
+/* ═══════════════════════════════════════════════════════════════
+   new_design.css — Global Figma Design System
+   Used by: user_dashboard, self_learning, report_test_performance,
+            student_report, report_subject_wise_performance
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Google Font ──────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+:root {
+  --brand-gradient: linear-gradient(90deg, #0b46ff, #0f7bff, #08c5d1);
+  --brand-blue: #0b46ff;
+  --brand-cyan: #08c5d1;
+  --bg-page: #f0f4f9;
+  --bg-card: #ffffff;
+  --border-card: #f3f4f6;
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --radius-card: 16px;
+  --radius-badge: 12px;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --font-main:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ── Global Overrides ─────────────────────────────────────────── */
+body {
+  background-color: var(--bg-page) !important;
+  font-family: var(--font-main) !important;
+}
+
+/* ── Top Navigation Bar ───────────────────────────────────────── */
+.dashboard-toolbar {
+  background: var(--brand-gradient) !important;
+  box-shadow: 0 2px 12px rgba(11, 70, 255, 0.25) !important;
+  /* min-height: 56px !important; */
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 20px !important;
+  justify-content: space-between !important;
+}
+
+.dashboard-toolbar .menu-toggle i,
+.dashboard-toolbar .menu-toggle {
+  color: #fff !important;
+  font-size: 18px !important;
+}
+
+.dashboard-toolbar .dropdown > a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 999px !important;
+  padding: 5px 14px 5px 6px !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  border: none !important;
+  transition: background 0.2s !important;
+}
+.dashboard-toolbar .dropdown > a:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+.dashboard-toolbar .dropdown > a i.fa-user {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.dashboard-toolbar .dropdown-toggle::after {
+  border-top-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+.dashboard-nav {
+  background: #ffffff !important;
+  border-right: 1px solid #e5e7eb !important;
+  width: 240px !important;
+}
+
+.dashboard-nav > header {
+  min-height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.dashboard-nav .brand-logo {
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
+  text-transform: uppercase;
+}
+
+.dashboard-nav-item a {
+  font-family: var(--font-main);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary) !important;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.dashboard-nav-item a:hover,
+.dashboard-nav-item.active a {
+  color: var(--brand-blue) !important;
+  background: rgba(11, 70, 255, 0.06) !important;
+}
+.dashboard-nav-item.active a {
+  border-left: 3px solid var(--brand-blue) !important;
+}
+
+/* ── Page Background ──────────────────────────────────────────── */
+.dashboard-content {
+  background: var(--bg-page);
+  padding: 28px 32px;
+  min-height: calc(100vh - 56px);
+}
+
+/* ── Gradient Banner ──────────────────────────────────────────── */
+.nd-banner {
+  background: var(--brand-gradient);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(11, 70, 255, 0.2);
+}
+.nd-banner-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+}
+.nd-banner-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: #fff;
+  fill: none;
+}
+.nd-banner h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.nd-banner p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 2px 0 0;
+}
+
+/* ── Welcome Header (dashboard) ───────────────────────────────── */
+.nd-welcome-header {
+  margin-bottom: 24px;
+  padding: 4px 0;
+}
+.nd-welcome-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  line-height: 1.25;
+}
+.nd-welcome-header p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Stat Cards Row ───────────────────────────────────────────── */
+.nd-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.nd-stat-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.nd-stat-card:hover {
+  box-shadow: 0 6px 24px rgba(11, 70, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.nd-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nd-stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Icon colour variants */
+.nd-icon-blue {
+  background: #dbeafe;
+}
+.nd-icon-blue svg {
+  stroke: #2563eb;
+}
+.nd-icon-green {
+  background: #dcfce7;
+}
+.nd-icon-green svg {
+  stroke: #16a34a;
+}
+.nd-icon-purple {
+  background: #ede9fe;
+}
+.nd-icon-purple svg {
+  stroke: #7c3aed;
+}
+.nd-icon-amber {
+  background: #fef3c7;
+}
+.nd-icon-amber svg {
+  stroke: #d97706;
+}
+
+.nd-stat-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nd-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.nd-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* ── Bottom Grid (3 cols) ─────────────────────────────────────── */
+.nd-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* ── Card title / subtitle helpers ───────────────────────────── */
+.nd-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+.nd-card-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+/* ── Question navigation row (self_learning) ─────────────────── */
+.nd-question-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.nd-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.nd-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Icon Badges ──────────────────────────────────────────────── */
+.nd-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-badge);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nd-icon-badge svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nd-icon-blue {
+  background: #dbeafe;
+}
+.nd-icon-blue svg {
+  stroke: #2563eb;
+}
+.nd-icon-green {
+  background: #dcfce7;
+}
+.nd-icon-green svg {
+  stroke: #16a34a;
+}
+.nd-icon-purple {
+  background: #ede9fe;
+}
+.nd-icon-purple svg {
+  stroke: #7c3aed;
+}
+.nd-icon-orange {
+  background: #ffedd5;
+}
+.nd-icon-orange svg {
+  stroke: #ea580c;
+}
+
+.nd-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin: 0;
+}
+.nd-stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ── Bottom 3-col Grid ────────────────────────────────────────── */
+.nd-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ── Card ─────────────────────────────────────────────────────── */
+.nd-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+
+.nd-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+}
+.nd-card-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+.nd-card-link {
+  font-size: 0.75rem;
+  color: var(--brand-blue);
+  font-weight: 500;
+  text-decoration: none;
+}
+.nd-card-link:hover {
+  text-decoration: underline;
+}
+
+/* ── JS-Generated Dynamic Classes (user_dashboard.js) ────────── */
+
+.ud-subject-row {
+  margin-bottom: 16px;
+}
+.ud-subject-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Colored dot + name on same line */
+.ud-subj-name {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+/* Colored dot via ::before — cycles through 4 colors */
+.ud-subj-name::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ud-subject-row:nth-child(4n + 1) .ud-subj-name::before {
+  background: #3b82f6;
+}
+.ud-subject-row:nth-child(4n + 2) .ud-subj-name::before {
+  background: #7c3aed;
+}
+.ud-subject-row:nth-child(4n + 3) .ud-subj-name::before {
+  background: #f59e0b;
+}
+.ud-subject-row:nth-child(4n + 4) .ud-subj-name::before {
+  background: #16a34a;
+}
+
+/* Bar wrap */
+.ud-subj-bar-wrap {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 4px;
+  margin: 0px;
+}
+
+/* Bar fill — different gradient per nth-child */
+.ud-subj-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+.ud-subject-row:nth-child(4n + 1) .ud-subj-bar {
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+.ud-subject-row:nth-child(4n + 2) .ud-subj-bar {
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+}
+.ud-subject-row:nth-child(4n + 3) .ud-subj-bar {
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+}
+.ud-subject-row:nth-child(4n + 4) .ud-subj-bar {
+  background: linear-gradient(90deg, #16a34a, #4ade80);
+}
+
+/* Percentage label */
+.ud-subj-pct {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+/* Quiz list items */
+.ud-quiz-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.ud-quiz-item:last-child {
+  border-bottom: none;
+}
+
+.ud-quiz-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ud-quiz-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.ud-quiz-score {
+  text-align: right;
+}
+
+.ud-quiz-marks {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.ud-quiz-pct {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Positive (green) and Negative (red) score colors */
+.ud-quiz-marks.positive,
+.ud-quiz-pct.positive {
+  color: #16a34a;
+}
+.ud-quiz-marks.negative,
+.ud-quiz-pct.negative {
+  color: #dc2626;
+}
+
+/* Empty state */
+.ud-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+.ud-empty-state svg {
+  width: 28px;
+  height: 28px;
+  stroke: #d1d5db;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Shared Components – self_learning, reports, student_report
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Filter Card ──────────────────────────────────────────────── */
+.nd-filter-card {
+  margin-bottom: 20px;
+}
+
+.nd-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.nd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.nd-btn-field {
+  flex: 0 0 auto;
+}
+
+/* ── Form Labels ──────────────────────────────────────────────── */
+.nd-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.nd-label.required::after {
+  content: " *";
+  color: #ef4444;
+}
+
+/* ── Form Inputs & Selects ────────────────────────────────────── */
+.nd-select,
+.nd-input {
+  height: 42px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: var(--font-main);
+  outline: none;
+  width: 100%;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.nd-input {
+  background-image: none;
+  padding-right: 14px;
+}
+.nd-select:focus,
+.nd-input:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(11, 70, 255, 0.1);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.nd-btn-primary {
+  height: 42px;
+  padding: 0 24px;
+  background: var(--brand-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
+  box-shadow: 0 4px 12px rgba(11, 70, 255, 0.25);
+  white-space: nowrap;
+}
+.nd-btn-primary:hover {
+  opacity: 0.92;
+}
+.nd-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.nd-btn-outline {
+  height: 42px;
+  padding: 0 20px;
+  background: transparent;
+  color: var(--brand-blue);
+  border: 1.5px solid #bfdbfe;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nd-btn-outline:hover {
+  background: #eff6ff;
+}
+
+.nd-btn-secondary {
+  height: 38px;
+  padding: 0 18px;
+  background: #f3f4f6;
+  color: var(--text-secondary);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nd-btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.nd-btn-success {
+  height: 38px;
+  padding: 0 20px;
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.nd-btn-success:hover {
+  opacity: 0.9;
+}
+
+/* ── Bootstrap table override ─────────────────────────────────── */
+.nd-table-override thead tr {
+  background: linear-gradient(90deg, #0b46ff, #0f7bff) !important;
+}
+.nd-table-override thead tr th {
+  background: transparent !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  padding: 12px 14px !important;
+  border: none !important;
+  white-space: nowrap;
+}
+.nd-table-override tbody tr {
+  transition: background 0.15s;
+}
+.nd-table-override tbody tr:nth-child(even) {
+  background: #f9fafb !important;
+}
+.nd-table-override tbody tr:hover {
+  background: #eff6ff !important;
+}
+.nd-table-override tbody td {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  vertical-align: middle;
+  border-color: #d1d5db !important;
+}
+.nd-table-override {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #d1d5db !important;
+}
+.nd-table-override th,
+.nd-table-override td {
+  border-top: 1px solid #d1d5db !important;
+  border-bottom: 1px solid #d1d5db !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+.nd-table-override tbody tr:nth-child(even) td,
+.nd-table-override tbody tr.even td {
+  background-color: #f9fafb !important;
+  --bs-table-bg-type: #f9fafb !important; /* Overrides Bootstrap 5 custom properties if active */
+}
+
+/* Ensure the odd rows stay cleanly white */
+.nd-table-override tbody tr:nth-child(odd) td,
+.nd-table-override tbody tr.odd td {
+  background-color: #ffffff !important;
+  --bs-table-bg-type: #ffffff !important;
+}
+
+/* ── Loading State ────────────────────────────────────────────── */
+.nd-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.nd-loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  animation: nd-bounce 1.2s ease-in-out infinite;
+}
+.nd-loading-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.nd-loading-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes nd-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Report Card ──────────────────────────────────────────────── */
+.nd-report-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.nd-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fff;
+}
+.nd-report-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Toggle Buttons ───────────────────────────────────────────── */
+.nd-toggle-group {
+  display: flex;
+  gap: 4px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 3px;
+}
+.nd-toggle-btn {
+  padding: 5px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-main);
+}
+.nd-toggle-active,
+.nd-toggle-btn.active {
+  background: #fff;
+  color: var(--brand-blue);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Breadcrumb ───────────────────────────────────────────────── */
+.nd-breadcrumb {
+  padding: 10px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── Back Button ──────────────────────────────────────────────── */
+.nd-back-btn {
+  margin-bottom: 16px;
+}
+
+/* ── Section Title (card heading) ─────────────────────────────── */
+.nd-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 20px;
+}
+
+/* ── Test Performance Filter Row ─────────────────────────────── */
+.nd-tp-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.nd-tp-select {
+  max-width: 260px;
+  background-color: #fff;
+}
+.nd-tp-view-btn {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Performance Summary Card ─────────────────────────────────── */
+.nd-perf-summary {
+  margin-bottom: 20px;
+}
+
+.nd-perf-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.nd-perf-stat-card {
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1.5px solid transparent;
+}
+
+.nd-perf-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nd-perf-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nd-perf-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.nd-perf-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* Blue — Total Answered */
+.nd-perf-blue {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+.nd-perf-blue .nd-perf-icon {
+  background: #dbeafe;
+}
+.nd-perf-blue .nd-perf-icon svg {
+  stroke: #2563eb;
+}
+.nd-perf-blue .nd-perf-value {
+  color: #1d4ed8;
+}
+.nd-perf-blue .nd-perf-label {
+  color: #3b82f6;
+}
+
+/* Green — Correct */
+.nd-perf-green {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.nd-perf-green .nd-perf-icon {
+  background: #dcfce7;
+}
+.nd-perf-green .nd-perf-icon svg {
+  stroke: #16a34a;
+}
+.nd-perf-green .nd-perf-value {
+  color: #15803d;
+}
+.nd-perf-green .nd-perf-label {
+  color: #22c55e;
+}
+
+/* Red — Wrong */
+.nd-perf-red {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+.nd-perf-red .nd-perf-icon {
+  background: #fee2e2;
+}
+.nd-perf-red .nd-perf-icon svg {
+  stroke: #dc2626;
+}
+.nd-perf-red .nd-perf-value {
+  color: #b91c1c;
+}
+.nd-perf-red .nd-perf-label {
+  color: #ef4444;
+}
+
+/* Orange — Unanswered */
+.nd-perf-orange {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+.nd-perf-orange .nd-perf-icon {
+  background: #ffedd5;
+}
+.nd-perf-orange .nd-perf-icon svg {
+  stroke: #ea580c;
+}
+.nd-perf-orange .nd-perf-value {
+  color: #c2410c;
+}
+.nd-perf-orange .nd-perf-label {
+  color: #f97316;
+}
+
+/* ── Section Performance Card ─────────────────────────────────── */
+.nd-section-perf-card {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.nd-section-perf-header {
+  padding: 20px 20px 0;
+}
+
+@media (max-width: 900px) {
+  .nd-perf-stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Student Info ─────────────────────────────────────────────── */
+.nd-student-info {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+/* ── Performance Legend ───────────────────────────────────────── */
+.nd-legend {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+}
+.nd-legend ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.nd-legend li {
+  margin-top: 6px;
+}
+.nd-legend-green {
+  background: #87b97c;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+.nd-legend-yellow {
+  background: #f1e08a;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+/* ── Question Display (self_learning) ─────────────────────────── */
+.nd-question-card {
+  margin-bottom: 16px;
+}
+
+.nd-question-no {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.nd-question-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.nd-submit-row {
+  display: flex;
+  margin-top: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   JS-Generated Dynamic Classes – report & self_learning pages
+   ══════════════════════════════════════════════════════════════ */
+
+/* .hidden — toggled by report_*.js on chart-wrapper / table-wrapper */
+.hidden {
+  display: none !important;
+}
+
+/* .drill-link — clickable drilldown anchor inside table cells */
+.drill-link {
+  color: var(--brand-blue);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.drill-link:hover {
+  color: #0a38cc;
+  text-decoration: underline;
+}
+
+/* .view-button — eye icon button in result_table */
+.view-button {
+  background: var(--brand-gradient) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 5px 10px !important;
+  color: #fff !important;
+  font-size: 0.75rem !important;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.view-button:hover {
+  opacity: 0.85 !important;
+}
+
+/* .badge — difficulty badge */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* .question_option — radio inputs in self_learning */
+.question_option {
+  accent-color: var(--brand-blue);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* .similar_question_option */
+.similar_question_option {
+  accent-color: var(--brand-blue);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Breadcrumb span links (built inline by renderChart/renderDashboard) */
+#breadcrumb span {
+  color: var(--brand-blue) !important;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+#breadcrumb span:hover {
+  color: #0a38cc !important;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .nd-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .nd-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .nd-stats-row {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-content {
+    padding: 16px;
+  }
+  .nd-filter-row {
+    flex-direction: column;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Student Report — Accordion (Section Performance)
+   ══════════════════════════════════════════════════════════════ */
+
+.sr-accordion-item {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0 16px 12px;
+}
+.sr-accordion-item:last-child {
+  margin-bottom: 16px;
+}
+
+/* Clickable header row */
+.sr-accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.15s;
+}
+.sr-accordion-header:hover {
+  filter: brightness(0.97);
+}
+
+/* Coloured dot */
+.sr-subj-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Subject name */
+.sr-subj-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+/* Chevron icon — rotates when open */
+.sr-chevron {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.sr-accordion-header.sr-open .sr-chevron {
+  transform: rotate(180deg);
+}
+
+/* Table body (hidden by default) */
+.sr-accordion-body {
+  border-top: 1px solid #e5e7eb;
+}
+.sr-accordion-body table {
+  border-radius: 0 !important;
+}
+
+/* ── Circular number badges inside accordion table ──────────── */
+.sr-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sr-badge-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.sr-badge-green {
+  background: #dcfce7;
+  color: #15803d;
+}
+.sr-badge-red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.sr-badge-orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+/* Base pill style */
+.nav-pill {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+/* Active item */
+.nav-pill-active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Inactive item */
+.nav-pill-inactive {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Hover effect */
+.nav-pill-inactive:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Submenu wrapper */
+.submenu-row {
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  animation: submenuSlide 0.2s ease;
+}
+
+/* Submenu buttons */
+.submenu-item {
+  position: relative;
+  padding: 14px 18px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Hover */
+.submenu-item:hover {
+  color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* Active submenu item */
+.submenu-item-active {
+  color: #0d6efd;
+}
+
+/* Bottom active indicator */
+.submenu-item-active::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  background: #0d6efd;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Smooth appearance */
+@keyframes submenuSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-pill.top-nav-item:hover {
+  text-decoration: none;
+  color: #fff; /* Must match the default color above */
+}
+
+.nd-btn-primary.disabled {
+  background: #e9ecef;
+  color: #6b7280; /* This is the hex code for Tailwind's standard .text-gray-500 */
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Prevents click/scale animations on hover when disabled */
+.nd-btn-primary.disabled:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* Base badge styles (Shared layout properties) */
+/* Modifier: Actual (Blue variation) */
+.badge-actual {
+  background-color: #dbeafe; /* Equivalent to bg-blue-100 */
+  color: #1d4ed8; /* Equivalent to text-blue-700 */
+  padding: 0.25rem 0.625rem;
+}
+
+/* Modifier: Practice (Purple variation) */
+.badge-practice {
+  background-color: #f3e8ff; /* Equivalent to bg-purple-100 */
+  color: #6b21a8; /* Equivalent to text-purple-700 */
+  padding: 0.25rem 0.625rem;
+}
+
+.nd-table-override button {
+  padding: 0.375rem 1rem; /* py-1.5 px-4 */
+  background-color: #2563eb; /* blue-600 */
+  color: #ffffff;
+  font-size: 0.75rem; /* text-xs */
+  border: none;
+  border-radius: 9999px; /* rounded-full */
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); /* shadow-sm */
+}
+
+.nd-table-override button:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}
+
+/* added new */
+
+/* ══════════════════════════════════════════════════════════════
+   Self Learning — Hint / Solution Accordions & Bottom Nav
+   ══════════════════════════════════════════════════════════════ */
+
+.sl-question-card {
+  margin-bottom: 12px;
+}
+
+/* Shared accordion wrapper spacing */
+.sl-accordion {
+  margin-bottom: 10px;
+}
+
+/* ── Hint (amber) ─────────────────────────────────────────── */
+.sl-hint-item {
+  background: #fffbeb;
+  border: 1.5px solid #f59e0b !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+.sl-hint-btn {
+  background: #fffbeb !important;
+  color: #d97706 !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+  display: flex;
+  align-items: center;
+}
+.sl-hint-btn::after {
+  /* tint Bootstrap chevron amber */
+  filter: invert(55%) sepia(80%) saturate(600%) hue-rotate(5deg) brightness(0.9);
+}
+.sl-hint-btn:not(.collapsed) {
+  border-radius: 14px 14px 0 0 !important;
+}
+.sl-hint-body-content {
+  background: #fffbeb;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+/* ── Solution (green) ─────────────────────────────────────── */
+.sl-answer-item {
+  background: #f0fdf4;
+  border: 1.5px solid #22c55e !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+.sl-answer-btn {
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+  display: flex;
+  align-items: center;
+}
+.sl-answer-btn::after {
+  filter: invert(40%) sepia(90%) saturate(500%) hue-rotate(100deg)
+    brightness(0.85);
+}
+.sl-answer-btn:not(.collapsed) {
+  border-radius: 14px 14px 0 0 !important;
+}
+.sl-answer-body-content {
+  background: #f0fdf4;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+/* ── Bottom Nav ───────────────────────────────────────────── */
+.sl-bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sl-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* "Go To Similar Question" — link style */
+.sl-similar-link {
+  background: none;
+  border: none;
+  color: var(--brand-blue);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+.sl-similar-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* Submit Test — outlined pill */
+.sl-submit-outline {
+  height: 42px;
+  padding: 0 20px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sl-submit-outline:hover {
+  background: #f3f4f6;
+}
+
+/* Hide show_questions.js-generated accordions/buttons inside #question_div
+   — the static Hint/Solution panels above handle them instead.
+   Note: similar_question_div_ is NOT hidden so showSimilarQuestion() can render it */
+#question_div [id^="accordion_hint_"],
+#question_div [id^="accordion_answer_"],
+#question_div [id^="help_button_"],
+#question_div [id^="answer_button_"],
+#question_div [id^="try_similar_button_"] {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Take MCQ Test Page
+   ══════════════════════════════════════════════════════════════ */
+
+.tm-table tbody td {
+  padding: 16px 14px !important;
+  vertical-align: middle !important;
+}
+
+/* Type badge pills */
+.tm-type-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+}
+.tm-type-actual {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.tm-type-practice {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+.tm-type-resume {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Take Test / Resume Test button */
+.take-test-btn {
+  background: var(--brand-gradient) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  padding: 8px 22px !important;
+  transition: opacity 0.2s !important;
+  white-space: nowrap;
+  cursor: pointer !important;
+}
+.take-test-btn:hover {
+  opacity: 0.88 !important;
+}
+
+/* Disabled / Contact Admin button */
+.tm-table .btn-secondary,
+.tm-table .btn-secondary:disabled {
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 999px !important;
+  color: #6b7280 !important;
+  font-weight: 600 !important;
+  font-size: 0.78rem !important;
+  padding: 8px 16px !important;
+  cursor: default !important;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Admin Dashboard & Leaderboard — Shared Components
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Page container */
+.nd-page-container {
+  padding: 24px 28px;
+  max-width: 100%;
+}
+
+/* Page Hero */
+.nd-page-hero {
+  margin-bottom: 24px;
+}
+.nd-page-hero-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+.nd-page-hero-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Section card wrapper */
+.nd-section-card {
+  background: #fff;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* Gradient banner inside card */
+.nd-section-banner {
+  background: var(--brand-gradient);
+  padding: 14px 22px;
+}
+.nd-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* ── Admin Dashboard: Stats ─────────────────────────────────── */
+.nd-all-stats-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16px;
+  gap: 0;
+}
+.nd-all-stats-wrap > .ud-stats-row {
+  display: contents; /* children flow directly into parent flex */
+}
+.nd-stat-card {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1.5px solid transparent; /* transparent border by default */
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer; /* Change to pointer so it feels interactive */
+}
+
+/* Base highlight keeps light blue tint but border is transparent now */
+.nd-stat-highlighted {
+  background: #f0f4ff;
+}
+
+/* Hover effects with specific transparent color shades (increased visibility) */
+.nd-hover-blue:hover {
+  background: #dbeafe;
+  border-color: #dbeafe;
+} /* Blue 100 */
+.nd-hover-green:hover {
+  background: #dcfce7;
+  border-color: #dcfce7;
+} /* Green 100 */
+.nd-hover-purple:hover {
+  background: #ede9fe;
+  border-color: #ede9fe;
+} /* Purple 100 */
+.nd-hover-orange:hover {
+  background: #ffedd5;
+  border-color: #ffedd5;
+} /* Orange 100 */
+.nd-hover-teal:hover {
+  background: #ccfbf1;
+  border-color: #ccfbf1;
+} /* Teal 100 */
+.nd-hover-pink:hover {
+  background: #fce7f3;
+  border-color: #fce7f3;
+} /* Pink 100 */
+.nd-stat-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.nd-stat-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+.nd-icon-blue {
+  background: #eff4ff;
+  color: #0b46ff;
+}
+.nd-icon-green {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.nd-icon-purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.nd-icon-orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.nd-icon-teal {
+  background: #ecfeff;
+  color: #0891b2;
+}
+.nd-icon-pink {
+  background: #fdf2f8;
+  color: #db2777;
+}
+.nd-stat-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.nd-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* ── Admin Dashboard: Two-column panels ─────────────────────── */
+.nd-two-col-panel {
+  display: flex;
+  padding: 20px;
+  gap: 0;
+}
+.nd-panel-half {
+  flex: 1;
+  padding: 0 16px;
+}
+.nd-panel-divider {
+  width: 1px;
+  background: #f3f4f6;
+  flex-shrink: 0;
+}
+.nd-panel-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+.nd-panel-sub {
+  font-size: 0.78rem;
+  color: var(--brand-blue);
+  margin: 0 0 16px;
+}
+.nd-empty-state {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 20px 0;
+}
+
+/* ── Leaderboard: Filters ────────────────────────────────────── */
+.nd-lb-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 20px 22px 16px;
+  flex-wrap: wrap;
+}
+.nd-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 160px;
+}
+.nd-filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.nd-select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-family: var(--font-main);
+  color: var(--text-primary);
+  background: #fff;
+  appearance: auto;
+  transition: border-color 0.15s;
+}
+.nd-select:focus {
+  border-color: var(--brand-blue);
+  outline: none;
+}
+
+.nd-filter-action {
+  align-self: flex-end;
+}
+.nd-lb-view-btn {
+  height: 42px;
+  padding: 0 26px;
+  background: var(--brand-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.nd-lb-view-btn:hover {
+  opacity: 0.88;
+}
+
+/* Loading */
+.nd-lb-loading {
+  padding: 20px 22px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Results table wrapper */
+.nd-lb-results {
+  padding: 0 22px 22px;
+}
+
+/* Leaderboard table */
+.nd-lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.nd-lb-table thead tr {
+  border-bottom: 2px solid #f1f5f9;
+}
+.nd-lb-table thead th {
+  padding: 12px 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #fff;
+}
+.nd-lb-table tbody tr {
+  border-bottom: 1px solid #f8fafc;
+  transition: background 0.12s;
+}
+.nd-lb-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Top 3 rows: cream tint */
+.nd-lb-table tbody tr:nth-child(-n + 3) {
+  background: #fef9e7;
+}
+.nd-lb-table tbody tr:nth-child(-n + 3):hover {
+  background: #fdf3c0;
+}
+
+.nd-lb-table tbody td {
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+/* Rank badge circles */
+.nd-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.nd-rank-gold {
+  background: #f59e0b;
+  color: #fff;
+}
+.nd-rank-silver {
+  background: #9ca3af;
+  color: #fff;
+}
+.nd-rank-bronze {
+  background: #ea580c;
+  color: #fff;
+}
+.nd-rank-plain {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1.5px solid #e2e8f0;
+}
+
+/* Score badge */
+.nd-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #eff4ff;
+  color: var(--brand-blue);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ── Admin Dashboard: JS-injected element styles ─────────────── */
+
+/* Empty state */
+.ud-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  gap: 8px;
+  text-align: center;
+}
+
+/* ── Analysis rows (Hardest/Easiest Subjects & Topics) ────────── */
+.ad-analysis-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin: 0 -12px;
+  border-radius: 8px;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Dynamic Row Hover Colors */
+.nd-row-hover-green:hover {
+  background: #dcfce7 !important;
+} /* Green */
+.nd-row-hover-yellow:hover {
+  background: #fef9c3 !important;
+} /* Yellow */
+.nd-row-hover-red:hover {
+  background: #fee2e2 !important;
+} /* Red */
+
+.ad-analysis-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.ad-analysis-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ad-analysis-sub {
+  font-size: 0.75rem;
+  color: var(--brand-blue);
+  font-weight: 400;
+}
+.ad-analysis-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+/* Percentage badge (amber circle for subjects) */
+.ad-analysis-pct {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fef9c3;
+  color: #92400e;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+/* Difficulty badge (colored pill — color set inline by JS) */
+.ad-analysis-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Subject performance progress bars ────────────────────────── */
+.ud-subject-row {
+  padding: 12px;
+  margin: 0 -12px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Color Cycle Classes for Subject Performance */
+.nd-cycle-purple .ud-subj-bar {
+  background: #8b5cf6;
+}
+.nd-cycle-purple .ud-subj-pct {
+  color: #8b5cf6 !important;
+}
+.nd-cycle-purple:hover {
+  background: #ede9fe !important;
+}
+
+.nd-cycle-blue .ud-subj-bar {
+  background: #3b82f6;
+}
+.nd-cycle-blue .ud-subj-pct {
+  color: #3b82f6 !important;
+}
+.nd-cycle-blue:hover {
+  background: #dbeafe !important;
+}
+
+.nd-cycle-green .ud-subj-bar {
+  background: #10b981;
+}
+.nd-cycle-green .ud-subj-pct {
+  color: #10b981 !important;
+}
+.nd-cycle-green:hover {
+  background: #dcfce7 !important;
+}
+
+.nd-cycle-orange .ud-subj-bar {
+  background: #f97316;
+}
+.nd-cycle-orange .ud-subj-pct {
+  color: #f97316 !important;
+}
+.nd-cycle-orange:hover {
+  background: #ffedd5 !important;
+}
+
+.nd-cycle-teal .ud-subj-bar {
+  background: #14b8a6;
+}
+.nd-cycle-teal .ud-subj-pct {
+  color: #14b8a6 !important;
+}
+.nd-cycle-teal:hover {
+  background: #ccfbf1 !important;
+}
+
+.nd-cycle-pink .ud-subj-bar {
+  background: #ec4899;
+}
+.nd-cycle-pink .ud-subj-pct {
+  color: #ec4899 !important;
+}
+.nd-cycle-pink:hover {
+  background: #fce7f3 !important;
+}
+
+.ud-subj-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.ud-subj-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.ud-subj-bar {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.ud-subj-pct {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+/* ── Recent Quiz Attempts ─────────────────────────────────────── */
+.ud-quiz-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin: 0 -12px;
+  border-radius: 8px;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ud-quiz-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.ud-quiz-date {
+  font-size: 0.72rem;
+  color: #f59e0b;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* Score pill default state */
+.ud-quiz-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #eff4ff;
+  color: var(--brand-blue);
+  font-weight: 700;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* Score pill hover states based on JS classes */
+.ud-quiz-item:hover .ud-quiz-score.score-green {
+  background: #10b981 !important;
+}
+.ud-quiz-item:hover .ud-quiz-score.score-green,
+.ud-quiz-item:hover .ud-quiz-score.score-green * {
+  color: #ffffff !important;
+}
+
+.ud-quiz-item:hover .ud-quiz-score.score-yellow {
+  background: #eab308 !important; /* amber/yellow */
+}
+.ud-quiz-item:hover .ud-quiz-score.score-yellow,
+.ud-quiz-item:hover .ud-quiz-score.score-yellow * {
+  color: #ffffff !important;
+}
+
+.ud-quiz-item:hover .ud-quiz-score.score-red {
+  background: #ef4444 !important;
+}
+.ud-quiz-item:hover .ud-quiz-score.score-red,
+.ud-quiz-item:hover .ud-quiz-score.score-red * {
+  color: #ffffff !important;
+}
+
+.ud-quiz-marks {
+  line-height: 1;
+}
+.ud-quiz-pct {
+  display: none;
+} /* keep marks only, hide duplicate pct */
+
+/* ── Leaderboard Row Highlighting ──────────────────────────────── */
+.nd-table-leaderboard tbody tr:nth-child(1),
+.nd-table-leaderboard tbody tr:nth-child(2),
+.nd-table-leaderboard tbody tr:nth-child(3) {
+  background-color: #fefce8 !important; /* Lighter soft yellow for top 3 */
+}
+
+/* ── Pagination & Footer ───────────────────────────────────────── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+}
+.show-count {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.page-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #4b5563;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.page-btn:hover:not(.active):not([disabled]) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+.page-btn.active {
+  background: var(--brand-gradient);
+  color: white !important;
+  border: none;
+  box-shadow: 0 4px 12px rgba(11, 70, 255, 0.2);
+}
+
+/* ── Modern Bootstrap Modal Overrides ───────────────────────────────────────── */
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: 1px solid #f3f4f6;
+  background-color: #ffffff;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-title {
+  font-weight: 700;
+  color: #111827;
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #f3f4f6;
+  background-color: #f9fafb;
+  padding: 1rem 1.5rem;
+}
+.page-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f3f4f6;
+}
+
+.nd-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.nd-stat-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.nd-stat-card:hover {
+  box-shadow: 0 6px 24px rgba(11, 70, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.nd-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nd-stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Toggle Switch (Sliders) ──────────────────────────────────── */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s;
+  border-radius: 20px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+input:checked + .slider {
+  background: var(--brand-gradient);
+}
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+/* ── Alert Messages ───────────────────────────────────────────── */
+.nd-alert {
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid var(--brand-blue);
+  background-color: #eff6ff;
+  border-top: 1px solid #dbeafe;
+  border-right: 1px solid #dbeafe;
+  border-bottom: 1px solid #dbeafe;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.nd-alert-icon {
+  background: var(--brand-blue);
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

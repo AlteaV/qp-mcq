@@ -718,14 +718,14 @@ function displayCorrectAnswers() {
   let correctCount = 0;
 
   answers.forEach(async (question, index) => {
-    let choices = question.choices;
-    if (typeof choices === "string") {
-      try {
-        choices = JSON.parse(choices);
-      } catch {
-        choices = question.choices;
-      }
-    }
+    let choices = parseChoices(question.choices) || {};
+    // if (typeof choices === "string") {
+    //   try {
+    //     choices = JSON.parse(choices);
+    //   } catch {
+    //     choices = question.choices;
+    //   }
+    // }
     let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
     for (let key in choices) {
@@ -772,7 +772,7 @@ function displayCorrectAnswers() {
     let questionHTML = `
                 <div style="margin-bottom: 20px;">
                     <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
-                      ${index + 1}) ${question.question}
+                      ${index + 1}) ${renderQuestionText(question.question)}
                     </p>
                     ${choiceHTML}
                 </div>

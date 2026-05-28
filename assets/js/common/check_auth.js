@@ -229,7 +229,18 @@ function buildNavigation() {
 
 function setUserName() {
   let userName = document.getElementById("user_name");
-  userName.innerHTML = loggedInUser.name;
+  if (userName && loggedInUser && loggedInUser.name) {
+    userName.textContent = loggedInUser.name;
+    let initials = loggedInUser.name
+      .split(" ") // Split string into ["John", "Fitzgerald", "Kennedy"]
+      .map((word) => word[0]) // Get the first character of each word: ["J", "F", "K"]
+      .join("") // Join them back into a single string: "JFK"
+      .toUpperCase();
+    let userInitials = document.getElementById("user_initial");
+    if (userInitials) {
+      userInitials.textContent = initials;
+    }
+  }
 }
 
 function setActiveNavItem() {
@@ -269,6 +280,165 @@ function setActiveNavItem() {
   });
 }
 
+function buildTopBarNavigation() {
+  setUserName();
+  let navDiv = document.getElementById("top_bar_nav_items");
+
+  if (!navDiv) return;
+
+  navDiv.innerHTML = "";
+
+  allowedActions.forEach((allowedItem) => {
+    let menuItemConfig = menuItems.find(
+      (item) => item.text === allowedItem.text,
+    );
+
+    if (!menuItemConfig) return;
+
+    let hasMultipleItems = allowedItem.items.length > 1;
+
+    if (hasMultipleItems) {
+      let navItem = document.createElement("a");
+
+      navItem.href = menuItemConfig.href;
+      navItem.classList.add("nav-pill", "nav-pill-inactive", "top-nav-item");
+
+      navItem.textContent = allowedItem.text;
+
+      navItem.addEventListener("click", function (e) {
+        e.preventDefault();
+        showSubMenu(allowedItem);
+      });
+
+      navDiv.appendChild(navItem);
+    } else {
+      let navItem = document.createElement("a");
+
+      let matchedItem = menuItemConfig.items.find(
+        (item) => item.text === allowedItem.items[0].text,
+      );
+
+      if (!matchedItem) return;
+
+      navItem.href = matchedItem.href;
+
+      navItem.classList.add("nav-pill", "nav-pill-inactive", "top-nav-item");
+
+      navItem.textContent = matchedItem.text;
+
+      navDiv.appendChild(navItem);
+    }
+  });
+
+  setTopBarActiveItem();
+}
+
+function showSubMenu(allowedItem) {
+  let dashboardSubmenu = document.getElementById("dashboardSubmenu");
+
+  if (
+    dashboardSubmenu.style.display === "flex" &&
+    dashboardSubmenu.dataset.menu === allowedItem.text
+  ) {
+    dashboardSubmenu.style.display = "none";
+    return;
+  }
+  dashboardSubmenu.dataset.menu = allowedItem.text;
+  let topBarSubmenuItems = document.getElementById("topBarSubmenuItems");
+  topBarSubmenuItems.innerHTML = "";
+
+  let menuItemConfig = menuItems.find((item) => item.text === allowedItem.text);
+
+  allowedItem.items.forEach((item) => {
+    let subItemConfig = menuItemConfig.items.find((m) => m.text === item.text);
+
+    if (!subItemConfig) return;
+
+    let navItem = document.createElement("button");
+
+    navItem.textContent = subItemConfig.text;
+    navItem.classList.add("submenu-item");
+    navItem.addEventListener("click", function () {
+      window.location.href = subItemConfig.href;
+    });
+
+    topBarSubmenuItems.appendChild(navItem);
+  });
+
+  dashboardSubmenu.style.display = "flex";
+  // setTopBarActiveItem();
+}
+
+function setTopBarActiveItem() {
+  let navItems = document.querySelectorAll(".top-nav-item");
+
+  let url = new URLSearchParams(window.location.search);
+
+  let currentPageWithParams = current_page;
+
+  if (url.size !== 0) {
+    let firstKey = url.keys().next().value;
+
+    currentPageWithParams = current_page + `?${firstKey}=${url.get(firstKey)}`;
+  }
+
+  navItems.forEach((navItem) => {
+    let isActive = navItem.href.includes(currentPageWithParams);
+
+    if (isActive) {
+      navItem.classList.add("nav-pill-active");
+      navItem.classList.remove("nav-pill-inactive");
+    } else {
+      navItem.classList.remove("nav-pill-active");
+      navItem.classList.add("nav-pill-inactive");
+    }
+  });
+
+  // Handle submenu active state
+  allowedActions.forEach((allowedItem) => {
+    if (allowedItem.items.length <= 1) return;
+
+    let menuItemConfig = menuItems.find(
+      (item) => item.text === allowedItem.text,
+    );
+
+    if (!menuItemConfig) return;
+
+    let matchedSubItem = menuItemConfig.items.find((subItem) => {
+      let subHref = subItem.href;
+
+      return subHref.includes(currentPageWithParams);
+    });
+
+    if (!matchedSubItem) return;
+
+    showSubMenu(allowedItem);
+
+    // Activate main nav pill
+    navItems.forEach((navItem) => {
+      if (navItem.textContent.trim() === allowedItem.text) {
+        navItem.classList.add("nav-pill-active");
+        navItem.classList.remove("nav-pill-inactive");
+      }
+    });
+
+    // If submenu is rendered, activate submenu item
+    let submenuItems = document.querySelectorAll(".submenu-item");
+
+    submenuItems.forEach((submenuItem) => {
+      if (submenuItem.textContent.trim() === matchedSubItem.text) {
+        submenuItem.classList.add("submenu-item-active");
+        dashboardSubmenu.style.display = "flex";
+      } else {
+        submenuItem.classList.remove("submenu-item-active");
+      }
+    });
+  });
+}
 if (current_page != "view_ui_template.html") {
-  buildNavigation();
+  if (loggedInUser.type != "TestTaker") {
+    buildNavigation();
+  } else {
+    buildTopBarNavigation();
+  }
 }

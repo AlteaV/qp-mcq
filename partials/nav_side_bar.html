@@ -1,7 +1,77 @@
 <div class="dashboard-nav">
-  <header>
-    <a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a
-    ><a href="#" class="brand-logo"><span>Test Ninja</span></a>
+  <header
+    style="
+      min-height: 64px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+    "
+  >
+    <a
+      href="#!"
+      class="menu-toggle"
+      style="display: none"
+      aria-label="Close menu"
+    >
+      <i class="fas fa-bars"></i>
+    </a>
+    <!-- Zap icon matching Figma brand -->
+    <div
+      style="
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #0b46ff, #08c5d1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      "
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="width: 16px; height: 16px; fill: white"
+      >
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    </div>
+    <a href="#" style="text-decoration: none; line-height: 1.1">
+      <div
+        style="
+          font-size: 8.5px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          color: #111827;
+          text-transform: uppercase;
+          font-family: &quot;Inter&quot;, sans-serif;
+        "
+      >
+        TEST
+      </div>
+      <div
+        style="
+          font-size: 8.5px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          color: #111827;
+          text-transform: uppercase;
+          font-family: &quot;Inter&quot;, sans-serif;
+        "
+      >
+        NINJA
+      </div>
+    </a>
   </header>
   <nav class="dashboard-nav-list"></nav>
 </div>

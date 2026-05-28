@@ -2,152 +2,174 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
+
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
       <div class="dashboard-app">
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-3">
-                      Subject Wise Report
-                    </h4>
-                    <div class="row mb-3 align-items-end">
-                      <div class="col mt-2">
-                        <label for="test_type" class="required"
-                          >Test Type</label
-                        >
-                        <select
-                          class="form-select"
-                          name="test_type"
-                          id="test_type"
-                          required
-                        >
-                          <option value="" selected disabled>
-                            Select Test Type
-                          </option>
-                          <option value="Practice">Practice</option>
-                          <option value="Actual">Actual</option>
-                        </select>
-                      </div>
-                      <div class="col mt-2">
-                        <label for="level" class="required">Level</label>
-                        <select
-                          class="form-select"
-                          name="level"
-                          id="level"
-                          required
-                        >
-                          <option value="">Please select a Level</option>
-                        </select>
-                      </div>
-                      <div class="col mt-2">
-                        <label for="subject" class="required">Subject</label>
-                        <select
-                          class="form-select"
-                          name="subject"
-                          id="subject"
-                          required
-                        >
-                          <option value="">Please select a Subject</option>
-                        </select>
-                      </div>
-                      <div class="col mt-4">
-                        <button
-                          class="btn btn-primary btn-color"
-                          type="button"
-                          id="network_button"
-                        >
-                          View Report
-                        </button>
-                      </div>
-                    </div>
-                    <div class="mt-5" id="fetching_data" style="display: none">
-                      <p>Fetching Data</p>
-                    </div>
-                    <div
-                      class="result mt-4 p-3"
-                      id="result_div"
-                      style="display: none"
-                    >
-                      <div class="row">
-                        <div class="stats-grid">
-                          <div class="stat-card">
-                            <div class="stat-number" id="s-att"></div>
-                            <div class="stat-label">Attended</div>
-                          </div>
-                          <div class="stat-card">
-                            <div class="stat-number" id="s-pass"></div>
-                            <div class="stat-label">Passed</div>
-                          </div>
-                          <div class="stat-card">
-                            <div class="stat-number" id="s-rate"></div>
-                            <div class="stat-label">Pass Rate</div>
-                          </div>
-                          <div class="stat-card">
-                            <div class="stat-number" id="s-time"></div>
-                            <div class="stat-label">Avg Time (m)</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="report-card">
-                          <div class="card-header">
-                            <h2
-                              id="view-title"
-                              style="
-                                margin: 0;
-                                font-size: 1.4rem;
-                                color: var(--dark);
-                              "
-                            >
-                              All Subjects Overview
-                            </h2>
-                            <div class="toggle-group">
-                              <button class="toggle-btn" id="btn-chart">
-                                Chart
-                              </button>
-                              <button class="toggle-btn active" id="btn-table">
-                                Table
-                              </button>
-                            </div>
-                          </div>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>Subject Wise Report</h1>
+              <p>Track performance across subjects and topics</p>
+            </div>
+          </div>
 
-                          <div class="breadcrumb" id="breadcrumb"></div>
+          <!-- Filter Card -->
+          <div class="nd-card nd-filter-card">
+            <div class="nd-filter-row">
+              <div class="nd-field">
+                <label for="test_type" class="nd-label required"
+                  >Test Type</label
+                >
+                <select
+                  class="nd-select"
+                  name="test_type"
+                  id="test_type"
+                  required
+                >
+                  <option value="" selected disabled>Select Test Type</option>
+                  <option value="Practice">Practice</option>
+                  <option value="Actual">Actual</option>
+                </select>
+              </div>
+              <div class="nd-field">
+                <label for="level" class="nd-label required">Level</label>
+                <select class="nd-select" name="level" id="level" required>
+                  <option value="">Please select a Level</option>
+                </select>
+              </div>
+              <div class="nd-field">
+                <label for="subject" class="nd-label required">Subject</label>
+                <select class="nd-select" name="subject" id="subject" required>
+                  <option value="">Please select a Subject</option>
+                </select>
+              </div>
+              <div class="nd-field nd-btn-field">
+                <button
+                  class="nd-btn-primary"
+                  type="button"
+                  id="network_button"
+                >
+                  View Report
+                </button>
+              </div>
+            </div>
+          </div>
 
-                          <div
-                            id="chart-wrapper"
-                            class="hidden"
-                            style="height: 400px"
-                          >
-                            <canvas id="drillChart"></canvas>
-                          </div>
+          <!-- Loading -->
+          <div class="nd-loading" id="fetching_data" style="display: none">
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <div class="nd-loading-dot"></div>
+            <span>Fetching Data…</span>
+          </div>
 
-                          <div id="table-wrapper">
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Attended</th>
-                                  <th>Passed</th>
-                                  <th>Success Rate</th>
-                                  <th>Avg Time</th>
-                                  <th>Difficulty</th>
-                                </tr>
-                              </thead>
-                              <tbody id="table-body"></tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          <!-- Result -->
+          <div class="result" id="result_div" style="display: none">
+            <!-- Stat Cards -->
+            <div class="nd-stats-row stats-grid" style="margin-bottom: 20px">
+              <div class="nd-stat-card stat-card">
+                <div class="nd-icon-badge nd-icon-blue">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
                 </div>
+                <div>
+                  <p class="nd-stat-label stat-label">Attended</p>
+                  <p class="nd-stat-value stat-number" id="s-att"></p>
+                </div>
+              </div>
+              <div class="nd-stat-card stat-card">
+                <div class="nd-icon-badge nd-icon-green">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="nd-stat-label stat-label">Passed</p>
+                  <p class="nd-stat-value stat-number" id="s-pass"></p>
+                </div>
+              </div>
+              <div class="nd-stat-card stat-card">
+                <div class="nd-icon-badge nd-icon-purple">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="nd-stat-label stat-label">Pass Rate</p>
+                  <p class="nd-stat-value stat-number" id="s-rate"></p>
+                </div>
+              </div>
+              <div class="nd-stat-card stat-card">
+                <div class="nd-icon-badge nd-icon-orange">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="nd-stat-label stat-label">Avg Time (m)</p>
+                  <p class="nd-stat-value stat-number" id="s-time"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drill Report Card -->
+            <div class="nd-report-card report-card">
+              <div class="nd-report-header card-header">
+                <h2 id="view-title">All Subjects Overview</h2>
+                <div class="nd-toggle-group">
+                  <button class="nd-toggle-btn" id="btn-chart">Chart</button>
+                  <button class="nd-toggle-btn active" id="btn-table">
+                    Table
+                  </button>
+                </div>
+              </div>
+
+              <div class="nd-breadcrumb breadcrumb" id="breadcrumb"></div>
+
+              <div id="chart-wrapper" class="hidden" style="height: 400px">
+                <canvas id="drillChart"></canvas>
+              </div>
+
+              <div id="table-wrapper">
+                <table class="table table-bordered nd-table-override">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Attended</th>
+                      <th>Passed</th>
+                      <th>Success Rate</th>
+                      <th>Avg Time</th>
+                      <th>Difficulty</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-body"></tbody>
+                </table>
               </div>
             </div>
           </div>

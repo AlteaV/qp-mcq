@@ -2,6 +2,12 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
@@ -9,105 +15,103 @@
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
 
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20"></div>
-                    <h4 class="c-grey-900 mB-20 mt-6 mb-4">
-                      View MCQ Template
-                    </h4>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div>
+              <h1>View MCQ Template</h1>
+              <p>Browse and review saved MCQ templates and formats</p>
+            </div>
+          </div>
 
-                    <div id="template_selection_div">
-                      <div
-                        class="container"
-                        id="fetching_data"
-                        style="display: none"
-                      >
-                        <p>Fetching Data</p>
-                      </div>
+          <div class="nd-card p-0">
+            <div id="template_selection_div">
+              <div class="mt-4" id="fetching_data" style="display: none">
+                <p class="text-muted fw-medium">
+                  <i class="fa-solid fa-spinner fa-spin me-2"></i>Fetching
+                  Data...
+                </p>
+              </div>
 
-                      <div
-                        class="row"
-                        id="details"
-                        style="
-                          padding-bottom: 20px;
-                          padding-left: 10px;
-                          padding-top: 20px;
-                          display: none;
-                        "
-                      >
-                        <table
-                          id="template_table"
-                          class="table table-bordered"
-                          width="100%"
-                        >
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Created On</th>
-                              <th>Template</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody id="details_body"></tbody>
-                        </table>
-                      </div>
-                    </div>
+              <div class="result" id="details" style="display: none">
+                <div class="table-responsive">
+                  <table
+                    id="template_table"
+                    class="table table-bordered nd-table-override mb-0"
+                    width="100%"
+                  >
+                    <thead>
+                      <tr>
+                        <th style="width: 50px; text-align: center">#</th>
+                        <th>Name</th>
+                        <th>Created On</th>
+                        <th>Template</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="details_body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                    <div
-                      id="exampleModalCenter"
-                      role="dialog"
-                      aria-labelledby="exampleModalCenterTitle"
-                      data-backdrop="static"
-                      data-keyboard="false"
-                      tabindex="-1"
-                      aria-hidden="true"
-                      class="modal fade"
-                    >
-                      <div
-                        class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
-                        role="document"
-                      >
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5
-                              class="modal-title"
-                              id="exampleModalCenterTitle"
-                            >
-                              New Question
-                            </h5>
-                            <button
-                              type="button"
-                              class="close"
-                              aria-label="Close"
-                              data-kt-modal-action="close"
-                              data-bs-toggle="modal"
-                              data-bs-target="#exampleModalCenter"
-                            >
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <div id="sectionsContainer" class="mb-5"></div>
-                          </div>
-                          <div class="modal-footer">
-                            <button
-                              type="button"
-                              class="btn btn-secondary"
-                              data-kt-modal-action="close"
-                              data-bs-toggle="modal"
-                              data-bs-target="#exampleModalCenter"
-                            >
-                              Close
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          <div
+            id="exampleModalCenter"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            data-backdrop="static"
+            data-keyboard="false"
+            tabindex="-1"
+            aria-hidden="true"
+            class="modal fade"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+              role="document"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">
+                    New Question
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    aria-label="Close"
+                    data-kt-modal-action="close"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div id="sectionsContainer" class="mb-5"></div>
+                </div>
+                <div class="modal-footer mt-3">
+                  <button
+                    type="button"
+                    class="btn nd-btn-secondary"
+                    data-kt-modal-action="close"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
             </div>

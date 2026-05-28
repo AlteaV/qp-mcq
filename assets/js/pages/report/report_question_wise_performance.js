@@ -149,9 +149,7 @@ async function showReportSection(data, isFiltered = false) {
 
   displayResult(tableData, resultTable);
   if (!isFiltered) {
-    qpAttendCount.innerHTML = `Total times attended: ${
-      data[0].total_attended + data[0].total_unattended
-    }`;
+    qpAttendCount.innerHTML = data[0].total_attended + data[0].total_unattended;
   }
 
   try {

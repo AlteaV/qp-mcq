@@ -76,23 +76,26 @@ function renderSubjectPerformance(subjects) {
   }
 
   adSubjectPerformance.innerHTML = subjects
-    .map((s) => {
+    .map((s, index) => {
       const displayName = s.level_name
         ? `${s.level_name} - ${s.subject_name}`
         : s.subject_name;
-      return `
-    <div class="ud-subject-row">
-      <span class="ud-subj-name">${displayName}</span>
-      <div class="ud-subj-bar-wrap">
-        <div class="ud-subj-bar" style="width:${s.accuracy}%"></div>
-      </div>
-      <span class="ud-subj-pct">${s.accuracy}% (${s.attempts} ${s.attempts === 1 ? "attempt" : "attempts"})</span>
-    </div>`;
+
+      return `<div class="ud-subject-row" style="display: block !important;">
+  <div style="display: flex !important; justify-content: space-between !important; align-items: baseline !important; margin-bottom: 8px !important; width: 100% !important;">
+    <span class="ud-subj-name" style="margin-bottom: 0 !important; display: flex !important;">${displayName}</span>
+    <span class="ud-subj-pct" style="margin-top: 0 !important; display: inline-block !important;">${s.accuracy}% (${s.attempts} ${s.attempts === 1 ? "attempt" : "attempts"})</span>
+  </div>
+  
+  <div class="ud-subj-bar-wrap" style="margin: 0 !important; width: 100% !important; display: block !important;">
+    <div class="ud-subj-bar" style="width:${s.accuracy}% !important;"></div>
+  </div>
+</div>`;
     })
     .join("");
 }
 
-function renderAnalysisPanel(container, items, nameField) {
+function renderAnalysisPanel(container, items, nameField, isHardSection) {
   if (!items || items.length === 0) {
     container.innerHTML = `
       <div class="ud-empty-state">
@@ -111,15 +114,56 @@ function renderAnalysisPanel(container, items, nameField) {
       if (nameField === "topic_name" && item.subject_name) {
         subLine = `<span class="ad-analysis-sub">${item.subject_name}</span>`;
       }
+
+      // Determine badge color and text
+      let badgeText = `${item.accuracy}%`;
+      if (item.difficulty) {
+        badgeText += ` ${item.difficulty}`;
+      }
+
+      let bgColor = "#f3f4f6";
+      let textColor = "#374151";
+      let rowHover = "nd-row-hover-red";
+
+      if (item.difficulty === "Easy") {
+        bgColor = "#d1fae5"; // light green
+        textColor = "#059669"; // green
+        rowHover = "nd-row-hover-green";
+      } else if (item.difficulty === "Medium") {
+        bgColor = "#fef3c7"; // light yellow/orange
+        textColor = "#d97706";
+        rowHover = "nd-row-hover-yellow";
+      } else if (item.difficulty === "Hard") {
+        bgColor = "#ffedd5"; // light orange
+        textColor = "#ea580c";
+        rowHover = "nd-row-hover-red";
+      } else if (item.difficulty === "Very Hard") {
+        bgColor = "#fee2e2"; // light red
+        textColor = "#dc2626"; // red
+        rowHover = "nd-row-hover-red";
+      } else {
+        // Subjects (no difficulty field), apply based on accuracy
+        if (item.accuracy >= 75) rowHover = "nd-row-hover-green";
+        else if (item.accuracy >= 40) rowHover = "nd-row-hover-yellow";
+        else rowHover = "nd-row-hover-red";
+
+        if (isHardSection) {
+          bgColor = "#fef9c3"; // yellow for hardest subjects
+          textColor = "#ca8a04";
+        } else {
+          bgColor = "#dcfce7"; // green for easiest subjects
+          textColor = "#16a34a";
+        }
+      }
+
       return `
-    <div class="ad-analysis-row">
+    <div class="ad-analysis-row ${rowHover}">
       <div class="ad-analysis-info">
         <span class="ad-analysis-name">${displayName}</span>
         ${subLine}
       </div>
       <div class="ad-analysis-meta">
-        <span class="ad-analysis-pct">${item.accuracy}%</span>
-        <span class="ad-analysis-badge" style="background:${difficultyColors[item.difficulty] || "#ccc"}">${item.difficulty}</span>
+        <span class="ad-analysis-pct" style="background:${bgColor}; color:${textColor};">${badgeText}</span>
       </div>
     </div>`;
     })
@@ -159,14 +203,26 @@ function renderRecentAttempts(attempts) {
       const dateStr = formatStartTime(a.start_time);
       const subjectLine = a.subject_name || a.quiz_name || "Quiz";
       const scorePct = a.score ?? 0;
+
+      let scoreColorClass = "score-red";
+      let rowHover = "nd-row-hover-red";
+
+      if (scorePct >= 75) {
+        scoreColorClass = "score-green";
+        rowHover = "nd-row-hover-green";
+      } else if (scorePct >= 40) {
+        scoreColorClass = "score-yellow";
+        rowHover = "nd-row-hover-yellow";
+      }
+
       return `
-      <div class="ud-quiz-item">
+      <div class="ud-quiz-item ${rowHover}">
         <div>
           ${a.user_name ? `<div class="ud-quiz-name">${a.user_name}</div>` : ""}
           <div style="font-size:13px; color:#555; margin-top:2px;">${subjectLine}</div>
           <div class="ud-quiz-date">${dateStr}</div>
         </div>
-        <div class="ud-quiz-score">
+        <div class="ud-quiz-score ${scoreColorClass}">
           <div class="ud-quiz-marks">${a.obtained}/${a.total}</div>
           <div class="ud-quiz-pct">${scorePct}%</div>
         </div>
@@ -194,21 +250,25 @@ function renderDashboard(data) {
     adHardSubjects,
     parseJsonField(data.hard_subjects),
     "subject_name",
+    true,
   );
   renderAnalysisPanel(
     adEasySubjects,
     parseJsonField(data.easy_subjects),
     "subject_name",
+    false,
   );
   renderAnalysisPanel(
     adHardTopics,
     parseJsonField(data.hard_topics),
     "topic_name",
+    true,
   );
   renderAnalysisPanel(
     adEasyTopics,
     parseJsonField(data.easy_topics),
     "topic_name",
+    false,
   );
   renderRecentAttempts(parseJsonField(data.recent_attempts));
   hideOverlay();
