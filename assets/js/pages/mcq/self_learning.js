@@ -33,6 +33,10 @@ networkButton.addEventListener("click", async () => {
 
 function reset() {
   resultDiv.style.display = "none";
+  navBar.style.display = "none";
+  submitBar.style.display = "none";
+  resultDiv.style.display = "none";
+  hintSumbitDiv.innerHTML = "";
   resultTable.innerHTML = "";
   fetchingDataSection.innerHTML = "";
   let scoreDiv = document.getElementById("score_div");

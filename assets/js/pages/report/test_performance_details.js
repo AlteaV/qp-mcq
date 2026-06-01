@@ -31,8 +31,10 @@ async function getIndividualPerformance(attempt_id, selectedStudent) {
       showIndividualPerformanceSection(response.result.report);
       if (selectedStudent != null && loggedInUser.type != "TestTaker") {
         studentInfo.innerHTML = `<b>Student Name: ${selectedStudent.user_name}<br><br>User ID: ${selectedStudent.user_id}</b>`;
+        student_info.style.display = "block";
       } else {
         studentInfo.innerHTML = ``;
+        student_info.style.display = "none";
       }
     }
   } catch (error) {

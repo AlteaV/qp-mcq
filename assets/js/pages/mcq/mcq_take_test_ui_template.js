@@ -161,9 +161,9 @@ function initializeUI() {
   document.querySelector(".left-panel").style.fontSize = baseFontSize + "px";
   testStartTime = new Date().toISOString();
   Object.entries(questionStates).forEach(([qId, state]) => {
-    if (state.hasOwnProperty("start_time")) {
-      if (new Date(state.start_time) < new Date(testStartTime)) {
-        testStartTime = state.start_time;
+    if (state.hasOwnProperty("start_times")) {
+      if (new Date(state.start_times[0]) < new Date(testStartTime)) {
+        testStartTime = state.start_times[0];
       }
     }
   });
@@ -172,6 +172,12 @@ function initializeUI() {
     questionPaperDetails.qp_time_remaining * 60,
     templateConfig.total_duration_mins * 60,
   );
+
+  let currentTime = new Date();
+  let startTime = new Date(testStartTime);
+  timeElapsed = Math.floor((currentTime - startTime) / 1000);
+
+  timeLeft = Math.max(0, timeLeft - timeElapsed);
 
   examFooter.style.display = "flex"; // nav is now inside the question card area
   // Keep #submit_test hidden in right panel — nav card button triggers it

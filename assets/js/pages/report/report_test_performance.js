@@ -50,11 +50,24 @@ toggleBtnChart.addEventListener("click", () => toggleView("chart"));
 toggleBtnTable.addEventListener("click", () => toggleView("table"));
 
 downloadButton.addEventListener("click", () => {
-  let selectedQp = qp.find((q) => q.question_id == questionPaperDropDown.value);
-  exportFullTableToExcel(
-    resultTable,
-    `${selectedQp.name} - Test Performance Report`,
-  );
+  let reportName = "Test Performance Report";
+
+  if (qp) {
+    let selectedQp = qp.find(
+      (q) => q.question_id == questionPaperDropDown.value,
+    );
+    reportName = `${selectedQp.name} - Test Performance Report`;
+  }
+
+  var clonedTable = resultTable.cloneNode(true);
+
+  var rows = clonedTable.rows;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].cells.length > 0) {
+      rows[i].deleteCell(-1);
+    }
+  }
+  exportFullTableToExcel(clonedTable, reportName);
 });
 
 function jumpTo(index) {
@@ -152,8 +165,8 @@ function showReportSection(data) {
     let temp = [];
     temp.push(new TableStructure(index + 1));
     if (loggedInUser.type == "TestTaker") {
-      temp.push(new TableStructure(row.user_name));
-      temp.push(new TableStructure(row.out_of_mark));
+      temp.push(new TableStructure(row.name));
+      temp.push(new TableStructure(row.total_questions));
       temp.push(new TableStructure(row.total_score));
     } else {
       temp.push(new TableStructure(row.user_name));

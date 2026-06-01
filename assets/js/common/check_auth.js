@@ -118,115 +118,186 @@ const current_page = path.split("/").pop();
 if (!allowedUrls.includes(currentPageUrl)) {
   window.location.href = allowedUrls[0];
 }
-function buildMenuItem(itemConfig, navList) {
+// function buildMenuItem(itemConfig, navList) {
+//   const { href, text, icon } = itemConfig;
+//   const menuItem = document.createElement("a");
+//   menuItem.href = href;
+//   menuItem.classList.add("dashboard-nav-item", "nav-item");
+//   menuItem.innerHTML = `<i class="${icon}"></i> ${text}`;
+//   navList.appendChild(menuItem);
+// }
+
+// function buildDropdownMenuItem(itemConfig, navList) {
+//   const { text, icon, items } = itemConfig;
+//   const dropdown = document.createElement("div");
+//   dropdown.classList.add("dashboard-nav-dropdown");
+
+//   const dropdownToggle = document.createElement("a");
+//   dropdownToggle.href = "#!";
+//   dropdownToggle.classList.add(
+//     "dashboard-nav-item",
+//     "dashboard-nav-dropdown-toggle",
+//   );
+//   dropdownToggle.innerHTML = `<i class="${icon}"></i> ${text}`;
+//   dropdown.appendChild(dropdownToggle);
+
+//   const dropdownMenu = document.createElement("div");
+//   dropdownMenu.classList.add("dashboard-nav-dropdown-menu");
+
+//   items.forEach((subItemConfig) => {
+//     const subMenuItem = document.createElement("a");
+//     subMenuItem.href = subItemConfig.href;
+//     subMenuItem.classList.add("dashboard-nav-dropdown-item", "nav-item");
+//     subMenuItem.textContent = subItemConfig.text;
+//     dropdownMenu.appendChild(subMenuItem);
+//   });
+
+//   dropdown.appendChild(dropdownMenu);
+//   navList.appendChild(dropdown);
+// }
+
+// function buildNavigation() {
+//   const navList = document.querySelector(".dashboard-nav-list");
+
+//   allowedActions.forEach((allowedItem) => {
+//     let menuItemConfig = menuItems.find(
+//       (item) => item.text == allowedItem.text,
+//     );
+
+//     if (!menuItemConfig) return; // Skip if menu item not found
+
+//     if (menuItemConfig.dropdown && allowedItem.asDropdown) {
+//       // Build dropdown menu
+//       const dropdownConfig = {
+//         text: menuItemConfig.text,
+//         icon: menuItemConfig.icon,
+//         items: [],
+//       };
+
+//       if (allowedItem.items[0] === "all") {
+//         dropdownConfig.items = menuItemConfig.items;
+//       } else {
+//         allowedItem.items.forEach((item) => {
+//           const subMenuItem = menuItemConfig.items.find(
+//             (m) => m.text === item.text,
+//           );
+//           if (subMenuItem) dropdownConfig.items.push(subMenuItem);
+//         });
+//       }
+
+//       buildDropdownMenuItem(dropdownConfig, navList);
+//     } else {
+//       // Build regular menu item
+//       if (menuItemConfig.dropdown) {
+//         const dropdownItems =
+//           allowedItem.items[0] === "all"
+//             ? menuItemConfig.items
+//             : allowedItem.items;
+//         dropdownItems.forEach((item) => {
+//           const subMenuItem = menuItemConfig.items.find(
+//             (m) => m.text === item.text,
+//           );
+//           if (subMenuItem) buildMenuItem(subMenuItem, navList);
+//         });
+//       } else {
+//         buildMenuItem(menuItemConfig, navList);
+//       }
+//     }
+//   });
+
+//   $(document).ready(function () {
+//     $(".dashboard-nav-dropdown-toggle").click(function () {
+//       $(this)
+//         .closest(".dashboard-nav-dropdown")
+//         .toggleClass("show")
+//         .find(".dashboard-nav-dropdown")
+//         .removeClass("show");
+//       $(this).parent().siblings().removeClass("show");
+//     });
+
+//     var dropdownElementList = [].slice.call(
+//       document.querySelectorAll(".dropdown-toggle"),
+//     );
+//     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+//       return new bootstrap.Dropdown(dropdownToggleEl);
+//     });
+//   });
+
+//   setActiveNavItem();
+//   setUserName();
+// }
+
+// 1. Builds individual links matching the new sidebar styling layout
+function buildSidebarItem(itemConfig, navList) {
   const { href, text, icon } = itemConfig;
   const menuItem = document.createElement("a");
   menuItem.href = href;
-  menuItem.classList.add("dashboard-nav-item", "nav-item");
+  menuItem.classList.add("sidebar-item");
   menuItem.innerHTML = `<i class="${icon}"></i> ${text}`;
+
+  // Automatically check and set active state based on current page URL path
+  const currentPath = window.location.pathname;
+  if (currentPath === href || currentPath.endsWith(href)) {
+    menuItem.classList.add("active");
+  }
+
   navList.appendChild(menuItem);
 }
 
-function buildDropdownMenuItem(itemConfig, navList) {
-  const { text, icon, items } = itemConfig;
-  const dropdown = document.createElement("div");
-  dropdown.classList.add("dashboard-nav-dropdown");
-
-  const dropdownToggle = document.createElement("a");
-  dropdownToggle.href = "#!";
-  dropdownToggle.classList.add(
-    "dashboard-nav-item",
-    "dashboard-nav-dropdown-toggle",
-  );
-  dropdownToggle.innerHTML = `<i class="${icon}"></i> ${text}`;
-  dropdown.appendChild(dropdownToggle);
-
-  const dropdownMenu = document.createElement("div");
-  dropdownMenu.classList.add("dashboard-nav-dropdown-menu");
-
-  items.forEach((subItemConfig) => {
-    const subMenuItem = document.createElement("a");
-    subMenuItem.href = subItemConfig.href;
-    subMenuItem.classList.add("dashboard-nav-dropdown-item", "nav-item");
-    subMenuItem.textContent = subItemConfig.text;
-    dropdownMenu.appendChild(subMenuItem);
-  });
-
-  dropdown.appendChild(dropdownMenu);
-  navList.appendChild(dropdown);
+// 2. Builds the non-clickable, bold Category Headers
+function buildSidebarCategory(text, navList) {
+  const categoryHeader = document.createElement("div");
+  categoryHeader.classList.add("sidebar-category");
+  categoryHeader.textContent = text;
+  navList.appendChild(categoryHeader);
 }
 
+// Main Navigation Builder
 function buildNavigation() {
-  const navList = document.querySelector(".dashboard-nav-list");
+  // Update selection target to match your new container class names if modified
+  const navList = document.querySelector(".sidebar-nav");
+  if (!navList) return;
+
+  navList.innerHTML = ""; // Clear loader elements smoothly
 
   allowedActions.forEach((allowedItem) => {
     let menuItemConfig = menuItems.find(
       (item) => item.text == allowedItem.text,
     );
 
-    if (!menuItemConfig) return; // Skip if menu item not found
+    if (!menuItemConfig) return; // Skip if menu item structure is missing
 
-    if (menuItemConfig.dropdown && allowedItem.asDropdown) {
-      // Build dropdown menu
-      const dropdownConfig = {
-        text: menuItemConfig.text,
-        icon: menuItemConfig.icon,
-        items: [],
-      };
+    // If it has sub-items, convert the top parent text to a category title heading
+    if (menuItemConfig.dropdown) {
+      buildSidebarCategory(menuItemConfig.text, navList);
 
-      if (allowedItem.items[0] === "all") {
-        dropdownConfig.items = menuItemConfig.items;
-      } else {
+      let itemsToRender = [];
+      if (allowedItem.items && allowedItem.items[0] === "all") {
+        itemsToRender = menuItemConfig.items;
+      } else if (allowedItem.items) {
         allowedItem.items.forEach((item) => {
           const subMenuItem = menuItemConfig.items.find(
             (m) => m.text === item.text,
           );
-          if (subMenuItem) dropdownConfig.items.push(subMenuItem);
+          if (subMenuItem) itemsToRender.push(subMenuItem);
         });
       }
 
-      buildDropdownMenuItem(dropdownConfig, navList);
+      // Render all approved children items as flat adjacent links
+      itemsToRender.forEach((subItem) => {
+        buildSidebarItem(subItem, navList);
+      });
     } else {
-      // Build regular menu item
-      if (menuItemConfig.dropdown) {
-        const dropdownItems =
-          allowedItem.items[0] === "all"
-            ? menuItemConfig.items
-            : allowedItem.items;
-        dropdownItems.forEach((item) => {
-          const subMenuItem = menuItemConfig.items.find(
-            (m) => m.text === item.text,
-          );
-          if (subMenuItem) buildMenuItem(subMenuItem, navList);
-        });
-      } else {
-        buildMenuItem(menuItemConfig, navList);
-      }
+      // Handles standalone items that don't belong to a group structure
+      buildSidebarItem(menuItemConfig, navList);
     }
   });
 
-  $(document).ready(function () {
-    $(".dashboard-nav-dropdown-toggle").click(function () {
-      $(this)
-        .closest(".dashboard-nav-dropdown")
-        .toggleClass("show")
-        .find(".dashboard-nav-dropdown")
-        .removeClass("show");
-      $(this).parent().siblings().removeClass("show");
-    });
-
-    var dropdownElementList = [].slice.call(
-      document.querySelectorAll(".dropdown-toggle"),
-    );
-    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-      return new bootstrap.Dropdown(dropdownToggleEl);
-    });
-  });
+  // Note: jQuery toggle logic removed because dropdown links are now fully flat!
 
   setActiveNavItem();
   setUserName();
 }
-
 function setUserName() {
   let userName = document.getElementById("user_name");
   if (userName && loggedInUser && loggedInUser.name) {

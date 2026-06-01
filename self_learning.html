@@ -97,29 +97,37 @@
           </div>
 
           <!-- Question View -->
-          <div class="result" id="result_div" style="display: none">
-            <div class="nd-card">
-              <h5 class="nd-card-title" id="question_no"></h5>
-              <div id="question_div"></div>
-              <div class="nd-question-nav">
-                <button
-                  class="nd-btn-secondary"
-                  type="button"
-                  id="previous_question"
-                  style="visibility: hidden"
-                >
-                  ← Previous
-                </button>
-                <button class="nd-btn-primary" type="button" id="next_question">
-                  Next →
-                </button>
-              </div>
-            </div>
-            <div style="margin-top: 12px">
-              <button class="nd-btn-primary" type="button" id="submit_test">
-                Submit Test
+          <div class="nd-card" id="result_div" style="display: none">
+            <h5 class="nd-card-title" id="question_no"></h5>
+            <div id="question_div"></div>
+          </div>
+          <div style="margin-top: 12px" id="hint_sumbit_div"></div>
+
+          <div class="nd-card" id="nav-bar" style="display: none">
+            <div
+              class="tui-nav-left"
+              style="display: flex; gap: 8px; width: 100% !important"
+            >
+              <button
+                class="tui-nav-prev"
+                id="previous_question"
+                style="visibility: hidden"
+              >
+                &#8592; Previous
+              </button>
+              <button class="tui-nav-next ms-auto" id="next_question">
+                Next &#8594;
               </button>
             </div>
+          </div>
+          <div class="nd-card mt-4" id="submit-bar" style="display: none">
+            <button
+              class="nd-btn-primary ms-auto"
+              type="button"
+              id="submit_test"
+            >
+              Submit Test
+            </button>
           </div>
         </div>
         <footer class="dashboard-footer" id="footer-placeholder"></footer>

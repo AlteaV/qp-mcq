@@ -6,6 +6,9 @@ let submitButton = document.getElementById("submit_test");
 let testTitle = document.getElementById("title");
 let questionNo = document.getElementById("question_no");
 resultTable = document.getElementById("result_table");
+let navBar = document.getElementById("nav-bar");
+let submitBar = document.getElementById("submit-bar");
+let hintSumbitDiv = document.getElementById("hint_sumbit_div");
 
 nextButton.addEventListener("click", nextQuestion);
 previousButton.addEventListener("click", previousQuestion);
@@ -257,19 +260,24 @@ async function showQuestion(question) {
     helpDiv.style.display = "none";
     helpDiv.className = "accordion mb-3 mt-3";
     helpDiv.id = `accordion_hint_${questionId}`;
-    helpDiv.innerHTML = `
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-heading-hint-${questionId}">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-hint-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-hint-${questionId}">
-          Hint
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapse-hint-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-hint-${questionId}">
-        <div class="accordion-body" id="hint_body_${questionId}">
-          Loading hint...
-        </div>
+    helpDiv.innerHTML = `<div class="hint-accordion">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-heading-hint-${questionId}">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-hint-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-hint-${questionId}">
+        <!-- Inline Lightbulb Icon to match the screenshot -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a3.75 3.75 0 1 0-3.75 3.75M12 12.75a3.75 3.75 0 1 1 3.75 3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 18.75h.008v.008H12v-.008Z" />
+        </svg>
+        Hint
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapse-hint-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-hint-${questionId}">
+      <div class="accordion-body latex" id="hint_body_${questionId}">
+        Loading hint...
       </div>
     </div>
+  </div>
+</div>
   `;
 
     let helpButton = document.createElement("button");
@@ -289,6 +297,7 @@ async function showQuestion(question) {
         hint = await getHelp(questionId, "hint");
       }
       showHint(questionId);
+      showAnswer(questionId);
       hideOverlay();
     };
 
@@ -296,19 +305,23 @@ async function showQuestion(question) {
     answerDiv.style.display = "none";
     answerDiv.className = "accordion mb-3 mt-3";
     answerDiv.id = `accordion_answer_${questionId}`;
-    answerDiv.innerHTML = `
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-heading-answer-${questionId}">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-answer-${questionId}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-answer-${questionId}">
-          Answer
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapse-answer-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-answer-${questionId}">
-        <div class="accordion-body" id="answer_body_${questionId}">
-          Loading answer...
-        </div>
+    answerDiv.innerHTML = `<div class="solution-accordion">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-heading-answer-${questionId}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-answer-${questionId}" aria-expanded="false" aria-controls="panelsStayOpen-collapse-answer-${questionId}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        Solution
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapse-answer-${questionId}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-answer-${questionId}">
+      <div class="accordion-body latex" id="answer_body_${questionId}">
+        Loading answer...
       </div>
     </div>
+  </div>
+</div>
   `;
 
     let answerButton = document.createElement("button");
@@ -356,18 +369,25 @@ async function showQuestion(question) {
         </button>
       </h2>
       <div id="panelsStayOpen-collapse-similar-${questionId}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading-similar-${questionId}">
-        <div class="accordion-body" id="similar_question_body_${questionId}">
+        <div class="accordion-body latex" id="similar_question_body_${questionId}">
         </div>
       </div>
     </div>
   `;
 
-    questionDiv.appendChild(helpDiv);
+    if (question.llm_answer) {
+      showAnswer(questionId);
+    }
+    // questionDiv.appendChild(helpDiv);
     questionDiv.appendChild(helpButton);
-    questionDiv.appendChild(answerDiv);
-    questionDiv.appendChild(answerButton);
+    // questionDiv.appendChild(answerDiv);
+    // questionDiv.appendChild(answerButton);
     questionDiv.appendChild(trySimilarButton);
     questionDiv.appendChild(similarQuestionDiv);
+
+    hintSumbitDiv.innerHTML = "";
+    hintSumbitDiv.appendChild(helpDiv);
+    hintSumbitDiv.appendChild(answerDiv);
 
     if (question.llm_hint) {
       showHint(questionId, question.llm_hint);
@@ -398,6 +418,8 @@ async function showQuestion(question) {
   });
 
   resultDiv.style.display = "block";
+  navBar.style.display = "block";
+  submitBar.style.display = "flex";
 }
 
 async function showHint(questionId) {
@@ -406,13 +428,13 @@ async function showHint(questionId) {
     question = questions.find((q) => q.question_id == questionId);
   }
   let hintBody = document.getElementById(`hint_body_${questionId}`);
-  hintBody.innerText = question.llm_hint;
+  hintBody.innerText = renderQuestionText(question.llm_hint);
   let helpDiv = document.getElementById(`accordion_hint_${questionId}`);
   helpDiv.style.display = "block";
   let helpButton = document.getElementById(`help_button_${questionId}`);
   helpButton.style.display = "none";
-  let answerButton = document.getElementById(`answer_button_${questionId}`);
-  answerButton.style.display = "block";
+  // let answerButton = document.getElementById(`answer_button_${questionId}`);
+  // answerButton.style.display = "block";
   await mathJaxTypeset();
 }
 
@@ -426,11 +448,12 @@ async function showAnswer(questionId) {
     await getAnswer(question.question_id);
   }
   let answerBody = document.getElementById(`answer_body_${questionId}`);
-  answerBody.innerText = question.llm_answer;
+  let answer = renderQuestionText(question.llm_answer);
+  answerBody.innerHTML = answer;
   let answerDiv = document.getElementById(`accordion_answer_${questionId}`);
   answerDiv.style.display = "block";
   let answerButton = document.getElementById(`answer_button_${questionId}`);
-  answerButton.style.display = "none";
+  // answerButton.style.display = "none";
   let trySimilarButton = document.getElementById(
     `try_similar_button_${questionId}`,
   );
@@ -693,6 +716,8 @@ async function submitTest() {
         testTitle.innerText = `Take Test`;
         questionDiv.innerHTML = "";
         resultDiv.style.display = "none";
+        navBar.style.display = "none";
+        submitBar.style.display = "none";
       }
     } else {
       throw new Error(response.message || "Failed to submit the test");
