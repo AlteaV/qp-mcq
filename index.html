@@ -1,826 +1,386 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Test Ninja - Premium B2C MCQ practice platform. Know where you stand, identify and fix weak areas, and score what you deserve with high-performance analytics."
-    />
-    <title>
-      Test Ninja - Know Where You Stand. Fix What's Weak. Score What You
-      Deserve.
-    </title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="TestNinja - The AI-Powered Assessment Platform Built for Institutions, Engineered for Student Growth.">
+  <title>TestNinja | The AI-Powered Assessment Platform</title>
 
-    <link rel="stylesheet" href="/assets/css/index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-  </head>
-  <body>
-    <div class="page-wrapper">
-      <div class="glow-orb orb-1"></div>
-      <div class="glow-orb orb-2"></div>
-      <div class="glow-orb orb-3"></div>
+  <link rel="stylesheet" href="assets/css/index.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
 
-      <nav class="navbar">
-        <div class="nav-container">
-          <a href="#" class="nav-logo">
-            <img src="/assets/img/logo.png" alt="TEST NINJA" class="logo-img" />
-          </a>
-          <ul class="nav-links">
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#dashboard">Dashboard Preview</a></li>
-          </ul>
-          <div class="nav-actions">
-            <button
-              class="theme-toggle-btn"
-              aria-label="Toggle Theme"
-              id="theme-toggle-desktop"
-            >
+<body>
+  <div class="page-wrapper">
+
+    <!-- Background Elements -->
+    <div class="bg-mesh"></div>
+    <div class="glow-orb orb-primary"></div>
+    <div class="glow-orb orb-secondary"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#" class="nav-logo">
+          <img src="assets/img/TNlogo.png" alt="TestNinja Logo" class="logo-img">
+        </a>
+
+        <ul class="nav-links">
+          <li class="nav-dropdown">
+            <a href="#solutions" class="nav-item">Solutions <i data-lucide="chevron-down" class="dropdown-icon"></i></a>
+            <div class="dropdown-menu">
+              <a href="#schools" class="dropdown-link">
+                <i data-lucide="school" class="dd-icon"></i>
+                <div class="dd-text">
+                  <span class="dd-title">For Schools & K-12</span>
+                  <span class="dd-desc">Master the Competitive Edge</span>
+                </div>
+              </a>
+              <a href="#higher-ed" class="dropdown-link">
+                <i data-lucide="graduation-cap" class="dd-icon"></i>
+                <div class="dd-text">
+                  <span class="dd-title">For Higher Ed & Universities</span>
+                  <span class="dd-desc">Maximize Employability</span>
+                </div>
+              </a>
+              <a href="#corporate" class="dropdown-link">
+                <i data-lucide="building-2" class="dd-icon"></i>
+                <div class="dd-text">
+                  <span class="dd-title">For Corporate</span>
+                  <span class="dd-desc">Hire Top Talent. Develop Your Workforce.</span>
+                </div>
+              </a>
+            </div>
+          </li>
+          <li><a href="#features" class="nav-item">Feature Suite</a></li>
+          <li><a href="#students" class="nav-item">For Students</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="theme-toggle-btn" aria-label="Toggle Theme" id="theme-toggle-desktop">
+            <i data-lucide="moon"></i>
+          </button>
+          <a href="https://auth.testninja.ai/login?client_id=3h89ie5dc0gk2l4560a4s2tfe&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Ftestninja.ai%2Flogin.html" class="btn btn-ghost">Log In</a>
+          <a href="#demo" class="btn btn-primary">Request a Demo</a>
+        </div>
+
+        <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+
+      <div class="mobile-nav">
+        <ul class="mobile-nav-links">
+          <li><a href="#solutions">Solutions</a></li>
+          <li><a href="#schools" class="mobile-sublink">- For Schools & K-12</a></li>
+          <li><a href="#higher-ed" class="mobile-sublink">- For Higher Ed & Universities</a></li>
+          <li><a href="#corporate" class="mobile-sublink">- For Corporate</a></li>
+          <li><a href="#features">Feature Suite</a></li>
+          <li><a href="#students">For Students</a></li>
+          <li class="mobile-nav-theme-toggle">
+            <span>Theme</span>
+            <button class="theme-toggle-btn" aria-label="Toggle Theme" id="theme-toggle-mobile">
               <i data-lucide="moon"></i>
             </button>
-            <a
-              class="btn btn-gradient"
-              href="https://auth.testninja.ai/login?client_id=3h89ie5dc0gk2l4560a4s2tfe&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Ftestninja.ai%2Flogin.html"
-              >Sign In</a
-            >
+          </li>
+          <li class="mobile-nav-buttons">
+            <a href="#demo" class="btn btn-primary w-full">Request a Demo</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="hero-tagline animate-fade-up" style="animation-delay: 0.1s;">
+            <span class="tagline-icon">✨</span>
+            The AI-Powered Assessment Platform Built for Institutions, Engineered for Student Growth.
           </div>
-
-          <button class="mobile-menu-toggle" aria-label="Toggle Menu">
-            <i data-lucide="menu"></i>
-          </button>
-        </div>
-
-        <div class="mobile-nav">
-          <ul class="mobile-nav-links">
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#dashboard">Dashboard Preview</a></li>
-            <li class="mobile-nav-theme-toggle">
-              <span>Dark Mode</span>
-              <button
-                class="theme-toggle-btn"
-                aria-label="Toggle Theme"
-                id="theme-toggle-mobile"
-              >
-                <i data-lucide="moon"></i>
-              </button>
-            </li>
-            <li class="mobile-nav-buttons">
-              <a class="btn btn-gradient">Try Now</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <header class="hero-section">
-        <div class="container hero-container">
-          <div class="hero-content scroll-reveal">
-            <div class="hero-badge">
-              <span>The Practice Infrastructure for Top Performers</span>
-            </div>
-            <h1 class="hero-title">
-              Know Where You Stand.<br />
-              <span class="gradient-text">Fix What's Weak.</span><br />
-              Score What You Deserve.
-            </h1>
-            <p class="hero-subtitle">
-              Stop guessing what's holding you back. Practice topic by topic,
-              see exactly where you're losing marks, and track your improvement
-              over time.
-            </p>
-            <div class="hero-actions">
-              <a class="btn btn-gradient btn-large">Try Now</a>
-              <a href="#dashboard" class="btn btn-secondary btn-large"
-                >View Interactive Sandbox</a
-              >
-            </div>
-
-            <div class="hero-social-proof">
-              <div class="avatar-group">
-                <div class="avatar-mini">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="16"
-                      cy="16"
-                      r="16"
-                      fill="var(--color-primary)"
-                    />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="avatar-mini">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="16" cy="16" r="16" fill="var(--color-accent)" />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="avatar-mini">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="16" cy="16" r="16" fill="#7b1fa2" />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="avatar-mini">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="16" cy="16" r="16" fill="#ffa502" />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <span class="social-proof-text"
-                >Built for those who compete at the top</span
-              >
-            </div>
-          </div>
-
-          <div class="hero-stats scroll-reveal">
-            <div class="stat-card">
-              <div class="stat-icon-wrapper">
-                <i data-lucide="users"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-number">5000+</div>
-                <div class="stat-label">Active Users</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon-wrapper">
-                <i data-lucide="database"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-number">5,00,000+</div>
-                <div class="stat-label">Questions Answered</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon-wrapper">
-                <i data-lucide="trending-up"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-number">94.6%</div>
-                <div class="stat-label">See Score Improvement</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <section id="how-it-works" class="how-it-works-section">
-        <div class="container">
-          <div class="section-header scroll-reveal">
-            <h2 class="section-title">How It Works</h2>
-            <p class="section-subtitle">
-              Optimize your practice with a simple three-step cycle.
-            </p>
-          </div>
-
-          <div class="timeline scroll-reveal">
-            <div class="timeline-step">
-              <div class="step-number">01</div>
-              <h3 class="step-title">Assess</h3>
-              <p class="step-text">
-                Take topic-wise tests to see where you actually stand
-              </p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-number">02</div>
-              <h3 class="step-title">Analyze</h3>
-              <p class="step-text">See which topics are costing you marks</p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-number">03</div>
-              <h3 class="step-title">Improve</h3>
-              <p class="step-text">
-                Focus on weak areas, practice more, watch your score grow
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="features" class="features-section">
-        <div class="container">
-          <div class="section-header scroll-reveal">
-            <h2 class="section-title">Features</h2>
-            <p class="section-subtitle">
-              Everything you need to practice, analyze, and improve your scores.
-            </p>
-          </div>
-
-          <div class="features-grid">
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="timer"></i>
-              </div>
-              <h3 class="feature-card-title">Timed Tests</h3>
-              <p class="feature-card-text">
-                Practice under real exam conditions. Build speed and stay calm
-                under pressure.
-              </p>
-            </div>
-
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="book-open"></i>
-              </div>
-              <h3 class="feature-card-title">Self Learning Mode</h3>
-              <p class="feature-card-text">
-                Go at your own pace. Get clear explanations for every question.
-              </p>
-            </div>
-
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="bar-chart-3"></i>
-              </div>
-              <h3 class="feature-card-title">Test Analysis</h3>
-              <p class="feature-card-text">
-                See more than just your score. Know which topics you got wrong
-                and why.
-              </p>
-            </div>
-
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="layers"></i>
-              </div>
-              <h3 class="feature-card-title">Subject Reports</h3>
-              <p class="feature-card-text">
-                Track your progress across subjects over time. See what's
-                improving.
-              </p>
-            </div>
-
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="target"></i>
-              </div>
-              <h3 class="feature-card-title">Weak Topic Finder</h3>
-              <p class="feature-card-text">
-                The platform tells you exactly which topics need more work.
-              </p>
-            </div>
-
-            <div class="feature-card scroll-reveal">
-              <div class="card-glow"></div>
-              <div class="feature-icon">
-                <i data-lucide="award"></i>
-              </div>
-              <h3 class="feature-card-title">Progress & Badges</h3>
-              <p class="feature-card-text">
-                Stay motivated. Track streaks, hit milestones, earn badges.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="dashboard" class="dashboard-section">
-        <div class="container">
-          <div class="section-header scroll-reveal">
-            <h2 class="section-title">See the Platform In Action</h2>
-            <p class="section-subtitle">
-              Gain unparalleled clarity on where you stand. Toggle between core
-              streams to inspect high-fidelity telemetry.
-            </p>
-          </div>
-
-          <div class="dashboard-tabs scroll-reveal">
-            <button class="tab-btn active" data-tab="student">
-              <i data-lucide="user"></i> Student Dashboard
-            </button>
-            <button class="tab-btn" data-tab="admin">
-              <i data-lucide="shield"></i> Admin Dashboard
-            </button>
-          </div>
-
-          <div class="browser-mockup scroll-reveal">
-            <div class="browser-header">
-              <div class="browser-buttons">
-                <span class="dot close"></span>
-                <span class="dot minimize"></span>
-                <span class="dot maximize"></span>
-              </div>
-              <div class="browser-address">
-                <i data-lucide="lock" class="lock-icon"></i>
-                <span>app.testninja.io/dashboard</span>
-              </div>
-              <div class="browser-actions-right">
-                <span class="avatar-stub">TN</span>
-              </div>
-            </div>
-
-            <div class="browser-body">
-              <aside class="mock-sidebar">
-                <div class="sidebar-logo">
-                  <span class="logo-accent">⚡</span> TestNinja
-                </div>
-                <ul class="sidebar-menu">
-                  <li class="active">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Dashboard</span>
-                  </li>
-                  <li>
-                    <i data-lucide="file-signature"></i>
-                    <span>Practice Tests</span>
-                  </li>
-                  <li>
-                    <i data-lucide="line-chart"></i> <span>Analytics Hub</span>
-                  </li>
-                  <li><i data-lucide="history"></i> <span>History</span></li>
-                  <li><i data-lucide="settings"></i> <span>Settings</span></li>
-                </ul>
-              </aside>
-
-              <main class="mock-main">
-                <div class="mock-main-header">
-                  <div>
-                    <h3 class="mock-welcome" id="mock-header-title">
-                      Student Overview
-                    </h3>
-                    <p class="mock-subtext" id="mock-header-sub">
-                      Personal progress and recent test metrics
-                    </p>
-                  </div>
-                  <div class="mock-badge" id="mock-header-badge">
-                    Active Streak:
-                    <strong class="streak-count">12 Days 🔥</strong>
-                  </div>
-                </div>
-
-                <div class="mock-stats-grid">
-                  <div class="mock-stat-card">
-                    <span class="mock-stat-label" id="mock-stat-1-label"
-                      >Quizzes Taken</span
-                    >
-                    <span class="mock-stat-val" id="mock-stat-1-val">45</span>
-                    <span class="mock-stat-sub text-green" id="mock-stat-1-sub"
-                      ><i data-lucide="arrow-up-right"></i> +3 this week</span
-                    >
-                  </div>
-                  <div class="mock-stat-card">
-                    <span class="mock-stat-label" id="mock-stat-2-label"
-                      >Average Score</span
-                    >
-                    <span class="mock-stat-val" id="mock-stat-2-val"
-                      >84.2%</span
-                    >
-                    <span class="mock-stat-sub text-green" id="mock-stat-2-sub"
-                      ><i data-lucide="arrow-up-right"></i> +2.1% net
-                      increase</span
-                    >
-                  </div>
-                  <div class="mock-stat-card">
-                    <span class="mock-stat-label" id="mock-stat-3-label"
-                      >MCQs Answered</span
-                    >
-                    <span class="mock-stat-val" id="mock-stat-3-val"
-                      >3,420</span
-                    >
-                    <span class="mock-stat-sub text-green" id="mock-stat-3-sub"
-                      ><i data-lucide="arrow-up-right"></i> 89% answered
-                      correctly</span
-                    >
-                  </div>
-                  <div class="mock-stat-card">
-                    <span class="mock-stat-label" id="mock-stat-4-label"
-                      >Total Time Spent</span
-                    >
-                    <span class="mock-stat-val" id="mock-stat-4-val"
-                      >48.5h</span
-                    >
-                    <span class="mock-stat-sub text-green" id="mock-stat-4-sub"
-                      ><i data-lucide="arrow-up-right"></i> +4.2h this
-                      week</span
-                    >
-                  </div>
-                </div>
-
-                <div class="mock-split-grid">
-                  <div class="mock-content-card">
-                    <h4 class="card-heading" id="left-card-heading">
-                      Subject Performance
-                    </h4>
-                    <div class="bars-container" id="left-card-content">
-                      <div class="bar-group">
-                        <div class="bar-labels">
-                          <span>Physics</span>
-                          <strong>88%</strong>
-                        </div>
-                        <div class="progress-bar-bg">
-                          <div
-                            class="progress-bar-fill"
-                            style="width: 88%"
-                          ></div>
-                        </div>
-                      </div>
-                      <div class="bar-group">
-                        <div class="bar-labels">
-                          <span>Chemistry</span>
-                          <strong>75%</strong>
-                        </div>
-                        <div class="progress-bar-bg">
-                          <div
-                            class="progress-bar-fill"
-                            style="width: 75%"
-                          ></div>
-                        </div>
-                      </div>
-                      <div class="bar-group">
-                        <div class="bar-labels">
-                          <span>Biology</span>
-                          <strong>92%</strong>
-                        </div>
-                        <div class="progress-bar-bg">
-                          <div
-                            class="progress-bar-fill"
-                            style="width: 92%"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mock-content-card">
-                    <h4 class="card-heading" id="right-card-heading">
-                      Recent Achievements
-                    </h4>
-                    <ul class="scores-list" id="right-card-content">
-                      <li>
-                        <div class="score-info">
-                          <strong class="score-title">Physics Prodigy</strong>
-                          <span class="score-meta"
-                            >Scored 95%+ in 3 mock tests</span
-                          >
-                        </div>
-                        <span class="score-val badge-yellow">🏆</span>
-                      </li>
-                      <li>
-                        <div class="score-info">
-                          <strong class="score-title"
-                            >Consistent Learner</strong
-                          >
-                          <span class="score-meta">7 day active streak</span>
-                        </div>
-                        <span class="score-val badge-green">🔥</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="mock-content-card table-card">
-                  <h4 class="card-heading" id="table-heading">
-                    Recent Quizzes
-                  </h4>
-                  <div class="table-responsive">
-                    <table class="mock-table">
-                      <thead id="table-head">
-                        <tr>
-                          <th>Quiz Name</th>
-                          <th>Subject</th>
-                          <th>Score</th>
-                          <th>Time Taken</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody id="table-body">
-                        <tr>
-                          <td><strong>NEET Mock Test 5</strong></td>
-                          <td>Full Syllabus</td>
-                          <td>
-                            <span class="accent-font text-green">650/720</span>
-                          </td>
-                          <td><span class="status-pill green">2h 45m</span></td>
-                          <td>
-                            <button class="table-btn-action">
-                              View Analysis
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><strong>Organic Chemistry Drill</strong></td>
-                          <td>Chemistry</td>
-                          <td>
-                            <span class="accent-font text-yellow">82%</span>
-                          </td>
-                          <td><span class="status-pill yellow">45m</span></td>
-                          <td>
-                            <button class="table-btn-action">
-                              Review Mistakes
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </main>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="testimonials" class="testimonials-section">
-        <div class="container">
-          <div class="section-header scroll-reveal">
-            <span class="section-tagline">Success Telemetry</span>
-            <h2 class="section-title">Trusted by High-Stakes Aspirants</h2>
-            <p class="section-subtitle">
-              See how serious practitioners use Test Ninja's topic analytics to
-              plug leaks and secure top-tier results.
-            </p>
-          </div>
-
-          <div class="testimonials-grid">
-            <div class="testimonial-card scroll-reveal">
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "I always thought I was weak at Math overall. Turns out it was
-                just one topic. Fixing it jumped my score by 20 marks."
-              </p>
-              <div class="testimonial-author">
-                <div class="author-avatar">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="16"
-                      cy="16"
-                      r="16"
-                      fill="var(--color-primary)"
-                    />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="author-info">
-                  <strong class="author-name">A.S.</strong>
-                  <span class="author-meta">Verified User</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="testimonial-card scroll-reveal">
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "My scores had plateaued for weeks. The reports showed I was
-                spending too long on certain question types. Once I fixed that,
-                my percentile jumped."
-              </p>
-              <div class="testimonial-author">
-                <div class="author-avatar">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="16" cy="16" r="16" fill="var(--color-accent)" />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="author-info">
-                  <strong class="author-name">K.M.</strong>
-                  <span class="author-meta">Verified User</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="testimonial-card scroll-reveal">
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-                <i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "Other platforms just give you a score. This one tells you *why*
-                you got it wrong. That's the difference."
-              </p>
-              <div class="testimonial-author">
-                <div class="author-avatar">
-                  <svg
-                    viewBox="0 0 32 32"
-                    class="avatar-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="16" cy="16" r="16" fill="#7b1fa2" />
-                    <circle
-                      cx="16"
-                      cy="12"
-                      r="6"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                    <path
-                      d="M6 26.5c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5"
-                      fill="#ffffff"
-                      opacity="0.95"
-                    />
-                  </svg>
-                </div>
-                <div class="author-info">
-                  <strong class="author-name">R.V.</strong>
-                  <span class="author-meta">Verified User</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="cta" class="cta-section">
-        <div class="container cta-container scroll-reveal">
-          <div class="cta-inner-glow"></div>
-          <h2 class="cta-title">Ready to Know Where You Stand?</h2>
-          <p class="cta-subtitle">
-            Create your free practice account in less than 2 minutes.
+          <h1 class="hero-title animate-fade-up" style="animation-delay: 0.2s;">
+            Stop Just Grading.<br>
+            <span class="gradient-text">Start Improving.</span>
+          </h1>
+          <p class="hero-subtitle animate-fade-up" style="animation-delay: 0.3s;">
+            TestNinja is the enterprise test SaaS platform that bridges the gap between evaluation and excellence.
+            Securely administer exams for schools, universities, and corporates while giving candidates the precise
+            analytics they need to master their fields.
           </p>
+          <div class="hero-actions animate-fade-up" style="animation-delay: 0.4s;">
+            <a href="#demo" class="btn btn-primary btn-large">Schedule an Institutional Demo <i
+                data-lucide="arrow-right" class="btn-icon"></i></a>
+            <a href="#student-portal" class="btn btn-secondary btn-large">Explore Student Portal</a>
+          </div>
+        </div>
+
+        <div class="hero-visual animate-fade-up" style="animation-delay: 0.5s;">
+          <img src="assets/img/TNSTUDASHBOARD.png" alt="TestNinja Dashboard"
+            style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);" />
+        </div>
+      </div>
+    </header>
+    <!-- Solutions Section -->
+    <section id="solutions" class="solutions-section">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2 class="section-title" style="font-size: 2rem;">Tailored <span class="gradient-text">Assessment Infrastructure</span> for Every Stage of the Evaluation Lifecycle.</h2>
+        </div>
+      </div>
+
+      <div class="features-grid segment-grid" style="padding: 0 5%; max-width: 100%; margin: 0 auto 60px;">
+        <div class="feature-card" style="display: flex; flex-direction: column;">
+          <div class="feature-icon"><i data-lucide="book-open"></i></div>
+          <h3 class="feature-card-title">For Schools</h3>
+          <p class="feature-card-text" style="flex-grow: 1;">Master the <span class="gradient-text">Competitive Edge.</span><br>From School Exams to National Ranks.</p>
+          <a href="#schools" class="btn btn-secondary" style="align-self: flex-start; margin-top: 10px;">View More</a>
+        </div>
+        <div class="feature-card" style="display: flex; flex-direction: column;">
+          <div class="feature-icon"><i data-lucide="graduation-cap"></i></div>
+          <h3 class="feature-card-title">For Universities</h3>
+          <p class="feature-card-text" style="flex-grow: 1;">Maximize <span class="gradient-text">Employability</span> with<br>Data-Driven Campus Placements.</p>
+          <a href="#higher-ed" class="btn btn-secondary" style="align-self: flex-start; margin-top: 10px;">View More</a>
+        </div>
+        <div class="feature-card" style="display: flex; flex-direction: column;">
+          <div class="feature-icon"><i data-lucide="briefcase"></i></div>
+          <h3 class="feature-card-title">For Corporates</h3>
+          <p class="feature-card-text" style="flex-grow: 1;">Hire <span class="gradient-text">Top Talent.</span><br>Develop Your Workforce.</p>
+          <a href="#corporate" class="btn btn-secondary" style="align-self: flex-start; margin-top: 10px;">View More</a>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="solutions-grid">
+
+          <!-- Schools -->
+          <div id="schools" class="solution-card scroll-reveal">
+            <div class="solution-icon-wrapper">
+              <i data-lucide="book-open" class="solution-icon"></i>
+            </div>
+            <div class="solution-content">
+              <div class="solution-badge">🛠️ For Schools (K-12, IIT-JEE & NEET Prep)</div>
+              <h3 class="solution-title">Master the <span class="gradient-text">Competitive Edge.</span><br>From School Exams to National Ranks.</h3>
+              <p class="solution-message">Streamline your weekly test schedules, internal assessments, and mock
+                examinations. TestNinja handles complex formatting for advanced science and math, making it the perfect
+                engine for demanding competitive prep.</p>
+
+              <div class="offerings-list">
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>National Exam Ready:</strong> Out-of-the-box templates mirroring exact exam patterns for
+                    IIT-JEE (Advanced/Mains) and NEET, alongside standard Grade 6–12 board curriculums.
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Smart Question Banks:</strong> Upload your existing content via PDFs or images. Our AI
+                    categorizes questions by difficulty, subject matter, and cognitive level (Bloom’s Taxonomy).
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Classroom Diagnostic Reports:</strong> Teachers instantly see which concepts (e.g., Organic
+                    Chemistry Mechanisms or Quadratic Equations) the entire cohort struggled with, allowing for
+                    immediate lesson adjustment.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Higher Ed -->
+          <div id="higher-ed" class="solution-card scroll-reveal">
+            <div class="solution-icon-wrapper">
+              <i data-lucide="graduation-cap" class="solution-icon"></i>
+            </div>
+            <div class="solution-content">
+              <div class="solution-badge">🎓 For Higher Education & Universities</div>
+              <h3 class="solution-title">Maximize <span class="gradient-text">Employability</span> with<br>Data-Driven Campus Placements.</h3>
+              <p class="solution-message">Transition your computer labs and examination halls into a scalable, secure
+                digital hub. Prepare your students to clear rigorous corporate recruitment filters.</p>
+
+              <div class="offerings-list">
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Placement MCQ Modules:</strong> Thousands of pre-vetted, industry-aligned MCQs covering
+                    Aptitude, Logical Reasoning, Verbal Ability, and Core Engineering concepts used by top-tier tech and
+                    consulting giants.
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Neo-Inspired Secure Exams:</strong> Cloud-based, high-concurrency engine that handles
+                    thousands of students testing simultaneously with zero latency.
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>The Placement Readiness Index (PRI):</strong> Track every student’s performance across
+                    semesters. Identify exactly which students are ready for day-one placement drives and who needs
+                    urgent upskilling.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Corporate -->
+          <div id="corporate" class="solution-card scroll-reveal">
+            <div class="solution-icon-wrapper">
+              <i data-lucide="briefcase" class="solution-icon"></i>
+            </div>
+            <div class="solution-content">
+              <div class="solution-badge">🏢 For Corporates & Enterprises</div>
+              <h3 class="solution-title">Hire <span class="gradient-text">Top Talent.</span><br>Develop Your Workforce.</h3>
+              <p class="solution-message">Automate your technical screening and continuous employee skill evaluation on
+                a secure, customizable platform.</p>
+
+              <div class="offerings-list">
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Pre-Employment Screening:</strong> Deploy customizable, cheat-proof aptitude and technical
+                    role assessments to accurately filter high-volume applicant pipelines.
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>L&D Benchmarking:</strong> Conduct post-training assessments to measure the true ROI of your
+                    upskilling initiatives.
+                  </div>
+                </div>
+                <div class="offering-item">
+                  <div class="offering-check"><i data-lucide="check-circle-2"></i></div>
+                  <div class="offering-text">
+                    <strong>Role-Specific Coding & Technical Tests:</strong> Move beyond generic MCQs with real-world
+                    technical scenarios tailored for developers, analysts, and project managers.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Feature Suite Section -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2 class="section-title"><span class="gradient-text">Feature Suite</span></h2>
+          <p class="section-subtitle">Everything your candidates need to practice, analyze, and improve their scores.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="timer"></i></div>
+            <h3 class="feature-card-title">Timed Tests</h3>
+            <p class="feature-card-text">Practice under real exam conditions. Build speed and stay calm under pressure.
+            </p>
+          </div>
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="book-open"></i></div>
+            <h3 class="feature-card-title">Self Learning Mode</h3>
+            <p class="feature-card-text">Go at your own pace. Get clear explanations for every question.</p>
+          </div>
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="bar-chart-3"></i></div>
+            <h3 class="feature-card-title">Test Analysis</h3>
+            <p class="feature-card-text">See more than just your score. Know which topics you got wrong and why.</p>
+          </div>
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="layers"></i></div>
+            <h3 class="feature-card-title">Subject Reports</h3>
+            <p class="feature-card-text">Track your progress across subjects over time. See what's improving.</p>
+          </div>
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="target"></i></div>
+            <h3 class="feature-card-title">Performance Insights</h3>
+            <p class="feature-card-text">The platform tells you exactly which topics need more work.</p>
+          </div>
+          <div class="feature-card scroll-reveal">
+            <div class="feature-icon"><i data-lucide="award"></i></div>
+            <h3 class="feature-card-title">Progress & Badges</h3>
+            <p class="feature-card-text">Stay motivated. Track streaks, hit milestones, earn badges.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- For Students Section -->
+    <section id="students" class="students-section">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <div class="solution-badge">👨‍🎓 For Students</div>
+          <h2 class="section-title"><span class="gradient-text">The Student Experience</span></h2>
+          <p class="section-subtitle">
+            Optimize your practice with a simple three-step cycle to reach your potential.
+          </p>
+        </div>
+
+        <div class="timeline scroll-reveal">
+          <div class="timeline-step">
+            <div class="step-number">01</div>
+            <h3 class="step-title">Assess</h3>
+            <p class="step-text">Take subject, section, or topic-wise tests to see where you actually stand</p>
+          </div>
+          <div class="timeline-step">
+            <div class="step-number">02</div>
+            <h3 class="step-title">Analyze</h3>
+            <p class="step-text">Understand exactly which concepts you've grasped and which ones need more work</p>
+          </div>
+          <div class="timeline-step">
+            <div class="step-number">03</div>
+            <h3 class="step-title">Improve</h3>
+            <p class="step-text">Target your growth areas, practice consistently, and watch your score grow</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- CTA Section -->
+    <section id="demo" class="cta-section scroll-reveal">
+      <div class="container">
+        <div class="cta-box">
+          <div class="cta-bg-glow"></div>
+          <h2 class="cta-title">Ready to transform your <span class="gradient-text">assessment infrastructure?</span></h2>
+          <p class="cta-subtitle">Join top institutions using TestNinja to power their evaluations.</p>
           <div class="cta-actions">
-            <a class="btn btn-white btn-large">Try Now</a>
+            <button class="btn btn-primary btn-large">Schedule a Demo</button>
+            <button class="btn btn-secondary btn-large cta-secondary">Contact Sales</button>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="container footer-container">
 
-      <footer class="footer" style="padding: 40px 0">
-        <div
-          class="container footer-container"
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-          "
-        >
-          <div
-            class="footer-left"
-            style="display: flex; align-items: center; gap: 16px"
-          >
-            <a href="#" class="footer-logo">
-              <img
-                src="/assets/img/logo.png"
-                alt="TEST NINJA"
-                class="logo-img"
-              />
-            </a>
-            <span
-              class="footer-copyright"
-              style="color: var(--text-muted); font-size: 0.9rem"
-              >&copy; 2026 Test Ninja</span
-            >
-          </div>
-          <div
-            class="footer-links"
-            style="
-              display: flex;
-              gap: 24px;
-              font-size: 0.95rem;
-              font-weight: 500;
-            "
-          >
-            <a
-              href="#features"
-              style="color: var(--text-muted); transition: color 0.25s ease"
-              onmouseover="this.style.color = 'var(--color-primary)'"
-              onmouseout="this.style.color = 'var(--text-muted)'"
-              >Features</a
-            >
-            <a
-              href="#how-it-works"
-              style="color: var(--text-muted); transition: color 0.25s ease"
-              onmouseover="this.style.color = 'var(--color-primary)'"
-              onmouseout="this.style.color = 'var(--text-muted)'"
-              >How It Works</a
-            >
-            <a
-              href="#"
-              style="color: var(--text-muted); transition: color 0.25s ease"
-              onmouseover="this.style.color = 'var(--color-primary)'"
-              onmouseout="this.style.color = 'var(--text-muted)'"
-              >Terms</a
-            >
-            <a
-              href="#"
-              style="color: var(--text-muted); transition: color 0.25s ease"
-              onmouseover="this.style.color = 'var(--color-primary)'"
-              onmouseout="this.style.color = 'var(--text-muted)'"
-              >Privacy</a
-            >
+        <div class="footer-bottom">
+          <p>&copy; 2026 TestNinja. All rights reserved.</p>
+          <div class="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
           </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
 
-    <script src="/assets/js/pages/index.js"></script>
-  </body>
+  </div>
+
+  <script src="/assets/js/pages/index.js"></script>
+</body>
+
 </html>
