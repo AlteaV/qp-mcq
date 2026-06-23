@@ -76,13 +76,26 @@ async function getQuestionPaperDetails() {
       }
       prepareContainer();
     } else {
-      alert(response.message);
-      window.history.back();
+      hideOverlay();
+      const blocked =
+        response.status === 405 ||
+        /not allowed|blocked|locked out|max attempts/i.test(
+          String(response.message || ""),
+        );
+      if (blocked) {
+        showMcqBlockedScreen(
+          response.message ||
+            "You are not allowed to take this test. Please contact your administrator.",
+        );
+      } else {
+        alert(response.message || "Unable to open this test.");
+        window.history.back();
+      }
     }
   } catch (error) {
     console.error(error);
+    hideOverlay();
     alert("An error occurred while fetching question paper details");
-    return;
   }
 }
 
@@ -834,24 +847,23 @@ async function submitTest() {
     (new Date(testEndTime) - new Date(testStartTime)) / 1000,
   );
   Object.entries(questionStates).forEach(([qId, state]) => {
-    if (state.start_time && state.end_time) {
-      state.time_taken_secs = Math.floor(
-        (new Date(state.end_time) - new Date(state.start_time)) / 1000,
-      );
-    } else {
-      state.time_taken_secs = 0;
-    }
+    const timeTakenSecs = getQuestionTimeTakenSecs(state);
+    const startTime =
+      (state.start_times && state.start_times[0]) || state.start_time || null;
+    const endTime =
+      (state.completion_times &&
+        state.completion_times[state.completion_times.length - 1]) ||
+      state.end_time ||
+      null;
 
-    if (state.status != "unattempted" && state.status != "skip") {
-      let temp = {
-        question_id: parseInt(qId),
-        total_time: state.time_taken_secs,
-        start_time: state.start_time || null,
-        end_time: state.end_time || null,
-        selected_option: state.selectedAnswer,
-      };
-      allAnswered.push(temp);
-    }
+    allAnswered.push({
+      question_id: parseInt(qId, 10),
+      total_time: timeTakenSecs,
+      start_time: startTime,
+      end_time: endTime,
+      selected_option:
+        state.status === "attempted" ? state.selectedAnswer : null,
+    });
   });
 
   const payload = {
@@ -861,10 +873,11 @@ async function submitTest() {
     type: questionPaperDetails.test_type,
     attempt_start_time: testStartTime,
     attempt_end_time: testEndTime,
-    total_time: totalTime.toFixed(0),
+    total_time: Math.round(totalTime),
     answers: JSON.stringify(allAnswered),
     user_id: loggedInUser.user_id,
     attempt_id: questionPaperDetails.attempt_id,
+    existing_achievements: getExistingAchievementsForSubmit(),
     function: "uad",
   };
 
@@ -872,140 +885,31 @@ async function submitTest() {
     let response = await postCall(userEndPoint, JSON.stringify(payload));
 
     if (response.success) {
-      let final_score = response.result.final_score;
+      await loadGudAndCacheAchievements(loggedInUser.user_id);
+      const fallbackTotalMark = questionsData.reduce(
+        (sum, q) => sum + (parseFloat(q.maxMark) || 0),
+        0,
+      );
+      const final_score = normalizeFinalScore(
+        response.result.final_score,
+        fallbackTotalMark,
+      );
 
-      if (showfinalScoreUser == "Y") {
-        hideOverlay();
-        leftPanel.style.display = "none";
-        rightPanel.style.display = "none";
-        legend.style.display = "none";
-        examFooter.style.display = "none";
-        timer.style.display = "none";
-
-        const scoreContainer = document.createElement("div");
-        scoreContainer.id = "finalScoreContainer";
-        scoreContainer.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          background: #ffffff;
-          z-index: 10000;
-        `;
-
-        scoreContainer.innerHTML = `
-          <div style="
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 500px;
-            animation: slideIn 0.5s ease-out;
-          ">
-            <div style="
-              width: 80px;
-              height: 80px;
-              margin: 0 auto 30px;
-              background: #22c55e;
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            ">
-              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-
-            <h1 style="
-              font-size: 32px;
-              font-weight: 700;
-              color: #2d3748;
-              margin-bottom: 15px;
-            ">Test Submitted Successfully!</h1>
-
-            <p style="
-              font-size: 16px;
-              color: #718096;
-              margin-bottom: 40px;
-            ">Your test has been submitted. Here's your result:</p>
-
-            <div style="
-              background: #f7fafc;
-              border-radius: 15px;
-              padding: 30px;
-              margin-bottom: 30px;
-            ">
-              <div style="margin-bottom: 20px;">
-                <div style="
-                  font-size: 18px;
-                  color: #718096;
-                  margin-bottom: 10px;
-                ">Your Score</div>
-                <div style="
-                  font-size: 48px;
-                  font-weight: 700;
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                  background-clip: text;
-                ">${final_score.obtained_mark} / ${final_score.total_mark}</div>
-              </div>
-
-            <button onclick="window.location.replace('take_mcq_test.html')"  style="
-              background: linear-gradient(135deg, #90a0eaff 0%, #8460a8ff 100%);
-              color: white;
-              border: none;
-              padding: 15px 40px;
-              border-radius: 10px;
-              font-size: 16px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: transform 0.2s;
-            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-              Close
-            </button>
-          </div>
-
-          <style>
-            @keyframes slideIn {
-              from {
-                opacity: 0;
-                transform: translateY(-50px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          </style>
-        `;
-
-        document.body.appendChild(scoreContainer);
-      } else {
-        await Swal.fire({
-          icon: "success",
-          title: "Test Submitted",
-          text:
-            response.message || "Your test has been submitted successfully!",
-          confirmButtonText: "OK",
-          allowOutsideClick: false,
-        });
-
-        setTimeout(() => {
-          window.close();
-
-          if (!window.closed) {
-            window.location.href = "take_mcq_test.html";
-          }
-        }, 1000);
+      if (timerInterval) {
+        clearInterval(timerInterval);
       }
+
+      leftPanel.style.display = "none";
+      rightPanel.style.display = "none";
+      legend.style.display = "none";
+      examFooter.style.display = "none";
+      timer.style.display = "none";
+
+      showMcqSubmitResultScreen({
+        message: response.message || "Test submitted successfully!",
+        finalScore: final_score,
+        redirectUrl: "take_mcq_test.html",
+      });
     } else {
       throw new Error(response.message || "Failed to submit test");
     }
@@ -1052,5 +956,6 @@ document.addEventListener("readystatechange", async () => {
 });
 
 async function initializePage() {
+  await loadGudAndCacheAchievements(loggedInUser.user_id);
   await getQuestionPaperDetails();
 }

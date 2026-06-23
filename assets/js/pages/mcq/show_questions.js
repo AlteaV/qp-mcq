@@ -680,7 +680,7 @@ async function submitTest() {
     type: testType,
     attempt_start_time: startTime,
     attempt_end_time: endTime,
-    total_time: totalTime.toFixed(0),
+    total_time: Math.round(totalTime),
     answers: JSON.stringify(allAnswered),
     user_id: loggedInUser.user_id,
     get_correct_answers: false,
@@ -690,6 +690,8 @@ async function submitTest() {
   if (testType == "Self") {
     out.total_questions = allAnswered.length;
     out.obtained_mark = correctCount;
+    out.correct_answers = correctCount;
+    out.existing_achievements = getExistingAchievementsForSubmit();
     out.question_paper_id = null;
     out.function = "sst";
   }
@@ -701,6 +703,7 @@ async function submitTest() {
       alert(response.message);
 
       if (testType == "Self") {
+        await loadGudAndCacheAchievements(loggedInUser.user_id);
         displayCorrectAnswers();
       } else {
         hideOverlay();

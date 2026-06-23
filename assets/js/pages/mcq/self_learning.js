@@ -190,6 +190,7 @@ async function takeTest() {
       questions.questions = response.result.questions;
 
       testType = questions.test_type;
+      await loadGudAndCacheAchievements(loggedInUser.user_id);
       nextQuestion();
     } else {
       throw new Error(response.message || "Failed to fetch questions");
