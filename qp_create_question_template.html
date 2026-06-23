@@ -2,6 +2,12 @@
 <html lang="en">
   <head id="header-placeholder">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="/assets/css/new_design.css" rel="stylesheet" />
   </head>
   <body translate="no">
     <div class="dashboard" id="side-bar-placeholder">
@@ -9,171 +15,171 @@
         <header class="dashboard-toolbar" id="top-bar-placeholder"></header>
 
         <div class="dashboard-content">
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                      <h4 class="c-grey-900 mB-20 mt-6 mb-4">
-                        Question Template Generator
-                      </h4>
+          <!-- Gradient Banner -->
+          <div class="nd-banner">
+            <div class="nd-banner-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h1>Question Template Generator</h1>
+              <p>Create and structure your exam question templates</p>
+            </div>
+          </div>
 
-                      <div class="row mt-5">
-                        <div class="row mb-5" id="template_details">
-                          <form id="template_details_form" class="row">
-                            <div class="col">
-                              <label for="total_marks" class="required"
-                                >Total Marks:</label
-                              >
-                              <input
-                                class="form-control"
-                                type="number"
-                                id="total_marks"
-                                min="1"
-                                required
-                              />
-                              <div class="invalid-feedback">
-                                Please enter a valid total marks.
-                              </div>
-                            </div>
-                            <div class="col">
-                              <label for="template_name" class="required"
-                                >Template Name:</label
-                              >
-                              <input
-                                class="form-control"
-                                type="text"
-                                id="template_name"
-                                required
-                              />
-                              <div class="invalid-feedback">
-                                Please enter a template name.
-                              </div>
-                            </div>
-                            <div class="col">
-                              <label for="part_level" class="required"
-                                >Choose a level:</label
-                              >
-                              <select
-                                class="form-control part-questions"
-                                id="part_level"
-                                required
-                              ></select>
-                              <div class="invalid-feedback">
-                                Please choose a level.
-                              </div>
-                            </div>
-
-                            <div class="col" style="align-self: flex-end">
-                              <input
-                                class="btn btn-primary"
-                                type="button"
-                                value="Create Template"
-                                id="create_template_btn"
-                                onclick="createTemplate()"
-                              />
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div
-                          class="col ms-3"
-                          id="question_section"
-                          style="display: none"
-                        >
-                          <div class="row">
-                            <div id="parts_div" style="display: none"></div>
-
-                            <div id="new_part_div" class="bordered">
-                              <form id="part_form">
-                                <div class="row mb-3">
-                                  <div class="col">
-                                    <label for="part_name" class="required"
-                                      >Part Name:</label
-                                    >
-                                    <input
-                                      class="form-control part-names"
-                                      type="text"
-                                      id="part_name"
-                                      required
-                                      disabled
-                                    />
-                                    <div class="invalid-feedback">
-                                      Please enter a part name.
-                                    </div>
-                                  </div>
-                                  <div class="col">
-                                    <label for="part_subject" class="required"
-                                      >Choose a subject:</label
-                                    >
-                                    <select
-                                      class="form-control part-questions"
-                                      id="part_subject"
-                                      required
-                                    ></select>
-                                    <div class="invalid-feedback">
-                                      Please choose a subject.
-                                    </div>
-                                  </div>
-                                  <div class="col">
-                                    <label for="part_marks" class="required"
-                                      >Total Marks:</label
-                                    >
-                                    <input
-                                      class="form-control part-marks"
-                                      type="number"
-                                      id="part_marks"
-                                      min="1"
-                                      required
-                                    />
-                                    <div class="invalid-feedback">
-                                      Please enter valid marks per question.
-                                    </div>
-                                  </div>
-                                  <!-- create part button -->
-                                  <div
-                                    class="col-auto"
-                                    style="align-self: flex-end"
-                                  >
-                                    <input
-                                      class="btn btn-primary"
-                                      type="button"
-                                      onclick="assignQuestionsToSubject()"
-                                      id="assign_questions_btn"
-                                      value="Assign Questions"
-                                    />
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                          <div class="row mt-3">
-                            <div class="col"></div>
-                            <div class="col-auto" style="align-self: flex-end">
-                              <input
-                                class="btn btn-primary"
-                                style="display: none"
-                                type="button"
-                                onclick="createPart()"
-                                id="part_create_btn"
-                                value="Create Part"
-                              />
-                            </div>
-                            <div class="col-auto" style="align-self: flex-end">
-                              <input
-                                class="btn btn-success"
-                                type="button"
-                                value="Save Template"
-                                id="save_button"
-                                onclick="saveTemplate()"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+          <div class="nd-card">
+            <div class="row mt-3">
+              <div class="row mb-5" id="template_details">
+                <form id="template_details_form" class="row align-items-end">
+                  <div class="col">
+                    <label for="total_marks" class="nd-label required">Total Marks:</label>
+                    <input
+                      class="nd-input"
+                      type="number"
+                      id="total_marks"
+                      min="1"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a valid total marks.
                     </div>
+                  </div>
+                  <div class="col">
+                    <label for="template_name" class="nd-label required">Template Name:</label>
+                    <input
+                      class="nd-input"
+                      type="text"
+                      id="template_name"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a template name.
+                    </div>
+                  </div>
+                  <div class="col">
+                    <label for="part_level" class="nd-label required">Choose a level:</label>
+                    <select
+                      class="nd-select part-questions"
+                      id="part_level"
+                      required
+                    ></select>
+                    <div class="invalid-feedback">
+                      Please choose a level.
+                    </div>
+                  </div>
+
+                  <div class="col-auto">
+                    <button
+                      class="nd-btn-primary"
+                      type="button"
+                      id="create_template_btn"
+                      onclick="createTemplate()"
+                    >
+                      Create Template
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col"
+                id="question_section"
+                style="display: none"
+              >
+                <div class="row">
+                  <div id="parts_div" style="display: none"></div>
+
+                  <div id="new_part_div" class="bordered p-3 mb-3" style="border: 1px solid #e5e7eb; border-radius: 12px;">
+                    <form id="part_form">
+                      <div class="row mb-3 align-items-end">
+                        <div class="col">
+                          <label for="part_name" class="nd-label required">Part Name:</label>
+                          <input
+                            class="nd-input part-names"
+                            type="text"
+                            id="part_name"
+                            required
+                            disabled
+                          />
+                          <div class="invalid-feedback">
+                            Please enter a part name.
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label for="part_subject" class="nd-label required">Choose a subject:</label>
+                          <select
+                            class="nd-select part-questions"
+                            id="part_subject"
+                            required
+                          ></select>
+                          <div class="invalid-feedback">
+                            Please choose a subject.
+                          </div>
+                        </div>
+                        <div class="col">
+                          <label for="part_marks" class="nd-label required">Total Marks:</label>
+                          <input
+                            class="nd-input part-marks"
+                            type="number"
+                            id="part_marks"
+                            min="1"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter valid marks per question.
+                          </div>
+                        </div>
+                        <!-- create part button -->
+                        <div class="col-auto">
+                          <button
+                            class="nd-btn-primary"
+                            type="button"
+                            onclick="assignQuestionsToSubject()"
+                            id="assign_questions_btn"
+                          >
+                            Assign Questions
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col"></div>
+                  <div class="col-auto">
+                    <button
+                      class="nd-btn-primary"
+                      style="display: none"
+                      type="button"
+                      onclick="createPart()"
+                      id="part_create_btn"
+                    >
+                      Create Part
+                    </button>
+                  </div>
+                  <div class="col-auto">
+                    <button
+                      class="nd-btn-success"
+                      type="button"
+                      id="save_button"
+                      onclick="saveTemplate()"
+                    >
+                      Save Template
+                    </button>
                   </div>
                 </div>
               </div>

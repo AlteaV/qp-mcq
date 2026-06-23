@@ -628,6 +628,48 @@ body {
   background-image: none;
   padding-right: 14px;
 }
+input[type="file"],
+input[type="file"].nd-input,
+input[type="file"].form-control {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  height: 42px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: var(--font-main);
+  outline: none;
+  width: 100%;
+  line-height: 1.2;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="file"]::file-selector-button,
+input[type="file"].nd-input::file-selector-button,
+input[type="file"].form-control::file-selector-button {
+  background-color: #f3f4f6;
+  color: var(--text-primary);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 4px 12px;
+  margin-right: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+input[type="file"]::file-selector-button:hover,
+input[type="file"].nd-input::file-selector-button:hover,
+input[type="file"].form-control::file-selector-button:hover {
+  background-color: #e5e7eb;
+}
+input[type="file"]:focus,
+input[type="file"].nd-input:focus,
+input[type="file"].form-control:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(11, 70, 255, 0.1);
+}
 .nd-select:focus,
 .nd-input:focus {
   border-color: var(--brand-blue);
