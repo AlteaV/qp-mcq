@@ -428,13 +428,21 @@ async function showHint(questionId) {
     question = questions.find((q) => q.question_id == questionId);
   }
   let hintBody = document.getElementById(`hint_body_${questionId}`);
-  hintBody.innerText = renderQuestionText(question.llm_hint);
+  if (hintBody) {
+    hintBody.innerText = renderQuestionText(question.llm_hint);
+  }
   let helpDiv = document.getElementById(`accordion_hint_${questionId}`);
-  helpDiv.style.display = "block";
+  if (helpDiv) {
+    helpDiv.style.display = "block";
+  }
   let helpButton = document.getElementById(`help_button_${questionId}`);
-  helpButton.style.display = "none";
+  if (helpButton) {
+    helpButton.style.display = "none";
+  }
   // let answerButton = document.getElementById(`answer_button_${questionId}`);
-  // answerButton.style.display = "block";
+  // if (answerButton) {
+  //   answerButton.style.display = "block";
+  // }
   await mathJaxTypeset();
 }
 
@@ -448,16 +456,24 @@ async function showAnswer(questionId) {
     await getAnswer(question.question_id);
   }
   let answerBody = document.getElementById(`answer_body_${questionId}`);
-  let answer = renderQuestionText(question.llm_answer);
-  answerBody.innerHTML = answer;
+  if (answerBody) {
+    let answer = renderQuestionText(question.llm_answer);
+    answerBody.innerHTML = answer;
+  }
   let answerDiv = document.getElementById(`accordion_answer_${questionId}`);
-  answerDiv.style.display = "block";
+  if (answerDiv) {
+    answerDiv.style.display = "block";
+  }
   let answerButton = document.getElementById(`answer_button_${questionId}`);
-  // answerButton.style.display = "none";
+  // if (answerButton) {
+  //   answerButton.style.display = "none";
+  // }
   let trySimilarButton = document.getElementById(
     `try_similar_button_${questionId}`,
   );
-  trySimilarButton.style.display = "block";
+  if (trySimilarButton) {
+    trySimilarButton.style.display = "block";
+  }
   hideOverlay();
   await mathJaxTypeset();
 }
@@ -469,59 +485,67 @@ async function showSimilarQuestion(questionId, similarQuestion) {
   }
 
   let alreadyAnswered = answers.find((q) => q.question_id == questionId);
-  let selected = "";
-  if (
-    alreadyAnswered &&
-    alreadyAnswered.similar_question_selected_option == key
-  ) {
-    selected = "checked";
-  }
 
   let truSimilarButton = document.getElementById(
     `try_similar_button_${questionId}`,
   );
-  truSimilarButton.style.display = "none";
+  if (truSimilarButton) {
+    truSimilarButton.style.display = "none";
+  }
   let similarQuestionBody = document.getElementById(
     `similar_question_body_${questionId}`,
   );
-  let choices = similarQuestion.choices;
-  if (typeof choices === "string") {
-    try {
-      choices = JSON.parse(choices);
-    } catch {
-      choices = similarQuestion.choices;
+  if (similarQuestionBody) {
+    let choices = similarQuestion.choices;
+    if (typeof choices === "string") {
+      try {
+        choices = JSON.parse(choices);
+      } catch {
+        choices = similarQuestion.choices;
+      }
     }
+    similarQuestionBody.innerHTML = `
+      <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
+           ${similarQuestion.question}
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">
+        ${Object.keys(choices)
+          .map(
+            (key) => {
+              let selected = "";
+              if (
+                alreadyAnswered &&
+                alreadyAnswered.similar_question_selected_option == key
+              ) {
+                selected = "checked";
+              }
+              return `
+                <label  style="display: flex; align-items: left; gap: 5px;">
+                    <input 
+                        type="radio" 
+                        name="similar_question_${questionId}"  
+                        class="similar_question_option"
+                        value="${key}" 
+                        ${selected}
+                    />
+                    <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
+                        ${choices[key]}
+                    </span>
+                </label>
+              `;
+            }
+          )
+          .join("")}
+      </div>
+    `;
   }
-  similarQuestionBody.innerHTML = `
-    <p class="latex" style="font-size: 130%; font-family: 'Times New Roman', Times, serif; text-align: left;">
-         ${similarQuestion.question}
-    </p>
-    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">
-      ${Object.keys(choices)
-        .map(
-          (key) => `
-        <label  style="display: flex; align-items: left; gap: 5px;">
-            <input 
-                type="radio" 
-                name="similar_question_${questionId}"  
-                class="similar_question_option"
-                value="${key}" 
-                ${selected}
-            />
-            <span class="latex" style="font-size: 100%; font-family: 'Times New Roman', Times, serif;">
-                ${choices[key]}
-            </span>
-        </label>
-      `,
-        )
-        .join("")}
-    </div>
-  `;
 
   let similarQuestionDiv = document.getElementById(
     `similar_question_div_${questionId}`,
   );
-  similarQuestionDiv.style.display = "block";
+  if (similarQuestionDiv) {
+    similarQuestionDiv.style.display = "block";
+  }
 
   $("input[type=radio].similar_question_option").click(function () {
     saveSimilarQuestionAnswer();
@@ -610,6 +634,10 @@ async function getHelp(id, type) {
 
 async function submitTest() {
   showOverlay();
+  if (currentQuestion) {
+    saveAnswer();
+    saveSimilarQuestionAnswer();
+  }
   setCompletionTime();
 
   let startTime = null;
@@ -639,20 +667,13 @@ async function submitTest() {
     totalTime += timeTaken;
     let temp = {
       question_id: a.question_id,
-      total_time: timeTaken.toFixed(0),
+      total_time: Math.round(timeTaken),
       start_time: a.start_time[0],
       end_time: a.completion_time[a.completion_time.length - 1],
       selected_option: a.selected_option ? a.selected_option : null,
     };
     if (testType == "Self") {
-      let ques = questions.questions.find(
-        (q) => q.question_id == a.question_id,
-      );
-      if (!ques) {
-        ques = answers.find((q) => q.question_id == a.question_id);
-      }
-
-      if (ques && ques.correct_answer == a.selected_option) {
+      if (a.correct_answer == a.selected_option) {
         temp.is_correct = true;
         correctCount += 1;
       } else {
@@ -737,23 +758,22 @@ function displayCorrectAnswers() {
   nextButton.style.visibility = "hidden";
   previousButton.style.visibility = "hidden";
   submitButton.style.visibility = "hidden";
+  navBar.style.display = "none";
+  submitBar.style.display = "none";
 
   questions.questions.forEach((q) => {
     answers.push({ ...q, selected_option: null });
   });
 
-  let totalQuestions = answers.length;
-  let correctCount = 0;
+  const totalQuestions = answers.length;
+  const correctCount = answers.filter(
+    (question) =>
+      question.selected_option &&
+      question.selected_option === question.correct_answer,
+  ).length;
 
-  answers.forEach(async (question, index) => {
+  answers.forEach((question, index) => {
     let choices = parseChoices(question.choices) || {};
-    // if (typeof choices === "string") {
-    //   try {
-    //     choices = JSON.parse(choices);
-    //   } catch {
-    //     choices = question.choices;
-    //   }
-    // }
     let choiceHTML = `<div style="display: flex; flex-direction: column; gap: 8px; font-size: 120%; font-family: 'Times New Roman', Times, serif;">`;
 
     for (let key in choices) {
@@ -766,10 +786,6 @@ function displayCorrectAnswers() {
       if (key == question.correct_answer) {
         backgroundColor = "#87b97cff";
         fontWeight = "bold";
-      }
-
-      if (key == question.correct_answer && key == question.selected_option) {
-        correctCount += 1;
       }
 
       if (question.selected_option == key) {
@@ -806,33 +822,24 @@ function displayCorrectAnswers() {
                 </div>
             `;
     questionDiv.innerHTML += questionHTML;
-
-    let scoreDiv = document.getElementById("score_div");
-    if (!scoreDiv) {
-      scoreDiv = document.createElement("div");
-      scoreDiv.id = "score_div";
-      scoreDiv.style.marginTop = "20px";
-      scoreDiv.style.fontSize = "120%";
-      scoreDiv.style.fontWeight = "bold";
-      resultDiv.appendChild(scoreDiv);
-    }
-
-    scoreDiv.innerHTML = `Total Score: ${correctCount} / ${totalQuestions}`;
-    scoreDiv.style.display = "block";
-    scoreDiv.style.visibility = "visible";
-    try {
-      if (window.MathJax) {
-        if (typeof MathJax.typesetPromise === "function") {
-          await MathJax.typesetPromise();
-        } else if (typeof MathJax.typeset === "function") {
-          MathJax.typeset();
-        }
-      }
-    } catch (error) {
-      console.error("MathJax typeset error:", error);
-      alert("Error rendering mathematical expressions.");
-    }
   });
+
+  let scoreDiv = document.getElementById("score_div");
+  if (!scoreDiv) {
+    scoreDiv = document.createElement("div");
+    scoreDiv.id = "score_div";
+    scoreDiv.style.marginTop = "20px";
+    scoreDiv.style.fontSize = "120%";
+    scoreDiv.style.fontWeight = "bold";
+    resultDiv.appendChild(scoreDiv);
+  }
+
+  scoreDiv.innerHTML = `Total Score: ${correctCount} / ${totalQuestions}`;
+  scoreDiv.style.display = "block";
+  scoreDiv.style.visibility = "visible";
   questionNo.innerHTML = "";
-  hideOverlay();
+
+  mathJaxTypeset().finally(() => {
+    hideOverlay();
+  });
 }
