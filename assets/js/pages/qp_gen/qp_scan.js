@@ -7,6 +7,7 @@ let sectionTopics = [];
 let questions = [];
 let questionsFormat = [];
 let scanId = "";
+let selectedSubject = null;
 
 // DOM element references
 const levelDropDown = document.getElementById("level");
@@ -20,9 +21,14 @@ let saveQuestionsButton = document.getElementById("save_question");
 const statusDiv = document.getElementById("status_div");
 const statusTable = document.getElementById("status_table");
 const scanQuestionInputDiv = document.getElementById("scan_question_input_div");
+let cancelButton = document.getElementById("cancel_button");
 
 // event listeners
 scanQuestionButton.addEventListener("click", scanQuestionPaper);
+
+cancelButton.addEventListener("click", async () => {
+  await deleteScannedData();
+});
 
 levelDropDown.addEventListener("change", () => {
   resultDiv.style.display = "none";
@@ -32,6 +38,32 @@ levelDropDown.addEventListener("change", () => {
 saveQuestionsButton.addEventListener("click", async () => {
   await submitQuestion();
 });
+
+async function deleteScannedData() {
+  showOverlay();
+  try {
+    const out = {
+      function: "dtsd",
+      scan_id: scanId,
+    };
+
+    let data = await postCall(adminEndPoint, JSON.stringify(out));
+
+    if (data.success) {
+      resultTable.innerHTML = "";
+      fileInput.value = "";
+      resultDiv.style.display = "none";
+      scanQuestionButton.style.display = "block";
+      hideOverlay();
+    } else {
+      alert("Failed to delete scanned data: " + data.message);
+    }
+    hideOverlay();
+  } catch (error) {
+    console.error("Failed to delete scanned data:", error);
+    hideOverlay();
+  }
+}
 
 async function getSubjects() {
   try {
@@ -102,8 +134,15 @@ async function scanQuestionPaper() {
   try {
     showOverlay();
     let file = fileInput.files[0];
+    if (!file) {
+      alert("Please select a PDF file to scan.");
+      hideOverlay();
+      return;
+    }
     let subjectName = subjectDropDown.value;
-    let matchedSubject = subjects.find((s) => s.subject == subjectName);
+    let matchedSubject = subjects.find(
+      (s) => s.subject == subjectName && s.level == levelDropDown.value,
+    );
 
     if (!matchedSubject) {
       alert("Please select a valid subject.");
@@ -126,42 +165,13 @@ async function scanQuestionPaper() {
 
     let response = await postCall(adminEndPoint, payload);
 
-    let retryCount = 0;
-    let maxRetries = 10;
     scanId = response.result.id;
 
-    while (retryCount < maxRetries) {
-      await new Promise((resolve) => setTimeout(resolve, 10000));
-
-      let retryResponse = await getScannedQuestions(response.result.id);
-
-      if (retryResponse.message === "Completed") {
-        questions = retryResponse.result.data.questions;
-        questions = questions.filter(
-          (q) => q.question_type == "Mcq" || q.question_type == "Fib",
-        );
-        sectionTopics = retryResponse.result.data.section_topic;
-        await showReportSection(questions);
-        return;
-      }
-
-      if (
-        retryResponse.message != "Processing" &&
-        retryResponse.message != "Completed"
-      ) {
-        alert(retryResponse.message);
-        hideOverlay();
-        return;
-      }
-      retryCount++;
-    }
-    if (retryCount === maxRetries) {
-      alert("Processing is taking longer than expected. Please wait.");
-      scanQuestionInputDiv.style.display = "none";
-      checkExistingScan();
-    }
+    scanQuestionInputDiv.style.display = "none";
+    checkExistingScan();
   } catch (error) {
     console.error("previewQuestions Error:", error);
+    hideOverlay();
     alert("Error processing PDF.");
   }
 }
@@ -181,6 +191,8 @@ async function showReportSection(data) {
     fetchingData.innerHTML = "<p>There is no data</p>";
     fetchingData.style.display = "block";
     resultDiv.style.display = "none";
+    statusDiv.style.display = "none";
+    deleteScannedData();
     hideOverlay();
     return;
   }
@@ -393,7 +405,7 @@ async function showReportSection(data) {
   levelDropDown.disabled = true;
   subjectDropDown.disabled = true;
 
-  let selectedLevel = subjects.find((s) => s.subject == subject.value)?.level;
+  let selectedLevel = subjects.find((s) => s.id == selectedSubject.id)?.level;
   levelDropDown.value = selectedLevel || "";
 
   try {
@@ -723,7 +735,7 @@ function handleExistingScan(data) {
           (q) => q.question_type == "Mcq" || q.question_type == "Fib",
         );
         sectionTopics = retryResponse.result.data.section_topic;
-        let selectedSubject = subjects.find(
+        selectedSubject = subjects.find(
           (s) => s.id == retryResponse.result.data.subject_id,
         );
 
@@ -750,7 +762,10 @@ function handleExistingScan(data) {
 
     hideOverlay();
     scanQuestionInputDiv.style.display = "none";
+    scanQuestionButton.style.display = "none";
     return;
+  } else {
+    scanQuestionButton.style.display = "block";
   }
   hideOverlay();
   scanQuestionInputDiv.style.display = "flex";
